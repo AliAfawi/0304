@@ -4,6 +4,7 @@ using BookStore.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookShop.Migrations
 {
     [DbContext(typeof(BookStoreContext))]
-    partial class BookStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20240402114248_ordermigra")]
+    partial class ordermigra
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,10 +126,7 @@ namespace BookShop.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderBookId"));
 
-                    b.Property<int>("BookID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrderID")
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -135,11 +135,14 @@ namespace BookShop.Migrations
                     b.Property<double>("UnitPrice")
                         .HasColumnType("float");
 
+                    b.Property<int>("bookId")
+                        .HasColumnType("int");
+
                     b.HasKey("OrderBookId");
 
-                    b.HasIndex("BookID");
+                    b.HasIndex("OrderId");
 
-                    b.HasIndex("OrderID");
+                    b.HasIndex("bookId");
 
                     b.ToTable("OrderBooks");
                 });
@@ -386,15 +389,15 @@ namespace BookShop.Migrations
 
             modelBuilder.Entity("BookShop.Models.OrderBooks", b =>
                 {
-                    b.HasOne("BookShop.Models.Book", "book")
-                        .WithMany()
-                        .HasForeignKey("BookID")
+                    b.HasOne("BookShop.Models.Order", "Order")
+                        .WithMany("OrderBooks")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BookShop.Models.Order", "Order")
-                        .WithMany("OrderBooks")
-                        .HasForeignKey("OrderID")
+                    b.HasOne("BookShop.Models.Book", "book")
+                        .WithMany()
+                        .HasForeignKey("bookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

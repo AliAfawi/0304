@@ -1,68 +1,4 @@
-﻿@* 
-<!DOCTYPE html>
-
-<html>
-<head>
-
-</head>
-<body>
-
-    @using (Html.BeginForm("Home", "Default", FormMethod.Post))
-    {
-
-
-
-
-
-
-         <img style="margin-left:650px ; width:100px;" src="https://png.pngtree.com/png-clipart/20190613/original/pngtree-book-word-art-design-png-image_3585658.jpg" alt="Alternate Text" />
-
-        <br />
-        @*images of products
-        <div class="row mb-2">
-
-            @for (int i = 0; i < 10; i++)
-            {
-
-
-                <div id="Book1" class="col-md-6">
-                    <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative " style="margin:20px ">
-                        <div class="col p-4 d-flex flex-column position-static">
-
-                            <h4 class="mb-0">  Caste: The Origins of Our Discontents  </h4>
-                            <div class=" text-muted"> Isabel Wilkerson (Author) </div>
-                            <p>Price $19.53</p>
-                            <p> Publish Date  February 14, 2023</p>
-                            <div>
-                            <form>
-                                    <button type="submit" asp-controller="ShoppingCart" asp-action="Cart" class="btn btn-success">Buy now</button>
-
-                                <button  type="submit" asp-controller="ShoppingCart" asp-action="Cart" class="btn btn-primary">add to card</button>
-                                    <button type="submit" asp-controller="Home" asp-action="ShowBook" class="btn btn-warning">Show Book</button>
-
-                            </form>
-
-                            </div>
-                        </div>
-                        <div class="col-auto d-none d-lg-block">
-                            <img class="bd-placeholder-img" width="200" height="250" src="https://images-us.bookshop.org/ingram/9780593230275.jpg?height=500&v=v2" preserveAspectRatio="xMidYMid slice" />
-                        </div>
-                    </div>
-
-
-                </div>
-            }
-        </div>
-
-    }
-
-
-
-</body>
-
-</html> *@
-
-
+﻿
 @using (Html.BeginForm("Index", "Home", FormMethod.Post))
 {
     int count = 0;
@@ -81,20 +17,23 @@
                     <div class="col p-4 d-flex flex-column position-static">
 
                         <h4>@item1.Title</h4>
-                        <div class=" text-muted"> Isabel Wilkerson (Author) </div>
-                        <p>Price $19.53</p>
-                        <p> Publish Date  February 14, 2023</p>
+                        <div class=" text-muted"> @item1.Author </div>
+                            <p>Price @item1.Price $ </p>
                         <p>@item1.description</p>
 
                         <div>
-                            <form>
-@*                                     <a href="@Url.Action("Cart", "ShoppingCart", new { id = item1.BookID })" class="btn btn-success">Buy now</a>
- *@                                  
-
-                                               <a href="@Url.Action("Index", "Home", new { id = item1.BookID })" class="btn btn-primary">Add to cart</a>
-                                    <a href="@Url.Action("ShowBook", "Home", new { id = item1.BookID })" class="btn btn-warning">Show Book</a>
-
+                            <form asp-action="AddToCartBuy">
+                                    
+                                <button type="submit" asp-controller="Home" asp-action="AddToCartBuy" asp-route-bookId="@item1.BookID" class="btn btn-success">Buy now</button>
                                 </form>
+                                <form asp-action="AddToCart">
+
+                                    <button type="submit" asp-controller="Home" asp-action="AddToCart" asp-route-bookId="@item1.BookID" class="btn btn-success">Add to cart</button>
+                                </form>
+@*                                 <a href="@Url.Action("Index", "Home", new { id = item1.BookID })" class="btn btn-primary">Add to cart</a>
+ *@                                    <a href="@Url.Action("ShowBook", "Home", new { id = item1.BookID })" class="btn btn-warning">Show Book</a>
+
+                           
 
                         </div>
                     </div>

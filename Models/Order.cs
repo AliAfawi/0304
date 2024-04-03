@@ -2,13 +2,14 @@
 {
     public class Order
     {
-        //מחיר כמות CARTITEMID
         public int OrderID { get; set; }
-        public int UserID { get; set; }//olpkpkp;oo
-        public decimal TotalPrice { get; set; }
+        public int qty { get; set; }
+        public float TotalPrice { get; set; }
         public DateTime OrderDate { get; set; }
 
-        public User User { get; set; }//pojipjo
+        public ICollection <OrderBooks> OrderBooks { get; set; }
+
+        public User User { get; set; }
         // Navigation property for OrderDetails
     }
 }

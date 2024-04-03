@@ -5,19 +5,12 @@ namespace BookShop.Models
 {
     public class CartItem
     {
-        //ORDERS USERID CARTID TOTAL
         [Key]
-        public int CartItemID { get; set; }
-       
+        public string CartItemID { get; set; }
 
-        [ForeignKey("Cart")]
-        public int CartID { get; set; }//KJHGFDFGHJ
-
-        [ForeignKey("Book")]
-        public int BookID { get; set; }//KJHGFD
-        public int Quantity { get; set; }//HGFDFGHJ
-
-        public Cart Cart { get; set; }
-        public Book Book { get; set; }//LKJHGFDFGH
+        [ForeignKey("User")]
+        public int UserId { get; set; }
+        public float TotalPrice { get; set; }
+        public List<Order> orders { get; set; }
     }
 }

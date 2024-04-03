@@ -28,20 +28,34 @@ namespace BookShop.Controllers
         }
 
 
+
         [HttpPost]
         public async Task<IActionResult> login(LoginVM model)
         {
             if (ModelState.IsValid)
             {
-                Console.WriteLine(model.Password!);
-                var result = await signInManager.PasswordSignInAsync(model.UserName!, model.Password!, false,false);
-                if (result.Succeeded)
+                var user = await userManager.FindByNameAsync(model.UserName);
+                if (user != null)
                 {
-                    return RedirectToAction("Index", "Home");
+                    // Ensure you await the task here
+                    var result = await signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+                    if (result.Succeeded) // Now you are accessing SignInResult's Succeeded property
+                    {
+                        await signInManager.SignInAsync(user, false);
+                        HttpContext.Session.SetString("CartId", user.Id.ToString());
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Invalid login attempt!");
+                        return View(model);
+                    }
                 }
-                ModelState.AddModelError("", "Inavalid login attempt!");
-                return View(model);
-
+                else
+                {
+                    ModelState.AddModelError("", "User not found.");
+                    return View(model);
+                }
             }
             return View(model);
         }
@@ -58,7 +72,6 @@ namespace BookShop.Controllers
                     LockoutEnabled = true,
                     PhoneNumberConfirmed = true,
                     TwoFactorEnabled = true
-                    // Do not set UserID or PasswordHash here; Identity will handle these.
                 };
 
                 var result = await userManager.CreateAsync(user, model.Password);
@@ -80,11 +93,32 @@ namespace BookShop.Controllers
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
-            return RedirectToAction(nameof(HomeController.Index));   
+            return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult reset()
+        public async Task<IActionResult> Reset(ResetVM model)
         {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    ModelState.AddModelError("", "Invalid reset attempt!");
+                    return View(model);
+                }
+
+                var result = await userManager.ResetPasswordAsync(user, model.OldPassword!, model.NewPassword!);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("login", "Account");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return View();
+            }
             return View();
         }
     }

@@ -1,0 +1,91 @@
+﻿    @model BookShop.Models.Book
+
+
+<!-- content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row gx-5">
+            <aside class="col-lg-6">
+                <div class=" rounded-4 mb-3 d-flex justify-content-center">
+                    <img style="max-width: 40%; max-height: 100vh; margin:auto;" src="/@Model.ImgUrl" />
+                </div>
+
+                <!-- thumbs-wrap.// -->
+                <!-- gallery-wrap .end// -->
+            </aside>
+            <main class="col-lg-6">
+                <div class="ps-lg-3">
+                    <h4 class="title text-dark">
+                        @Model.Title
+                    </h4>
+
+
+                    <div class="d-flex flex-row my-3">
+                        <div class="text-warning mb-1 me-2">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span class="ms-1">
+                                4.5
+                            </span>
+                        </div>
+                        <span class="text-success ms-2">@Model.StockQuantity in stock</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <span class="h5">$@Model.Price</span>
+                    </div>
+
+                    <p>@Model.description</p>
+
+                    <div class="row">
+                        <dt class="col-2">Title:</dt>
+                        <dd class="col-9">@Model.Title</dd>
+                        <dt class="col-2">Author:</dt>
+                        <dd class="col-9">@Model.Author</dd>
+                        <dt class="col-2">Quantity:</dt>
+                        <dd class="col-9">@Model.StockQuantity</dd>
+                        <dt class="col-2">price:</dt>
+                        <dd class="col-9">$@Model.Price</dd>
+
+
+                    </div>
+
+                    <hr />
+
+                    <div class="row mb-4">
+
+                        <!-- col.// -->
+                        <div class="col-md-4 col-6 mb-3">
+                            <label class="mb-2 d-block">Quantity</label>
+                            <div class="" style="width: 170px;">
+
+                                <input type="text" class="form-control text-center border border-secondary" placeholder="0" aria-label="Example text with button addon" aria-describedby="button-addon1" />
+
+                            </div>
+                        </div>
+
+                        <form asp-action="AddToCartBuy">
+
+                            <button type="submit" asp-controller="Home" asp-action="AddToCartBuy" asp-route-bookId="@Model.BookID" class="btn btn-success">Buy now</button>
+                        </form>
+                        <form asp-action="AddToCart">
+
+                            <button type="submit" asp-controller="Home" asp-action="AddToCart" asp-route-bookId="@Model.BookID" class="btn btn-success">Add to cart</button>
+                        </form>
+
+
+
+                    </div>
+
+
+                </div>
+            </main>
+        </div>
+
+</section>
+<!-- content -->
+}
+<!-- Footer -->

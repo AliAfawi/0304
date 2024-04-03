@@ -5,13 +5,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.Data
 {
-    public class BookStoreContext : DbContext
+    public class BookStoreContext : IdentityDbContext<User>
     {
-        public BookStoreContext(DbContextOptions options) : base(options)
+        public BookStoreContext(DbContextOptions<BookStoreContext> options) : base(options)
         {
 
         }
-
+        public BookStoreContext()
+        {
+            
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -27,9 +30,11 @@ namespace BookStore.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Book> Books { get; set; }
-        public DbSet<Cart> Carts { get; set; }
-        public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Order> Orders { get; set; }
 
+        public DbSet<CartItems> Cartsitems { get; set; }
+        public DbSet<TheCart> TheCarts { get; set; }
+
+        public DbSet<OrderBooks> OrderBooks { get; set; }
     }
 }

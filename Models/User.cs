@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BookShop.Models
 {
-    public class User: IdentityUser
+    public class User : IdentityUser
     {
-        [Key]
+        public List<CartItems> CartItems { get; set; }
+        public TheCart Cart { get; set; }
 
-        public int UserID { get; set; }
-        // Navigation property for related Cart
-        public Cart Cart { get; set; }
-        // Navigation property for related Orders
-        public ICollection<Order> Orders { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace BookShop.Models
         public int StockQuantity { get; set; }
 
         // Navigation property for CartItem
-        public List<CartItem> CartItems { get; set; } //oijojomoil
+        public List<CartItems> CartItems { get; set; }
         // Navigation property for OrderDetails
 
         public string ImgUrl { get; set; }

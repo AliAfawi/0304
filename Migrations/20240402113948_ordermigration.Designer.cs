@@ -4,6 +4,7 @@ using BookStore.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookShop.Migrations
 {
     [DbContext(typeof(BookStoreContext))]
-    partial class BookStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20240402113948_ordermigration")]
+    partial class ordermigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,6 +41,9 @@ namespace BookShop.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("OrderID")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18, 2)");
 
@@ -53,6 +59,8 @@ namespace BookShop.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("BookID");
+
+                    b.HasIndex("OrderID");
 
                     b.ToTable("Books");
                 });
@@ -123,10 +131,7 @@ namespace BookShop.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderBookId"));
 
-                    b.Property<int>("BookID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrderID")
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -135,11 +140,14 @@ namespace BookShop.Migrations
                     b.Property<double>("UnitPrice")
                         .HasColumnType("float");
 
+                    b.Property<int>("bookId")
+                        .HasColumnType("int");
+
                     b.HasKey("OrderBookId");
 
-                    b.HasIndex("BookID");
+                    b.HasIndex("OrderId");
 
-                    b.HasIndex("OrderID");
+                    b.HasIndex("bookId");
 
                     b.ToTable("OrderBooks");
                 });
@@ -356,6 +364,13 @@ namespace BookShop.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("BookShop.Models.Book", b =>
+                {
+                    b.HasOne("BookShop.Models.Order", null)
+                        .WithMany("books")
+                        .HasForeignKey("OrderID");
+                });
+
             modelBuilder.Entity("BookShop.Models.CartItems", b =>
                 {
                     b.HasOne("BookShop.Models.Book", "Book")
@@ -386,15 +401,15 @@ namespace BookShop.Migrations
 
             modelBuilder.Entity("BookShop.Models.OrderBooks", b =>
                 {
-                    b.HasOne("BookShop.Models.Book", "book")
+                    b.HasOne("BookShop.Models.Order", "Order")
                         .WithMany()
-                        .HasForeignKey("BookID")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BookShop.Models.Order", "Order")
-                        .WithMany("OrderBooks")
-                        .HasForeignKey("OrderID")
+                    b.HasOne("BookShop.Models.Book", "book")
+                        .WithMany()
+                        .HasForeignKey("bookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -470,7 +485,7 @@ namespace BookShop.Migrations
 
             modelBuilder.Entity("BookShop.Models.Order", b =>
                 {
-                    b.Navigation("OrderBooks");
+                    b.Navigation("books");
                 });
 
             modelBuilder.Entity("BookShop.Models.TheCart", b =>

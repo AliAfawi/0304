@@ -8,11 +8,12 @@ namespace BookShop.Models
         [Key]
         public int CartID { get; set; }
 
-        [ForeignKey("CartItem")]
-        public int UserID { get; set; }//OIUYTRFD
+        [ForeignKey("User")]
+        public string UserID { get; set; } // This should be a string to match IdentityUser's Id type
         public User User { get; set; }
 
         // Navigation property for CartItems
-        public List<CartItem> CartItems { get; set; }
+        public List<CartItems> CartItems { get; set; }
     }
+
 }
