@@ -381,6 +381,91 @@ footer{background:var(--bg-2);border-top:1px solid var(--line);padding:50px 0 30
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:12px;z-index:200;transition:.3s;font-weight:500}
 .toast.show{transform:translateX(-50%)}
 :focus-visible{outline:3px solid var(--accent-2);outline-offset:2px}
+/* school page */
+[hidden]{display:none!important}
+.sv-hero{position:relative;color:#fff;background:linear-gradient(135deg,var(--sch) 0%,#1f2a0c 100%);padding:34px 0 0;overflow:hidden}
+.sv-hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.14) 1.2px,transparent 1.2px);background-size:22px 22px;mask-image:linear-gradient(to bottom,#000,transparent 85%)}
+.sv-hero>.wrap{position:relative}
+.sv-back{display:inline-block;color:#fff;opacity:.85;text-decoration:none;font-weight:500;margin-bottom:22px}
+.sv-back:hover{opacity:1;text-decoration:underline}
+.sv-head{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center}
+.sv-mono{width:120px;height:120px;border-radius:30px;background:#fff;color:var(--sch);display:grid;place-items:center;font-size:4rem;font-weight:900;box-shadow:0 12px 40px rgba(0,0,0,.25);transform:rotate(-4deg)}
+.sv-head h1{font-size:clamp(2.1rem,5vw,3.6rem);font-weight:900;letter-spacing:-.02em;margin:12px 0 8px;text-wrap:balance}
+.sv-sub{margin:0 0 22px;opacity:.9;font-size:1.05rem;max-width:720px}
+.sv-chips{display:flex;gap:8px;flex-wrap:wrap}
+.sv-chip{font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22)}
+.sv-chip.on{background:#fff;color:var(--sch)}
+.sv-btn{background:#fff;color:#1f2a0c}
+.sv-btn-ghost{background:transparent;border:1.5px solid rgba(255,255,255,.55);color:#fff}
+.sv-stats{display:grid;grid-template-columns:repeat(6,1fr);margin-top:34px;background:var(--surface);color:var(--ink);border-radius:var(--r) var(--r) 0 0;border:1px solid var(--line);border-bottom:0}
+.sv-stat{padding:18px 20px;border-inline-start:1px solid var(--line)}
+.sv-stat:first-child{border-inline-start:0}
+.sv-stat b{display:block;font-size:1.9rem;font-weight:900;line-height:1.1;font-variant-numeric:tabular-nums}
+.sv-stat span{font-size:.85rem;color:var(--muted)}
+.sv-nav{position:sticky;top:calc(68px + env(safe-area-inset-top,0px));z-index:40;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.sv-nav .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-block:8px}
+.sv-nav a{white-space:nowrap;text-decoration:none;padding:7px 14px;border-radius:999px;font-weight:500;font-size:.92rem;color:var(--ink-2)}
+.sv-nav a:hover{background:var(--bg-2);color:var(--ink)}
+.sv-sec{padding:64px 0;scroll-margin-top:130px}
+.sv-sec.alt{background:var(--bg-2)}
+.sv-sec h2{font-size:clamp(1.4rem,2.6vw,2rem);margin:8px 0 24px;text-wrap:balance}
+.sv-over{display:grid;grid-template-columns:1.2fr 1fr;gap:40px}
+.sv-vision{font-size:1.25rem;line-height:1.7;margin:12px 0 24px;max-width:62ch}
+.sv-msg{padding:22px;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
+.sv-msg p{margin:4px 0 8px;font-size:1.02rem}
+.sv-high{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+.sv-high .card{padding:20px}
+.sv-high b{display:block;font-size:2.2rem;font-weight:900;color:var(--brand);line-height:1.1}
+.sv-high span{font-size:.92rem;color:var(--ink-2)}
+.sv-data2{grid-template-columns:1.4fr 1fr;margin-top:22px}
+.sv-rings{padding:22px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-items:center}
+.ring{position:relative;text-align:center}
+.ring svg{width:100%;max-width:120px;display:block;margin:0 auto}
+.ring b{position:absolute;top:0;left:0;right:0;height:0;padding-top:calc(min(100%,120px)/2 - .75rem);font-size:1.3rem;font-weight:900;font-variant-numeric:tabular-nums}
+.ring span{display:block;font-size:.82rem;color:var(--ink-2);margin-top:6px}
+.staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.person{padding:18px;display:grid;grid-template-columns:auto 1fr;gap:14px}
+.person.lead{border-color:var(--brand);background:linear-gradient(var(--brand-soft),var(--surface) 70%)}
+.person .av{width:52px;height:52px;font-size:1.05rem}
+.person h3{font-size:1.02rem}
+.person .role{font-size:.84rem;color:var(--muted);margin-bottom:8px}
+.person .subs{display:flex;gap:6px;flex-wrap:wrap}
+.pfoot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:.82rem}
+.pfoot .chip{padding:4px 12px;font-size:.8rem}
+.sv-tracks{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.sv-tracks .card{padding:22px}
+.sv-track-top{display:flex;justify-content:space-between;gap:10px;align-items:start;margin-bottom:8px}
+.sv-tracks h3{font-size:1.1rem}
+.sv-tracks p{margin:0;color:var(--ink-2);font-size:.94rem}
+.sv-fac{display:flex;gap:8px;flex-wrap:wrap}
+.sv-fac span{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 14px;font-size:.9rem}
+.sv-sched{display:grid;grid-template-columns:300px 1fr;gap:22px;align-items:start}
+.sv-bells,.sv-week{padding:22px;min-width:0}
+.sv-sched>*,.sv-over>*,.sv-data2>*,.sv-evgrid>*{min-width:0}
+.sv-bells h3,.sv-week h3{font-size:1.08rem;margin-bottom:12px}
+.sv-bells ol{list-style:none;margin:0;padding:0}
+.sv-bells li{display:flex;justify-content:space-between;padding:8px 10px;border-radius:10px;font-size:.92rem}
+.sv-bells li time{font-variant-numeric:tabular-nums;color:var(--ink-2);direction:ltr;unicode-bidi:isolate}
+.sv-bells li.brk{color:var(--muted);font-size:.84rem;background:var(--bg-2)}
+.sv-bells li.now{background:var(--accent-soft);color:var(--accent);font-weight:700}
+.sv-bells li.now::after{content:attr(data-now);font-size:.72rem;background:var(--accent);color:#fff;border-radius:999px;padding:1px 8px;margin-inline-start:8px}
+.tt-wrap{overflow-x:auto}
+.tt{width:100%;border-collapse:separate;border-spacing:4px;font-size:.86rem;min-width:520px}
+.tt th{color:var(--muted);font-weight:500;padding:4px}
+.tt td{background:var(--bg-2);border-radius:8px;padding:9px 6px;text-align:center}
+.tt td.now{background:var(--accent);color:#fff;font-weight:700}
+.sv-evgrid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.sv-board{padding:22px}
+.sv-board h3{margin-bottom:10px}
+.note{padding:12px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:54px 1fr;gap:12px}
+.note time{font-weight:900;color:var(--brand);font-variant-numeric:tabular-nums}
+.note p{margin:0;font-size:.93rem}
+.sel{user-select:all;font-weight:700;font-size:1.1rem;margin:4px 0 10px;direction:ltr;text-align:start}
+html[dir="rtl"] .sel{text-align:right}
+.school .go{font-size:.85rem;font-weight:700;color:var(--brand);white-space:nowrap}
+.school.plan .go{color:var(--muted);font-weight:400}
+@media (max-width:980px){.sv-stats{grid-template-columns:repeat(3,1fr)}.sv-stat:nth-child(4){border-inline-start:0}.sv-stat:nth-child(n+4){border-top:1px solid var(--line)}.sv-over,.sv-data2,.sv-evgrid,.sv-sched{grid-template-columns:1fr}}
+@media (max-width:600px){.sv-head{grid-template-columns:1fr}.sv-mono{width:78px;height:78px;font-size:2.6rem;border-radius:20px}.sv-high{grid-template-columns:1fr 1fr}.sv-stat{padding:14px}.sv-stat b{font-size:1.5rem}.sv-rings{grid-template-columns:repeat(3,1fr)}.school .go{display:none}}
 </style>
 </head>
 <body>
@@ -651,12 +736,13 @@ footer{background:var(--bg-2);border-top:1px solid var(--line);padding:50px 0 30
   </div>
 </section>
 </main>
+<div id="schoolView" class="school-view" hidden></div>
 
 <footer>
   <div class="wrap">
     <div class="foot">
       <div><a class="brand" href="#top" style="margin:0 0 10px"><img src="data:image/jpeg;base64,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" alt=""><span data-i18n="brand">רשת תמר</span></a><p class="muted" data-i18n="f.about">מחוללים שינוי · تحدث التغيير · Igniting Change. רשת חינוך בנגב.</p></div>
-      <div><h4 data-i18n="f.net">הרשת</h4><a href="#about" data-i18n="nav.about">אודות</a><a href="#schools" data-i18n="nav.schools">בתי הספר</a><a href="#data" data-i18n="nav.data">נתונים</a></div>
+      <div><h4 data-i18n="f.net">הרשת</h4><a href="#alsana" data-sname="alsana">בית ספר אלסנא</a><a href="#hura" data-sname="hura">תמר מנהיגות – חורה</a><a href="#about" data-i18n="nav.about">אודות</a><a href="#schools" data-i18n="nav.schools">בתי הספר</a><a href="#data" data-i18n="nav.data">נתונים</a></div>
       <div><h4 data-i18n="f.join">הצטרפות</h4><a href="#enroll" data-i18n="nav.enroll">הרשמה</a><a href="#jobs" data-i18n="nav.jobs">דרושים</a><a href="#top" data-i18n="f.donate">תרומות</a></div>
       <div><h4 data-i18n="f.info">מידע</h4><a href="#top" data-i18n="f.a11y">הצהרת נגישות</a><a href="#top" data-i18n="f.privacy">מדיניות פרטיות</a><a href="#contact" data-i18n="nav.contact">צור קשר</a></div>
     </div>
@@ -691,13 +777,13 @@ footer{background:var(--bg-2);border-top:1px solid var(--line);padding:50px 0 30
    ========================================================= */
 const DATA = {
   schools: [
-    {id:"rahat", status:"active", lat:31.393, lon:34.755, students:720, teachers:54, bagrut:89, founded:2022, level:{he:"חט״ב ותיכון (ז׳–י״ב)",ar:"إعدادية وثانوية (7–12)",en:"Middle & High (7–12)"},
-     name:{he:"תמר למדעים – רהט",ar:"تمار للعلوم – رهط",en:"Tamar Science – Rahat"}, town:{he:"רהט",ar:"رهط",en:"Rahat"},
+    {id:"alsana", status:"active", lat:31.323, lon:34.868, students:720, teachers:54, bagrut:89, founded:2022, level:{he:"חט״ב ותיכון (ז׳–י״ב)",ar:"إعدادية وثانوية (7–12)",en:"Middle & High (7–12)"},
+     name:{he:"בית ספר אלסנא",ar:"مدرسة الصانع",en:"Al-Sana School"}, short:{he:"אלסנא",ar:"الصانع",en:"Al-Sana"}, town:{he:"לקיה",ar:"اللقية",en:"Lakiya"},
      focus:{he:"מגמות פיזיקה, מדעי המחשב ורובוטיקה",ar:"مسارات الفيزياء وعلوم الحاسوب والروبوتات",en:"Physics, computer science & robotics tracks"}},
     {id:"hura", status:"active", lat:31.300, lon:34.935, students:520, teachers:42, bagrut:84, founded:2024, level:{he:"תיכון (ט׳–י״ב)",ar:"ثانوية (9–12)",en:"High school (9–12)"},
-     name:{he:"תמר מנהיגות – חורה",ar:"تمار للقيادة – حورة",en:"Tamar Leadership – Hura"}, town:{he:"חורה",ar:"حورة",en:"Hura"},
+     name:{he:"תמר מנהיגות – חורה",ar:"تمار للقيادة – حورة",en:"Tamar Leadership – Hura"}, town:{he:"חורה",ar:"حورة",en:"Hura"}, short:{he:"חורה",ar:"حورة",en:"Hura"},
      focus:{he:"אנגלית מוגברת, יזמות ומנהיגות נשים",ar:"إنجليزية مكثفة، ريادة وقيادة نسائية",en:"Advanced English, entrepreneurship & women's leadership"}},
-    {id:"lakiya", status:"plan", lat:31.323, lon:34.868, opening:2027, name:{he:"תמר לקיה",ar:"تمار اللقية",en:"Tamar Lakiya"}, town:{he:"לקיה",ar:"اللقية",en:"Lakiya"}, level:{he:"יסודי",ar:"ابتدائية",en:"Elementary"}},
+    {id:"rahat", status:"plan", lat:31.393, lon:34.755, opening:2027, name:{he:"תמר רהט",ar:"تمار رهط",en:"Tamar Rahat"}, town:{he:"רהט",ar:"رهط",en:"Rahat"}, level:{he:"יסודי",ar:"ابتدائية",en:"Elementary"}},
     {id:"telsheva", status:"plan", lat:31.247, lon:34.862, opening:2027, name:{he:"תמר תל שבע",ar:"تمار تل السبع",en:"Tamar Tel Sheva"}, town:{he:"תל שבע",ar:"تل السبع",en:"Tel Sheva"}, level:{he:"חטיבת ביניים",ar:"إعدادية",en:"Middle school"}},
     {id:"segev", status:"plan", lat:31.197, lon:34.838, opening:2028, name:{he:"תמר שגב שלום",ar:"تمار شقيب السلام",en:"Tamar Segev Shalom"}, town:{he:"שגב שלום",ar:"شقيب السلام",en:"Segev Shalom"}, level:{he:"תיכון",ar:"ثانوية",en:"High school"}},
     {id:"kuseife", status:"plan", lat:31.243, lon:35.088, opening:2028, name:{he:"תמר כסייפה",ar:"تمار كسيفة",en:"Tamar Kuseife"}, town:{he:"כסייפה",ar:"كسيفة",en:"Kuseife"}, level:{he:"חט״ב ותיכון",ar:"إعدادية وثانوية",en:"Middle & High"}},
@@ -789,9 +875,9 @@ s:{students:"students",teachers:"staff",bagrut:"Bagrut",opening:"planned opening
 }};
 
 const CONTENT = {
-  ticker:{he:["הרשמה לתשפ\"ז נפתחה","87% זכאות לבגרות במחזור האחרון","צוות רובוטיקה של תמר רהט – מקום 1 במחוז דרום","מכרז פתוח: מנהל/ת לבית הספר בלקיה","יום פתוח – 14 בנובמבר"],
-          ar:["فُتح التسجيل للعام 2026–2027","87% أهلية بجروت في الفوج الأخير","فريق الروبوتات في تمار رهط – المرتبة الأولى في لواء الجنوب","مناقصة مفتوحة: مدير/ة لمدرسة اللقية","يوم مفتوح – 14 تشرين الثاني"],
-          en:["2026–27 enrollment is open","87% Bagrut eligibility in the latest class","Tamar Rahat robotics team – 1st place, Southern District","Now hiring: principal for Lakiya school","Open day – November 14"]},
+  ticker:{he:["הרשמה לתשפ\"ז נפתחה","87% זכאות לבגרות במחזור האחרון","צוות רובוטיקה של בית ספר אלסנא – מקום 1 במחוז דרום","מכרז פתוח: מנהל/ת לבית הספר ברהט","יום פתוח – 14 בנובמבר"],
+          ar:["فُتح التسجيل للعام 2026–2027","87% أهلية بجروت في الفوج الأخير","فريق الروبوتات في مدرسة الصانع – المرتبة الأولى في لواء الجنوب","مناقصة مفتوحة: مدير/ة لمدرسة رهط","يوم مفتوح – 14 تشرين الثاني"],
+          en:["2026–27 enrollment is open","87% Bagrut eligibility in the latest class","Al-Sana School robotics team – 1st place, Southern District","Now hiring: principal for Rahat school","Open day – November 14"]},
   timeline:[
     {y:"2015",c:"",t:{he:"ייסוד תמר ע\"י מחנכים ומנהיגים בנגב",ar:"تأسيس تمار على يد مربين وقادة في النقب",en:"Tamar founded by Negev educators & leaders"}},
     {y:"2017",c:"",t:{he:"תכנית מצוינות במדעים – מחזור ראשון",ar:"برنامج التميّز في العلوم – الفوج الأول",en:"Science excellence program – first cohort"}},
@@ -813,26 +899,26 @@ const CONTENT = {
   ],
   stories:[
     {n:{he:"נור, בוגרת 2023",ar:"نور، خريجة 2023",en:"Nour, class of 2023"},r:{he:"סטודנטית להנדסת חשמל",ar:"طالبة هندسة كهربائية",en:"Electrical engineering student"},q:{he:"„בתמר הבנתי שמדע זה לא רק לאחרים. היום אני הראשונה במשפחה שלומדת הנדסה.”",ar:"«في تمار فهمت أن العلم ليس للآخرين فقط. اليوم أنا الأولى في عائلتي التي تدرس الهندسة.»",en:"“At Tamar I realized science isn't just for others. Today I'm the first in my family to study engineering.”"},c:"#4a6b12"},
-    {n:{he:"אחמד, מורה לפיזיקה",ar:"أحمد، معلم فيزياء",en:"Ahmad, physics teacher"},r:{he:"תמר למדעים – רהט",ar:"تمار للعلوم – رهط",en:"Tamar Science – Rahat"},q:{he:"„יש לנו נתונים על כל תלמיד, בזמן אמת. זה משנה את הדרך שבה אני מלמד.”",ar:"«لدينا معطيات عن كل طالب، بشكل فوري. هذا يغيّر طريقة تدريسي.»",en:"“We have real-time data on every student. It changes the way I teach.”"},c:"#e0512a"},
+    {n:{he:"אחמד, מורה לפיזיקה",ar:"أحمد، معلم فيزياء",en:"Ahmad, physics teacher"},r:{he:"בית ספר אלסנא",ar:"مدرسة الصانع",en:"Al-Sana School"},q:{he:"„יש לנו נתונים על כל תלמיד, בזמן אמת. זה משנה את הדרך שבה אני מלמד.”",ar:"«لدينا معطيات عن كل طالب، بشكل فوري. هذا يغيّر طريقة تدريسي.»",en:"“We have real-time data on every student. It changes the way I teach.”"},c:"#e0512a"},
     {n:{he:"אם סלים, הורה",ar:"أم سليم، ولية أمر",en:"Um Salim, parent"},r:{he:"חורה",ar:"حورة",en:"Hura"},q:{he:"„לראשונה אני מרגישה שבית הספר שותף אמיתי. הילדים שלי חולמים גדול.”",ar:"«لأول مرة أشعر أن المدرسة شريك حقيقي. أولادي يحلمون أحلامًا كبيرة.»",en:"“For the first time I feel the school is a real partner. My children dream big.”"},c:"#b7791f"}
   ],
   news:[
-    {tag:{he:"הישגים",ar:"إنجازات",en:"Achievements"},d:"12.09.2026",t:{he:"מקום ראשון באולימפיאדת הרובוטיקה",ar:"المرتبة الأولى في أولمبياد الروبوتات",en:"First place at the robotics olympiad"},p:{he:"צוות תלמידי י\"א מרהט זכה בתחרות המחוזית ויעלה לגמר הארצי.",ar:"فريق من طلاب الحادي عشر في رهط فاز بالمسابقة اللوائية وسيتأهل للنهائي القطري.",en:"An 11th-grade team from Rahat won the district contest and heads to nationals."},g:"linear-gradient(135deg,#4a6b12,#9dbb4a)"},
+    {tag:{he:"הישגים",ar:"إنجازات",en:"Achievements"},d:"12.09.2026",t:{he:"מקום ראשון באולימפיאדת הרובוטיקה",ar:"المرتبة الأولى في أولمبياد الروبوتات",en:"First place at the robotics olympiad"},p:{he:"צוות תלמידי י\"א מבית ספר אלסנא זכה בתחרות המחוזית ויעלה לגמר הארצי.",ar:"فريق من طلاب الحادي عشر في مدرسة الصانع فاز بالمسابقة اللوائية وسيتأهل للنهائي القطري.",en:"An 11th-grade team from Al-Sana School won the district contest and heads to nationals."},g:"linear-gradient(135deg,#4a6b12,#9dbb4a)"},
     {tag:{he:"הרשת",ar:"الشبكة",en:"Network"},d:"01.09.2026",t:{he:"פתיחת שנת הלימודים: 1,240 תלמידים",ar:"افتتاح العام الدراسي: 1,240 طالبًا",en:"School year opens: 1,240 students"},p:{he:"צמיחה של 18% במספר התלמידים לעומת אשתקד.",ar:"نمو بنسبة 18% في عدد الطلاب مقارنة بالعام الماضي.",en:"18% growth in enrollment compared to last year."},g:"linear-gradient(135deg,#e0512a,#f0a030)"},
     {tag:{he:"שותפויות",ar:"شراكات",en:"Partnerships"},d:"20.08.2026",t:{he:"שיתוף פעולה חדש עם האקדמיה",ar:"تعاون جديد مع الأكاديمية",en:"New academic partnership"},p:{he:"תלמידי המצוינות ילמדו קורסים אקדמיים כבר בתיכון.",ar:"طلاب التميّز سيدرسون مساقات أكاديمية منذ الثانوية.",en:"Excellence students will take university courses while in high school."},g:"linear-gradient(135deg,#2f4508,#6f8f25)"},
     {tag:{he:"קהילה",ar:"مجتمع",en:"Community"},d:"05.08.2026",t:{he:"מחנה קיץ באנגלית ל-300 ילדים",ar:"مخيم صيفي بالإنجليزية لـ300 طفل",en:"English summer camp for 300 kids"},p:{he:"שבועיים של משחק, דיבור ויצירה – כולם באנגלית.",ar:"أسبوعان من اللعب والمحادثة والإبداع – كلها بالإنجليزية.",en:"Two weeks of play, speaking and making – all in English."},g:"linear-gradient(135deg,#b7791f,#f0a030)"}
   ],
   events:[
-    {d:"14",m:{he:"נוב׳",ar:"ت2",en:"Nov"},t:{he:"יום פתוח להורים",ar:"يوم مفتوح للأهل",en:"Parents' open day"},w:{he:"תמר רהט · 17:00",ar:"تمار رهط · 17:00",en:"Tamar Rahat · 17:00"}},
+    {d:"14",m:{he:"נוב׳",ar:"ت2",en:"Nov"},t:{he:"יום פתוח להורים",ar:"يوم مفتوح للأهل",en:"Parents' open day"},w:{he:"אלסנא · 17:00",ar:"الصانع · 17:00",en:"Al-Sana · 17:00"}},
     {d:"27",m:{he:"נוב׳",ar:"ت2",en:"Nov"},t:{he:"כנס חדשנות בחינוך בנגב",ar:"مؤتمر الابتكار في التعليم في النقب",en:"Negev Education Innovation Summit"},w:{he:"באר שבע · 09:00",ar:"بئر السبع · 09:00",en:"Beersheba · 09:00"}},
     {d:"10",m:{he:"דצמ׳",ar:"ك1",en:"Dec"},t:{he:"האקתון AI לתלמידים",ar:"هاكاثون ذكاء اصطناعي للطلاب",en:"Student AI hackathon"},w:{he:"תמר חורה · 08:30",ar:"تمار حورة · 08:30",en:"Tamar Hura · 08:30"}},
     {d:"22",m:{he:"ינו׳",ar:"ك2",en:"Jan"},t:{he:"ערב בוגרים",ar:"أمسية خريجين",en:"Alumni evening"},w:{he:"מקוון · 19:30",ar:"عبر الإنترنت · 19:30",en:"Online · 19:30"}}
   ],
   jobs:[
-    {cat:"teach",t:{he:"מורה למתמטיקה (5 יח\"ל)",ar:"معلم/ة رياضيات (5 وحدات)",en:"Math teacher (5 units)"},s:"rahat",p:{he:"משרה מלאה",ar:"وظيفة كاملة",en:"Full time"}},
+    {cat:"teach",t:{he:"מורה למתמטיקה (5 יח\"ל)",ar:"معلم/ة رياضيات (5 وحدات)",en:"Math teacher (5 units)"},s:"alsana",p:{he:"משרה מלאה",ar:"وظيفة كاملة",en:"Full time"}},
     {cat:"teach",t:{he:"מורה לאנגלית",ar:"معلم/ة إنجليزية",en:"English teacher"},s:"hura",p:{he:"משרה מלאה",ar:"وظيفة كاملة",en:"Full time"}},
-    {cat:"lead",t:{he:"מנהל/ת בית ספר יסודי",ar:"مدير/ة مدرسة ابتدائية",en:"Elementary school principal"},s:"lakiya",p:{he:"פתיחה 2027",ar:"افتتاح 2027",en:"Opening 2027"}},
-    {cat:"teach",t:{he:"מורה לפיזיקה",ar:"معلم/ة فيزياء",en:"Physics teacher"},s:"rahat",p:{he:"חלקית",ar:"جزئية",en:"Part time"}},
+    {cat:"lead",t:{he:"מנהל/ת בית ספר יסודי",ar:"مدير/ة مدرسة ابتدائية",en:"Elementary school principal"},s:"rahat",p:{he:"פתיחה 2027",ar:"افتتاح 2027",en:"Opening 2027"}},
+    {cat:"teach",t:{he:"מורה לפיזיקה",ar:"معلم/ة فيزياء",en:"Physics teacher"},s:"alsana",p:{he:"חלקית",ar:"جزئية",en:"Part time"}},
     {cat:"staff",t:{he:"רכז/ת פדגוגי/ת ונתונים",ar:"مركّز/ة تربوي/ة ومعطيات",en:"Pedagogy & data coordinator"},s:"bs",p:{he:"משרה מלאה",ar:"وظيفة كاملة",en:"Full time"}},
     {cat:"staff",t:{he:"יועץ/ת חינוכי/ת",ar:"مستشار/ة تربوي/ة",en:"School counselor"},s:"hura",p:{he:"משרה מלאה",ar:"وظيفة كاملة",en:"Full time"}}
   ],
@@ -840,9 +926,9 @@ const CONTENT = {
   partners:{he:["משרד החינוך","אוניברסיטה שותפה","קרן שותפה","עיריית רהט","מועצת חורה","חברת טכנולוגיה"],ar:["وزارة التربية","جامعة شريكة","صندوق شريك","بلدية رهط","مجلس حورة","شركة تكنولوجيا"],en:["Ministry of Education","Partner university","Partner foundation","Rahat Municipality","Hura Council","Tech partner"]},
   amounts:[{v:180,i:{he:"= ערכת מעבדה לתלמיד לשנה",ar:"= عدة مختبر لطالب لمدة سنة",en:"= a lab kit for one student for a year"}},{v:500,i:{he:"= חודש תגבור באנגלית לקבוצה",ar:"= شهر تقوية بالإنجليزية لمجموعة",en:"= a month of English tutoring for a group"}},{v:1800,i:{he:"= מלגה אקדמית לבוגר/ת",ar:"= منحة أكاديمية لخريج/ة",en:"= a university scholarship for a graduate"}},{v:5000,i:{he:"= ציוד כיתת רובוטיקה",ar:"= تجهيز صف روبوتات",en:"= equipping a robotics classroom"}}],
   bot:{
-    he:[["איך נרשמים?","ההרשמה פתוחה! גללו ל״הרשמה״ ומלאו טופס קצר – נחזור אליכם תוך 48 שעות."],["איפה בתי הספר?","כרגע ברהט ובחורה, ובתכנון: לקיה, תל שבע, שגב שלום, כסייפה וערערה בנגב."],["יש הסעות?","כן, יש הסעות מכל היישובים הסמוכים לבתי הספר."],["משרות פנויות","יש כרגע 6 משרות פתוחות – ראו בלשונית ״דרושים״."]],
-    ar:[["كيف أسجّل؟","التسجيل مفتوح! انتقلوا إلى «تسجيل» واملؤوا نموذجًا قصيرًا – نعود إليكم خلال 48 ساعة."],["أين المدارس؟","حاليًا في رهط وحورة، وقيد التخطيط: اللقية، تل السبع، شقيب السلام، كسيفة وعرعرة النقب."],["هل توجد سفريات؟","نعم، توجد سفريات من جميع البلدات المجاورة."],["وظائف شاغرة","توجد حاليًا 6 وظائف مفتوحة – انظروا قسم «وظائف»."]],
-    en:[["How do I enroll?","Enrollment is open! Scroll to “Enroll” and fill in a short form – we'll reply within 48 hours."],["Where are the schools?","Currently in Rahat and Hura; planned: Lakiya, Tel Sheva, Segev Shalom, Kuseife and Ar'ara BaNegev."],["Is there transport?","Yes, transport runs from all nearby towns."],["Open jobs","There are 6 open positions – see the “Careers” section."]]
+    he:[["איך נרשמים?","ההרשמה פתוחה! גללו ל״הרשמה״ ומלאו טופס קצר – נחזור אליכם תוך 48 שעות."],["איפה בתי הספר?","כרגע: בית ספר אלסנא (לקיה) ותמר חורה. בתכנון: רהט, תל שבע, שגב שלום, כסייפה וערערה בנגב."],["יש הסעות?","כן, יש הסעות מכל היישובים הסמוכים לבתי הספר."],["משרות פנויות","יש כרגע 6 משרות פתוחות – ראו בלשונית ״דרושים״."]],
+    ar:[["كيف أسجّل؟","التسجيل مفتوح! انتقلوا إلى «تسجيل» واملؤوا نموذجًا قصيرًا – نعود إليكم خلال 48 ساعة."],["أين المدارس؟","حاليًا: مدرسة الصانع (اللقية) وتمار حورة. قيد التخطيط: رهط، تل السبع، شقيب السلام، كسيفة وعرعرة النقب."],["هل توجد سفريات؟","نعم، توجد سفريات من جميع البلدات المجاورة."],["وظائف شاغرة","توجد حاليًا 6 وظائف مفتوحة – انظروا قسم «وظائف»."]],
+    en:[["How do I enroll?","Enrollment is open! Scroll to “Enroll” and fill in a short form – we'll reply within 48 hours."],["Where are the schools?","Currently Al-Sana School (Lakiya) and Tamar Hura; planned: Rahat, Tel Sheva, Segev Shalom, Kuseife and Ar'ara BaNegev."],["Is there transport?","Yes, transport runs from all nearby towns."],["Open jobs","There are 6 open positions – see the “Careers” section."]]
   }
 };
 
@@ -866,6 +952,7 @@ function setLang(l){
   $$("[data-i18n-ph]").forEach(el=>{el.placeholder=T[l][el.dataset.i18nPh]});
   document.title = T[l].brand+" | "+T[l].brandSub;
   renderAll();
+  if(typeof CUR!=="undefined"&&CUR) renderSchoolPage();
   if(typeof showStep==="function") try{showStep()}catch(e){}
 }
 
@@ -901,12 +988,13 @@ function renderSchools(){
   $("#schoolList").innerHTML=list.length?list.map(s=>`<div class="card school ${s.status==="plan"?"plan":""}" data-id="${s.id}" tabindex="0" role="button">
     <div class="badge">${L(s.town).charAt(0)}</div>
     <div><h3>${L(s.name)}</h3><div class="meta"><span class="tag ${s.status==="plan"?"plan":""}">${S(s.status)}</span><span>${L(s.level)}</span>${s.status==="active"?`<span>${fmt(s.students)} ${S("students")}</span>`:`<span>${S("opening")}: ${s.opening}</span>`}</div></div>
-    <div class="go">${LANG==="en"?"→":"←"}</div></div>`).join(""):`<div class="empty">${S("noRes")}</div>`;
+    <div class="go">${s.status==="active"?SPT[LANG].open+" "+(LANG==="en"?"→":"←"):(LANG==="en"?"→":"←")}</div></div>`).join(""):`<div class="empty">${S("noRes")}</div>`;
   $$(".school").forEach(c=>{c.onclick=()=>openSchool(c.dataset.id);c.onkeydown=e=>{if(e.key==="Enter")openSchool(c.dataset.id)};c.onmouseenter=()=>hl(c.dataset.id,true);c.onmouseleave=()=>hl(c.dataset.id,false)});
   renderMap();
 }
 function openSchool(id){
   const s=DATA.schools.find(x=>x.id===id);
+  if(s.status==="active"&&typeof SCHOOL_PAGES!=="undefined"&&SCHOOL_PAGES[id]){location.hash=id;return}
   const body = s.status==="active"
    ? `<span class="tag">${S("active")}</span><h2 style="font-size:1.6rem;margin-top:10px">${L(s.name)}</h2><p class="muted" style="margin:0">${L(s.level)} · ${S("founded")} ${s.founded}</p>
       <div class="mini-stats"><div><b>${fmt(s.students)}</b><span>${S("students")}</span></div><div><b>${s.teachers}</b><span>${S("teachers")}</span></div><div><b>${s.bagrut}%</b><span>${S("bagrut")}</span></div></div>
@@ -920,7 +1008,7 @@ function closeModal(){$("#modal").classList.remove("open")}
 let dashScope="all";
 function scopeFactor(){ if(dashScope==="all") return null; return DATA.schools.find(s=>s.id===dashScope); }
 function renderSeg(){
-  const opts=[["all",S("all")],...DATA.schools.filter(s=>s.status==="active").map(s=>[s.id,L(s.town)])];
+  const opts=[["all",S("all")],...DATA.schools.filter(s=>s.status==="active").map(s=>[s.id,L(s.short)])];
   $("#schoolSeg").innerHTML=opts.map(([k,v])=>`<button data-scope="${k}" aria-pressed="${dashScope===k}">${v}</button>`).join("");
   $$("#schoolSeg button").forEach(b=>b.onclick=()=>{dashScope=b.dataset.scope;renderDash()});
 }
@@ -938,45 +1026,39 @@ function renderKpis(){
     {l:S("kStudents"),v:fmt(students),d:"+18%",sp:[610,680,760,820,900,1050,1240].map(v=>s?Math.round(v*s.students/1240):v)},
     {l:S("kTeachers"),v:fmt(teachers),d:"+12",sp:[40,48,55,62,71,84,96]},
     {l:S("kBagrut"),v:bag+"%",d:"+2pt",sp:DATA.bagrut.tamar},
-    {l:S("kFive"),v:(s?(s.id==="rahat"?34:24):31)+"%",d:"+4pt",sp:[14,17,19,22,25,27,31]},
+    {l:S("kFive"),v:(s?(s.id==="alsana"?34:24):31)+"%",d:"+4pt",sp:[14,17,19,22,25,27,31]},
     {l:S("kGirls"),v:"58%",d:"+6pt",sp:[38,41,45,48,52,55,58]}
   ];
   $("#kpis").innerHTML=k.map(x=>`<div class="card kpi"><div class="l">${x.l}</div><div class="v">${x.v}</div>${sparkline(x.sp)}<div class="d">▲ ${x.d} <span class="muted" style="font-weight:400">${S("vsLast")}</span></div></div>`).join("");
 }
-function lineChart(){
-  const el=$("#c1"), W=640,H=300,m={t:20,r:64,b:30,l:36};
-  const s=scopeFactor(); const adj=s?(s.bagrut-DATA.bagrut.tamar.at(-1)):0;
-  const A=DATA.bagrut.tamar.map((v,i)=>Math.max(0,Math.min(100,v+Math.round(adj*i/7))));
-  const B=DATA.bagrut.national, Y=DATA.years;
-  const x=i=>m.l+i*(W-m.l-m.r)/(Y.length-1), y=v=>m.t+(1-(v-50)/50)*(H-m.t-m.b);
+function drawLine(el,tableEl,Y,A,B,la,lb,title){
+  const W=640,H=300,m={t:20,r:64,b:30,l:36};
+  const lo=Math.max(0,Math.floor((Math.min(...A,...B)-5)/10)*10);
+  const x=i=>m.l+i*(W-m.l-m.r)/(Y.length-1), y=v=>m.t+(1-(v-lo)/(100-lo))*(H-m.t-m.b);
   let g="";
-  [50,60,70,80,90,100].forEach(t=>{g+=`<line class="gridline" x1="${m.l}" x2="${W-m.r}" y1="${y(t)}" y2="${y(t)}"/><text class="axis" x="${m.l-8}" y="${y(t)+4}" text-anchor="end">${t}%</text>`});
+  for(let t=lo;t<=100;t+=10){g+=`<line class="gridline" x1="${m.l}" x2="${W-m.r}" y1="${y(t)}" y2="${y(t)}"/><text class="axis" x="${m.l-8}" y="${y(t)+4}" text-anchor="end">${t}%</text>`}
   Y.forEach((yr,i)=>{g+=`<text class="axis" x="${x(i)}" y="${H-8}" text-anchor="middle">${yr}</text>`});
   const path=arr=>arr.map((v,i)=>(i?"L":"M")+x(i).toFixed(1)+","+y(v).toFixed(1)).join("");
-  const area=`M${x(0)},${y(A[0])}`+A.map((v,i)=>`L${x(i)},${y(v)}`).join("")+B.slice().reverse().map((v,i)=>`L${x(B.length-1-i)},${y(v)}`).join("")+"Z";
-  g+=`<path d="${area}" fill="var(--s1)" opacity=".08"/>`;
   g+=`<path d="${path(B)}" fill="none" stroke="var(--s2)" stroke-width="2" stroke-dasharray="5 4" stroke-linecap="round"/>`;
-  g+=`<path d="${path(A)}" fill="none" stroke="var(--s1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="drawline"/>`;
+  g+=`<path d="${path(A)}" fill="none" stroke="var(--s1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
   const li=Y.length-1;
   g+=`<circle cx="${x(li)}" cy="${y(A[li])}" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/><circle cx="${x(li)}" cy="${y(B[li])}" r="5" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/>`;
   g+=`<text class="dlabel" x="${x(li)+10}" y="${y(A[li])+4}">${A[li]}%</text><text class="dlabel" x="${x(li)+10}" y="${y(B[li])+4}">${B[li]}%</text>`;
-  g+=`<line id="xh" class="gridline" y1="${m.t}" y2="${H-m.b}" stroke="var(--muted)" stroke-dasharray="3 3" opacity="0"/>`;
-  g+=`<g id="hdots" opacity="0"><circle id="hA" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/><circle id="hB" r="5" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/></g>`;
-  g+=`<rect id="hit" x="${m.l}" y="${m.t}" width="${W-m.l-m.r}" height="${H-m.t-m.b}" fill="transparent"/>`;
-  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${T[LANG]["c1.t"]}">${g}</svg><div class="tip"></div>`;
-  const svg=el.querySelector("svg"), tip=el.querySelector(".tip"), hit=svg.querySelector("#hit");
-  const move=ev=>{const r=svg.getBoundingClientRect();const px=(ev.clientX-r.left)*W/r.width;
-    const i=Math.max(0,Math.min(Y.length-1,Math.round((px-m.l)/((W-m.l-m.r)/(Y.length-1)))));
-    svg.querySelector("#xh").setAttribute("x1",x(i));svg.querySelector("#xh").setAttribute("x2",x(i));svg.querySelector("#xh").setAttribute("opacity",1);
-    svg.querySelector("#hA").setAttribute("cx",x(i));svg.querySelector("#hA").setAttribute("cy",y(A[i]));svg.querySelector("#hB").setAttribute("cx",x(i));svg.querySelector("#hB").setAttribute("cy",y(B[i]));svg.querySelector("#hdots").setAttribute("opacity",1);
-    tip.innerHTML=`<b>${Y[i]}</b><br><i style="background:var(--s1)"></i>${S("tamar")}: ${A[i]}%<br><i style="background:var(--s2)"></i>${S("nat")}: ${B[i]}%<br><span style="opacity:.75">${S("gap")}: ${A[i]-B[i]>0?"+":""}${A[i]-B[i]}pt</span>`;
-    tip.style.opacity=1;const tx=x(i)*r.width/W;tip.style.left=(tx>r.width*0.6?tx-tip.offsetWidth-14:tx+14)+"px";tip.style.top=(y(Math.max(A[i],B[i]))*r.height/H-10)+"px"};
-  hit.addEventListener("pointermove",move);hit.addEventListener("pointerleave",()=>{tip.style.opacity=0;svg.querySelector("#xh").setAttribute("opacity",0);svg.querySelector("#hdots").setAttribute("opacity",0)});
-  $("#c1-table").innerHTML=`<table class="data"><thead><tr><th>${S("year")}</th><th>${S("tamar")}</th><th>${S("nat")}</th></tr></thead><tbody>${Y.map((yr,i)=>`<tr><td>${yr}</td><td>${A[i]}%</td><td>${B[i]}%</td></tr>`).join("")}</tbody></table>`;
+  g+=`<line class="gridline xh" y1="${m.t}" y2="${H-m.b}" stroke="var(--muted)" stroke-dasharray="3 3" opacity="0"/>`;
+  g+=`<g class="hdots" opacity="0"><circle class="hA" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/><circle class="hB" r="5" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/></g>`;
+  g+=`<rect class="hit" x="${m.l}" y="${m.t}" width="${W-m.l-m.r}" height="${H-m.t-m.b}" fill="transparent"/>`;
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${title}">${g}</svg><div class="tip"></div>`;
+  const svg=el.querySelector("svg"), tip=el.querySelector(".tip"), q=c=>svg.querySelector(c);
+  q(".hit").addEventListener("pointermove",ev=>{const r=svg.getBoundingClientRect();const px=(ev.clientX-r.left)*W/r.width;
+    const i=Math.max(0,Math.min(li,Math.round((px-m.l)/((W-m.l-m.r)/li))));
+    q(".xh").setAttribute("x1",x(i));q(".xh").setAttribute("x2",x(i));q(".xh").setAttribute("opacity",1);
+    q(".hA").setAttribute("cx",x(i));q(".hA").setAttribute("cy",y(A[i]));q(".hB").setAttribute("cx",x(i));q(".hB").setAttribute("cy",y(B[i]));q(".hdots").setAttribute("opacity",1);
+    tip.innerHTML=`<b>${Y[i]}</b><br><i style="background:var(--s1)"></i>${la}: ${A[i]}%<br><i style="background:var(--s2)"></i>${lb}: ${B[i]}%<br><span style="opacity:.75">${S("gap")}: ${A[i]-B[i]>0?"+":""}${A[i]-B[i]}pt</span>`;
+    tip.style.opacity=1;const tx=x(i)*r.width/W;tip.style.left=(tx>r.width*0.6?tx-tip.offsetWidth-14:tx+14)+"px";tip.style.top=(y(Math.max(A[i],B[i]))*r.height/H-10)+"px"});
+  q(".hit").addEventListener("pointerleave",()=>{tip.style.opacity=0;q(".xh").setAttribute("opacity",0);q(".hdots").setAttribute("opacity",0)});
+  tableEl.innerHTML=`<table class="data"><thead><tr><th>${S("year")}</th><th>${la}</th><th>${lb}</th></tr></thead><tbody>${Y.map((yr,i)=>`<tr><td>${yr}</td><td>${A[i]}%</td><td>${B[i]}%</td></tr>`).join("")}</tbody></table>`;
 }
-function barChart(){
-  const el=$("#c2"); const s=scopeFactor(); const f=s?s.students/1240:1;
-  const d=DATA.fiveUnits.map(x=>({k:L(x.k),v:Math.round(x.v*f)})).sort((a,b)=>b.v-a.v);
+function drawBars(el,tableEl,d,keyLabel,unit,title){
   const W=400,rowH=44,H=d.length*rowH+10,lw=110,mx=Math.max(...d.map(x=>x.v));
   const rtl=LANG!=="en";
   let g="";
@@ -984,14 +1066,24 @@ function barChart(){
     const bx=rtl?W-lw-w:lw;
     g+=`<g class="bar" data-i="${i}"><rect x="0" y="${yy-4}" width="${W}" height="${rowH}" fill="transparent"/>
       <text class="axis" style="font-size:13px;fill:var(--ink-2)" x="${rtl?W-lw+10:lw-10}" y="${yy+19}" text-anchor="${rtl?"start":"end"}">${r.k}</text>
-      <rect x="${bx}" y="${yy+6}" width="${w}" height="20" rx="4" fill="var(--s1)"/>
+      <rect class="mark" x="${bx}" y="${yy+6}" width="${w}" height="20" rx="4" fill="var(--s1)"/>
       <text class="dlabel" x="${rtl?bx-8:bx+w+8}" y="${yy+21}" text-anchor="${rtl?"end":"start"}">${r.v}</text></g>`});
-  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${T[LANG]["c2.t"]}">${g}</svg><div class="tip"></div>`;
-  const tip=el.querySelector(".tip"), svg=el.querySelector("svg");
-  svg.querySelectorAll(".bar").forEach(b=>{b.addEventListener("pointermove",ev=>{const r=el.getBoundingClientRect();const x=d[b.dataset.i];
-    tip.innerHTML=`<b>${x.k}</b><br>${x.v} ${S("students")}`;tip.style.opacity=1;tip.style.left=(ev.clientX-r.left+12)+"px";tip.style.top=(ev.clientY-r.top-40)+"px";b.querySelector("rect+text+rect").setAttribute("opacity",.8)});
-    b.addEventListener("pointerleave",()=>{tip.style.opacity=0;b.querySelector("rect+text+rect").setAttribute("opacity",1)})});
-  $("#c2-table").innerHTML=`<table class="data"><thead><tr><th>${S("subject")}</th><th>${S("students")}</th></tr></thead><tbody>${d.map(r=>`<tr><td>${r.k}</td><td>${r.v}</td></tr>`).join("")}</tbody></table>`;
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${title}">${g}</svg><div class="tip"></div>`;
+  const tip=el.querySelector(".tip");
+  el.querySelectorAll(".bar").forEach(b=>{b.addEventListener("pointermove",ev=>{const r=el.getBoundingClientRect();const x=d[b.dataset.i];
+    tip.innerHTML=`<b>${x.k}</b><br>${x.v} ${unit}`;tip.style.opacity=1;tip.style.left=(ev.clientX-r.left+12)+"px";tip.style.top=(ev.clientY-r.top-40)+"px";b.querySelector(".mark").setAttribute("opacity",.8)});
+    b.addEventListener("pointerleave",()=>{tip.style.opacity=0;b.querySelector(".mark").setAttribute("opacity",1)})});
+  tableEl.innerHTML=`<table class="data"><thead><tr><th>${keyLabel}</th><th>${unit}</th></tr></thead><tbody>${d.map(r=>`<tr><td>${r.k}</td><td>${r.v}</td></tr>`).join("")}</tbody></table>`;
+}
+function lineChart(){
+  const s=scopeFactor(); const adj=s?(s.bagrut-DATA.bagrut.tamar.at(-1)):0;
+  const A=DATA.bagrut.tamar.map((v,i)=>Math.max(0,Math.min(100,v+Math.round(adj*i/7))));
+  drawLine($("#c1"),$("#c1-table"),DATA.years,A,DATA.bagrut.national,S("tamar"),S("nat"),T[LANG]["c1.t"]);
+}
+function barChart(){
+  const s=scopeFactor(); const f=s?s.students/1240:1;
+  const d=DATA.fiveUnits.map(x=>({k:L(x.k),v:Math.round(x.v*f)})).sort((a,b)=>b.v-a.v);
+  drawBars($("#c2"),$("#c2-table"),d,S("subject"),S("students"),T[LANG]["c2.t"]);
 }
 function renderGoals(){
   $("#goals").innerHTML=DATA.goals.map(g=>{const p=Math.round(g.v/g.t*100);return `<div class="goal-row"><span>${L(g.k)}</span><div class="bar-goal" title="${p}%"><span data-w="${p}"></span></div><b>${g.pct?g.v+"%":fmt(g.v)} <span class="muted" style="font-weight:400">/ ${g.pct?g.t+"%":fmt(g.t)}</span></b></div>`}).join("");
@@ -1034,7 +1126,210 @@ function renderBot(){
 }
 function addMsg(t,who){const d=document.createElement("div");d.className="msg "+who;d.textContent=t;$("#botBody").appendChild(d);$("#botBody").scrollTop=1e6}
 function botAsk(q,a){addMsg(q,"u");setTimeout(()=>addMsg(a,"b"),450)}
-function renderAll(){renderTicker();renderTimeline();renderSchools();renderDash();renderPrograms();renderStories();renderNews();renderJobs();renderPartners();renderDonate();renderSelectSchools();renderBot()}
+function renderFootSchools(){$$("[data-sname]").forEach(a=>{const s=DATA.schools.find(x=>x.id===a.dataset.sname);if(s)a.textContent=L(s.name)})}
+function renderAll(){renderFootSchools();renderTicker();renderTimeline();renderSchools();renderDash();renderPrograms();renderStories();renderNews();renderJobs();renderPartners();renderDonate();renderSelectSchools();renderBot()}
+
+/* =========================================================
+   SCHOOL PAGES — עמוד מלא לכל בית ספר פעיל (נתוני דמה)
+   ========================================================= */
+const NAMES = {
+  f:[{he:"אחמד",ar:"أحمد",en:"Ahmad"},{he:"מוחמד",ar:"محمد",en:"Mohammad"},{he:"יוסף",ar:"يوسف",en:"Yousef"},{he:"סלים",ar:"سليم",en:"Salim"},{he:"עומר",ar:"عمر",en:"Omar"},{he:"חסן",ar:"حسن",en:"Hasan"},{he:"איברהים",ar:"إبراهيم",en:"Ibrahim"},{he:"ח'אלד",ar:"خالد",en:"Khaled"},{he:"סאמר",ar:"سامر",en:"Samer"},{he:"דוד",ar:"دافيد",en:"David"},
+      {he:"נור",ar:"نور",en:"Nour"},{he:"אמל",ar:"أمل",en:"Amal"},{he:"סמאח",ar:"سماح",en:"Samah"},{he:"רים",ar:"ريم",en:"Reem"},{he:"הדיל",ar:"هديل",en:"Hadeel"},{he:"מנאר",ar:"منار",en:"Manar"},{he:"סוהא",ar:"سهى",en:"Suha"},{he:"פאטמה",ar:"فاطمة",en:"Fatma"},{he:"איה",ar:"آية",en:"Aya"},{he:"מיכל",ar:"ميخال",en:"Michal"}],
+  l:[{he:"חמדאן",ar:"حمدان",en:"Hamdan"},{he:"סלאמה",ar:"سلامة",en:"Salameh"},{he:"נאסר",ar:"ناصر",en:"Nasser"},{he:"עודה",ar:"عودة",en:"Odeh"},{he:"חוסיין",ar:"حسين",en:"Hussein"},{he:"ח'ליל",ar:"خليل",en:"Khalil"},{he:"מנסור",ar:"منصور",en:"Mansour"},{he:"דאוד",ar:"داود",en:"Daoud"},{he:"כהן",ar:"كوهين",en:"Cohen"},{he:"לוי",ar:"ليفي",en:"Levi"}]
+};
+const DEPTS = {mgmt:{he:"הנהלה",ar:"الإدارة",en:"Leadership"},math:{he:"מתמטיקה",ar:"رياضيات",en:"Mathematics"},sci:{he:"מדעים",ar:"علوم",en:"Sciences"},eng:{he:"אנגלית",ar:"إنجليزية",en:"English"},lang:{he:"שפות",ar:"لغات",en:"Languages"},hum:{he:"הומניסטיקה",ar:"إنسانيات",en:"Humanities"},tech:{he:"טכנולוגיה",ar:"تكنولوجيا",en:"Technology"},pe:{he:"חינוך גופני",ar:"تربية بدنية",en:"Physical education"},care:{he:"ייעוץ ורווחה",ar:"استشارة ورفاه",en:"Counseling & wellbeing"}};
+const SUBJ = {math:{he:"מתמטיקה",ar:"رياضيات",en:"Math"},phys:{he:"פיזיקה",ar:"فيزياء",en:"Physics"},chem:{he:"כימיה",ar:"كيمياء",en:"Chemistry"},bio:{he:"ביולוגיה",ar:"أحياء",en:"Biology"},cs:{he:"מדעי המחשב",ar:"علوم الحاسوب",en:"Computer science"},rob:{he:"רובוטיקה",ar:"روبوتات",en:"Robotics"},eng:{he:"אנגלית",ar:"إنجليزية",en:"English"},ar:{he:"ערבית",ar:"عربية",en:"Arabic"},heb:{he:"עברית",ar:"عبرية",en:"Hebrew"},hist:{he:"היסטוריה",ar:"تاريخ",en:"History"},civ:{he:"אזרחות",ar:"مدنيات",en:"Civics"},pe:{he:"חינוך גופני",ar:"رياضة",en:"PE"},lead:{he:"מנהיגות",ar:"قيادة",en:"Leadership"},home:{he:"שעת חינוך",ar:"ساعة تربية",en:"Homeroom"},ent:{he:"יזמות",ar:"ريادة",en:"Entrepreneurship"},bus:{he:"כלכלה",ar:"اقتصاد",en:"Economics"},coun:{he:"ייעוץ חינוכי",ar:"استشارة تربوية",en:"Counseling"}};
+const ROLES = {principal:{he:"מנהל/ת בית הספר",ar:"مدير/ة المدرسة",en:"Principal"},deputy:{he:"סגן/ית מנהל",ar:"نائب/ة المدير",en:"Deputy principal"},coord:{he:"רכז/ת מקצוע",ar:"مركّز/ة موضوع",en:"Subject coordinator"},teacher:{he:"מורה",ar:"معلم/ة",en:"Teacher"},counselor:{he:"יועץ/ת חינוכי/ת",ar:"مستشار/ة تربوي/ة",en:"School counselor"},grade:{he:"רכז/ת שכבה",ar:"مركّز/ة طبقة",en:"Grade coordinator"}};
+const BELLS = [["1","08:00","08:45"],["2","08:45","09:30"],["b","09:30","09:50"],["3","09:50","10:35"],["4","10:35","11:20"],["b","11:20","11:35"],["5","11:35","12:20"],["6","12:20","13:05"],["l","13:05","13:30"],["7","13:30","14:15"],["8","14:15","15:00"]];
+
+// staff row: [first, last, dept, role, [subjects], yearsAtSchool, homeroom]
+const SCHOOL_PAGES = {
+  alsana:{
+    symbol:"640101", principal:[3,0], hue:"#4a6b12",
+    phone:"08-000-0101", email:"alsana@tamar.example", addr:{he:"לקיה, הנגב (כתובת לדוגמה)",ar:"اللقية، النقب (عنوان للتوضيح)",en:"Lakiya, Negev (sample address)"},
+    classes:26, avgClass:28, attendance:94, girls:54,
+    years:[2021,2022,2023,2024,2025,2026], bagrut:[68,72,79,83,86,89], national:[71,71,72,72,73,73],
+    grades:[["ז",118],["ח",121],["ט",124],["י",122],["יא",118],["יב",117]],
+    five:[["eng",98],["math",71],["phys",46],["cs",38],["chem",22]],
+    vision:{he:"בית ספר אלסנא הוא בית ספר מדעי-טכנולוגי, שבו כל תלמיד ותלמידה מגלים את הסקרנות שלהם ומקבלים את הכלים להגיע לאקדמיה ולהוביל את הקהילה. אנחנו מאמינים בשילוב של מצוינות לימודית, ערכים וזהות.",ar:"مدرسة الصانع مدرسة علمية-تكنولوجية، يكتشف فيها كل طالب وطالبة فضولهم ويحصلون على الأدوات للوصول إلى الأكاديمية وقيادة المجتمع. نؤمن بالدمج بين التميّز التعليمي والقيم والهوية.",en:"Al-Sana is a science and technology school where every student discovers their curiosity and gains the tools to reach university and lead their community. We combine academic excellence with values and identity."},
+    msg:{he:"„כשהצטרפנו לרשת תמר ב-2022 הצבנו יעד: שכל בוגר ובוגרת ייצאו עם תעודת בגרות איכותית ועם חלום. היום אנחנו קרובים מתמיד.”",ar:"«عندما انضممنا إلى شبكة تمار عام 2022 وضعنا هدفًا: أن يتخرج كل طالب وطالبة بشهادة بجروت نوعية وحلم. اليوم نحن أقرب من أي وقت مضى.»",en:"“When we joined Tamar in 2022 we set a goal: every graduate leaves with a strong Bagrut certificate and a dream. Today we are closer than ever.”"},
+    highlights:[["1",{he:"מקום ראשון באולימפיאדת הרובוטיקה, מחוז דרום 2026",ar:"المرتبة الأولى في أولمبياد الروبوتات، لواء الجنوب 2026",en:"1st place, Southern District robotics olympiad 2026"}],["38",{he:"תלמידים לומדים קורסים אקדמיים במקביל לתיכון",ar:"طالبًا يدرسون مساقات أكاديمية بالتوازي مع الثانوية",en:"students taking university courses alongside high school"}],["12",{he:"מעבדות וחללי למידה חדשניים",ar:"مختبرًا وفضاء تعلم حديثًا",en:"labs and modern learning spaces"}],["+21",{he:"נקודות אחוז בזכאות לבגרות מאז 2021",ar:"نقطة مئوية في أهلية البجروت منذ 2021",en:"percentage points in Bagrut eligibility since 2021"}]],
+    tracks:[["phys",{he:"פיזיקה 5 יח\"ל עם מעבדה מתקדמת ופרויקט גמר בשיתוף האוניברסיטה.",ar:"فيزياء 5 وحدات مع مختبر متقدم ومشروع تخرج بالتعاون مع الجامعة.",en:"5-unit physics with an advanced lab and a capstone with a university partner."},46],["cs",{he:"תכנות, אלגוריתמים ובינה מלאכותית, כולל התמחות בפייתון.",ar:"برمجة وخوارزميات وذكاء اصطناعي، مع تخصص في بايثون.",en:"Programming, algorithms and AI with a Python specialization."},38],["rob",{he:"צוות תחרותי, מעבדת מייקרים והנדסת מערכות.",ar:"فريق تنافسي ومختبر صُنّاع وهندسة أنظمة.",en:"Competition team, maker lab and systems engineering."},32],["bio",{he:"ביוטכנולוגיה, מחקר שדה בנגב ומעבדה רטובה.",ar:"تقنية حيوية وبحث ميداني في النقب ومختبر رطب.",en:"Biotech, Negev field research and a wet lab."},41],["eng",{he:"אנגלית 5 יח\"ל, מועדון דיבייט ותוכנית חילופין.",ar:"إنجليزية 5 وحدات ونادي مناظرة وبرنامج تبادل.",en:"5-unit English, debate club and exchange program."},98]],
+    facilities:{he:["מעבדת פיזיקה","מעבדת רובוטיקה","מעבדת ביולוגיה","ספרייה דיגיטלית","אולם ספורט","חדר מייקרים","מרכז למידה שקט","קפטריה בריאה"],ar:["مختبر فيزياء","مختبر روبوتات","مختبر أحياء","مكتبة رقمية","قاعة رياضة","غرفة صُنّاع","مركز تعلم هادئ","كافتيريا صحية"],en:["Physics lab","Robotics lab","Biology lab","Digital library","Sports hall","Maker room","Quiet study center","Healthy cafeteria"]},
+    staff:[[3,0,"mgmt","principal",["phys"],9,""],[11,1,"mgmt","deputy",["math"],7,""],[0,2,"math","coord",["math"],6,"יב1"],[12,3,"math","teacher",["math"],3,"י2"],[5,4,"math","teacher",["math"],2,""],[1,5,"sci","coord",["phys"],8,"יא1"],[13,6,"sci","teacher",["bio"],4,"ט1"],[6,7,"sci","teacher",["chem"],5,""],[14,0,"tech","teacher",["cs","rob"],3,"י1"],[8,1,"tech","teacher",["rob"],2,""],[19,8,"eng","coord",["eng"],6,"ח2"],[15,2,"eng","teacher",["eng"],3,""],[16,3,"lang","teacher",["ar"],10,"ז1"],[9,9,"lang","teacher",["heb"],4,""],[2,4,"hum","teacher",["hist","civ"],5,"ח1"],[17,5,"care","counselor",["coun"],6,""],[4,6,"pe","teacher",["pe"],7,""],[18,7,"hum","grade",["civ"],2,"ט2"]],
+    week:[["math","eng","phys","ar","cs"],["math","eng","phys","ar","cs"],["heb","math","chem","eng","bio"],["hist","math","chem","eng","bio"],["phys","civ","rob","math","home"],["phys","pe","rob","math","heb"],["eng","pe","cs","lead","ar"],["eng","bio","cs","lead",""]],
+    klass:"י1",
+    events:[["14",{he:"נוב׳",ar:"ت2",en:"Nov"},{he:"יום פתוח להורים ולתלמידים חדשים",ar:"يوم مفتوح للأهل والطلاب الجدد",en:"Open day for parents & new students"},"17:00"],["03",{he:"דצמ׳",ar:"ك1",en:"Dec"},{he:"תערוכת פרויקטים במדעים",ar:"معرض مشاريع علمية",en:"Science project fair"},"10:00"],["10",{he:"דצמ׳",ar:"ك1",en:"Dec"},{he:"האקתון AI של הרשת",ar:"هاكاثون الذكاء الاصطناعي للشبكة",en:"Network AI hackathon"},"08:30"],["18",{he:"ינו׳",ar:"ك2",en:"Jan"},{he:"אספת הורים – שכבות י׳–י״ב",ar:"اجتماع أهالٍ – الصفوف 10–12",en:"Parent meeting – grades 10–12"},"18:00"]],
+    news:[["21.09",{he:"מערכת השעות המעודכנת לתשפ\"ז פורסמה באפליקציית ההורים.",ar:"نُشر البرنامج المحدّث للعام في تطبيق الأهل.",en:"The updated 2026–27 timetable is live in the parent app."}],["15.09",{he:"ההרשמה לחוגי העשרה אחר הצהריים נפתחה.",ar:"فُتح التسجيل لدورات الإثراء بعد الظهر.",en:"Registration for afternoon enrichment clubs is open."}],["09.09",{he:"צוות הרובוטיקה מגייס תלמידים חדשים משכבת ט׳.",ar:"فريق الروبوتات يستقبل طلابًا جددًا من الصف التاسع.",en:"The robotics team is recruiting new 9th graders."}],["01.09",{he:"ברוכים הבאים לשנת הלימודים! 720 תלמידים, 26 כיתות.",ar:"أهلًا بكم في العام الدراسي! 720 طالبًا، 26 صفًا.",en:"Welcome back! 720 students, 26 classes."}]]
+  },
+  hura:{
+    symbol:"640202", principal:[11,2], hue:"#b7791f",
+    phone:"08-000-0202", email:"hura@tamar.example", addr:{he:"חורה, הנגב (כתובת לדוגמה)",ar:"حورة، النقب (عنوان للتوضيح)",en:"Hura, Negev (sample address)"},
+    classes:19, avgClass:27, attendance:92, girls:61,
+    years:[2021,2022,2023,2024,2025,2026], bagrut:[64,66,69,75,80,84], national:[71,71,72,72,73,73],
+    grades:[["ט",134],["י",131],["יא",129],["יב",126]],
+    five:[["eng",86],["math",52],["bio",30],["phys",24],["cs",26]],
+    vision:{he:"תמר חורה מגדלת את הדור הבא של מנהיגות ומנהיגים בנגב: אנגלית ברמה בינלאומית, יזמות אמיתית ומחויבות לקהילה.",ar:"تمار حورة تنشئ الجيل القادم من القائدات والقادة في النقب: إنجليزية بمستوى دولي، ريادة حقيقية والتزام تجاه المجتمع.",en:"Tamar Hura grows the Negev's next generation of leaders: world-class English, real entrepreneurship and commitment to community."},
+    msg:{he:"„הבנות שלנו מובילות היום מיזמים, דיבייטים ופרויקטים קהילתיים. זה השינוי שחלמנו עליו.”",ar:"«بناتنا اليوم يقدن مبادرات ومناظرات ومشاريع مجتمعية. هذا هو التغيير الذي حلمنا به.»",en:"“Our students now lead ventures, debates and community projects. This is the change we dreamed of.”"},
+    highlights:[["61%",{he:"מהתלמידים בבית הספר הן בנות",ar:"من الطلاب في المدرسة فتيات",en:"of students are girls"}],["86",{he:"תלמידים באנגלית 5 יח\"ל",ar:"طالبًا في الإنجليزية 5 وحدات",en:"students in 5-unit English"}],["9",{he:"מיזמים חברתיים שהוקמו על ידי תלמידים",ar:"مبادرات اجتماعية أسسها الطلاب",en:"student-founded social ventures"}],["+20",{he:"נקודות אחוז בזכאות לבגרות מאז 2021",ar:"نقطة مئوية في أهلية البجروت منذ 2021",en:"percentage points in Bagrut eligibility since 2021"}]],
+    tracks:[["eng",{he:"אנגלית 5 יח\"ל, דיבייט ומודל או\"ם.",ar:"إنجليزية 5 وحدات، مناظرة ونموذج الأمم المتحدة.",en:"5-unit English, debate and Model UN."},86],["ent",{he:"יזמות עסקית וחברתית עם מנטורים מהתעשייה.",ar:"ريادة أعمال واجتماعية مع مرشدين من الصناعة.",en:"Business and social entrepreneurship with industry mentors."},44],["bus",{he:"כלכלה וניהול, כולל אוריינות פיננסית.",ar:"اقتصاد وإدارة، بما في ذلك الثقافة المالية.",en:"Economics and management, including financial literacy."},38],["bio",{he:"ביולוגיה ובריאות הקהילה.",ar:"أحياء وصحة المجتمع.",en:"Biology and community health."},30],["lead",{he:"תכנית מנהיגות נשים ומעורבות אזרחית.",ar:"برنامج قيادة نسائية ومشاركة مدنية.",en:"Women's leadership and civic engagement."},52]],
+    facilities:{he:["מרכז יזמות","אולפן דיבייט","מעבדת ביולוגיה","ספרייה","אולם ספורט","חדר מחשבים","גינה קהילתית"],ar:["مركز ريادة","استوديو مناظرة","مختبر أحياء","مكتبة","قاعة رياضة","غرفة حواسيب","حديقة مجتمعية"],en:["Entrepreneurship hub","Debate studio","Biology lab","Library","Sports hall","Computer room","Community garden"]},
+    staff:[[11,2,"mgmt","principal",["eng"],8,""],[7,3,"mgmt","deputy",["bus"],6,""],[19,9,"eng","coord",["eng"],5,"יב1"],[10,4,"eng","teacher",["eng"],3,"י1"],[15,5,"eng","teacher",["eng"],2,""],[0,6,"math","coord",["math"],7,"יא2"],[18,7,"math","teacher",["math"],2,"ט1"],[13,0,"sci","teacher",["bio"],4,"י2"],[5,1,"sci","teacher",["phys"],3,""],[9,8,"tech","teacher",["cs"],2,""],[12,2,"hum","teacher",["ent","lead"],5,"יא1"],[16,3,"lang","teacher",["ar"],9,"ט2"],[2,4,"lang","teacher",["heb"],4,""],[14,5,"care","counselor",["coun"],6,""],[4,7,"pe","teacher",["pe"],5,""]],
+    week:[["eng","math","ent","ar","bio"],["eng","math","ent","ar","bio"],["heb","eng","math","bus","lead"],["hist","eng","math","bus","lead"],["math","civ","eng","phys","home"],["cs","pe","eng","phys","heb"],["lead","pe","bus","eng","ar"],["lead","bio","","eng",""]],
+    klass:"י2",
+    events:[["12",{he:"נוב׳",ar:"ت2",en:"Nov"},{he:"יריד מיזמי תלמידים",ar:"معرض مبادرات الطلاب",en:"Student ventures fair"},"16:00"],["26",{he:"נוב׳",ar:"ت2",en:"Nov"},{he:"תחרות דיבייט אזורית",ar:"مسابقة مناظرة إقليمية",en:"Regional debate contest"},"09:00"],["15",{he:"דצמ׳",ar:"ك1",en:"Dec"},{he:"ערב הורים ובנות מובילות",ar:"أمسية أهالٍ وقائدات",en:"Parents & young leaders evening"},"18:30"],["20",{he:"ינו׳",ar:"ك2",en:"Jan"},{he:"יום פתוח לשכבת ט׳",ar:"يوم مفتوح للصف التاسع",en:"Grade 9 open day"},"17:00"]],
+    news:[["20.09",{he:"נפתחה ההרשמה למשלחת מודל האו\"ם.",ar:"فُتح التسجيل لبعثة نموذج الأمم المتحدة.",en:"Sign-ups for the Model UN delegation are open."}],["12.09",{he:"מרכז היזמות מארח מנטורים חדשים מהתעשייה.",ar:"مركز الريادة يستضيف مرشدين جددًا من الصناعة.",en:"The entrepreneurship hub welcomes new industry mentors."}],["01.09",{he:"ברוכים הבאים! 520 תלמידים, 19 כיתות.",ar:"أهلًا بكم! 520 طالبًا، 19 صفًا.",en:"Welcome back! 520 students, 19 classes."}]]
+  }
+};
+const SPT = {
+he:{back:"כל בתי הספר ברשת",open:"לעמוד בית הספר",overview:"סקירה",data:"נתונים",staff:"צוות",tracks:"מגמות",schedule:"מערכת שעות",events:"אירועים",contact:"יצירת קשר",principal:"מנהל/ת",symbol:"סמל מוסד",joined:"הצטרף לרשת",students:"תלמידים",teachers:"אנשי צוות",classes:"כיתות",avgClass:"ממוצע בכיתה",attendance:"נוכחות",bagrut:"זכאות לבגרות",enroll:"הרשמה לבית הספר",tour:"תיאום סיור",tourOk:"בקשת הסיור נקלטה (הדגמה)",vision:"החזון שלנו",fromPrincipal:"דבר המנהל/ת",pride:"במה אנחנו גאים",dataLead:"ביצועי בית הספר לאורך השנים מול הממוצע הארצי.",bagrutT:"זכאות לבגרות",bagrutS:"בית הספר מול ממוצע ארצי",gradesT:"תלמידים לפי שכבה",gradesS:"שנת הלימודים תשפ\"ז",fiveT:"5 יחידות לפי מקצוע",fiveS:"מספר תלמידים בהגברה",grade:"שכבה",subject:"מקצוע",nat:"ממוצע ארצי",staffLead:"הכירו את הצוות שמוביל את בית הספר.",search:"חיפוש לפי שם או מקצוע…",allDepts:"כל המחלקות",yrs:"שנים בבית הספר",homeroom:"מחנך/ת",msg:"הודעה",msgOk:"ההודעה נשלחה (הדגמה)",shown:"מוצגים",of:"מתוך",tracksLead:"מסלולי הלימוד הייחודיים של בית הספר.",inTrack:"תלמידים",bells:"לוח צלצולים",week:"מערכת שבועית לדוגמה",klass:"כיתה",brk:"הפסקה",lunch:"הפסקת צהריים",now:"עכשיו",days:["ראשון","שני","שלישי","רביעי","חמישי"],news:"לוח מודעות",upcoming:"אירועים קרובים",facilities:"מתקנים ומרחבי למידה",secretary:"מזכירות",hours:"א׳–ה׳, 07:30–15:30",phone:"טלפון",email:"דוא\"ל",address:"כתובת",copy:"העתקה",copied:"הועתק",nav:"ניווט",noStaff:"לא נמצאו אנשי צוות",period:"שיעור"},
+ar:{back:"كل مدارس الشبكة",open:"لصفحة المدرسة",overview:"نظرة عامة",data:"معطيات",staff:"الطاقم",tracks:"مسارات",schedule:"البرنامج",events:"فعاليات",contact:"اتصال",principal:"المدير/ة",symbol:"رمز المؤسسة",joined:"انضمت للشبكة",students:"طلاب",teachers:"أفراد طاقم",classes:"صفوف",avgClass:"معدل الصف",attendance:"حضور",bagrut:"أهلية البجروت",enroll:"التسجيل للمدرسة",tour:"تنسيق جولة",tourOk:"تم استلام طلب الجولة (تجريبي)",vision:"رؤيتنا",fromPrincipal:"كلمة المدير/ة",pride:"ما نفخر به",dataLead:"أداء المدرسة عبر السنين مقارنة بالمعدل القطري.",bagrutT:"أهلية البجروت",bagrutS:"المدرسة مقابل المعدل القطري",gradesT:"الطلاب حسب الطبقة",gradesS:"العام الدراسي 2026–2027",fiveT:"5 وحدات حسب الموضوع",fiveS:"عدد الطلاب في المستوى المكثّف",grade:"طبقة",subject:"موضوع",nat:"المعدل القطري",staffLead:"تعرّفوا على الطاقم الذي يقود المدرسة.",search:"ابحث بالاسم أو الموضوع…",allDepts:"كل الأقسام",yrs:"سنوات في المدرسة",homeroom:"مربي/ة صف",msg:"رسالة",msgOk:"أُرسلت الرسالة (تجريبي)",shown:"معروض",of:"من",tracksLead:"مسارات التعلم المميزة في المدرسة.",inTrack:"طلاب",bells:"جدول الأجراس",week:"برنامج أسبوعي نموذجي",klass:"صف",brk:"استراحة",lunch:"استراحة غداء",now:"الآن",days:["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس"],news:"لوحة الإعلانات",upcoming:"فعاليات قريبة",facilities:"مرافق وفضاءات تعلم",secretary:"السكرتارية",hours:"الأحد–الخميس، 07:30–15:30",phone:"هاتف",email:"بريد إلكتروني",address:"عنوان",copy:"نسخ",copied:"تم النسخ",nav:"ملاحة",noStaff:"لم يُعثر على أفراد طاقم",period:"حصة"},
+en:{back:"All network schools",open:"School page",overview:"Overview",data:"Data",staff:"Staff",tracks:"Tracks",schedule:"Timetable",events:"Events",contact:"Contact",principal:"Principal",symbol:"School ID",joined:"Joined network",students:"students",teachers:"staff",classes:"classes",avgClass:"avg. class size",attendance:"attendance",bagrut:"Bagrut eligibility",enroll:"Enroll at this school",tour:"Book a visit",tourOk:"Visit request received (demo)",vision:"Our vision",fromPrincipal:"From the principal",pride:"What we're proud of",dataLead:"School performance over time against the national average.",bagrutT:"Bagrut eligibility",bagrutS:"School vs national average",gradesT:"Students by grade",gradesS:"School year 2026–27",fiveT:"5-unit level by subject",fiveS:"Students at the advanced level",grade:"Grade",subject:"Subject",nat:"National average",staffLead:"Meet the team leading the school.",search:"Search by name or subject…",allDepts:"All departments",yrs:"years at school",homeroom:"Homeroom",msg:"Message",msgOk:"Message sent (demo)",shown:"Showing",of:"of",tracksLead:"The school's signature learning tracks.",inTrack:"students",bells:"Bell schedule",week:"Sample weekly timetable",klass:"Class",brk:"Break",lunch:"Lunch break",now:"Now",days:["Sun","Mon","Tue","Wed","Thu"],news:"Notice board",upcoming:"Upcoming events",facilities:"Facilities & learning spaces",secretary:"Front office",hours:"Sun–Thu, 07:30–15:30",phone:"Phone",email:"Email",address:"Address",copy:"Copy",copied:"Copied",nav:"Directions",noStaff:"No staff found",period:"Period"}
+};
+const GRADE_EN={"ז":"7","ח":"8","ט":"9","י":"10","יא":"11","יב":"12"}, GRADE_AR={"ז":"السابع","ח":"الثامن","ט":"التاسع","י":"العاشر","יא":"الحادي عشر","יב":"الثاني عشر"};
+const gradeName=g=>LANG==="en"?GRADE_EN[g]:LANG==="ar"?GRADE_AR[g]:(g.length>1?g[0]+"״"+g[1]:g+"׳");
+const hr=h=>!h?"":h.replace(/^(יב|יא|[זחטי])(\d)$/,(m,g,n)=>LANG==="he"?gradeName(g)+n:GRADE_EN[g]+"-"+n);
+const P=k=>SPT[LANG][k];
+let CUR=null, staffDept="all", staffQ="";
+const personName=(f,l)=>L(NAMES.f[f])+" "+L(NAMES.l[l]);
+const initials=(f,l)=>L(NAMES.f[f]).charAt(0)+L(NAMES.l[l]).charAt(0);
+
+function renderSchoolPage(){
+  const s=DATA.schools.find(x=>x.id===CUR), d=SCHOOL_PAGES[CUR]; if(!s||!d) return;
+  const id=CUR, arrow=LANG==="en"?"←":"→";
+  document.title=L(s.name)+" | "+T[LANG].brand;
+  const secs=[["overview",P("overview")],["data",P("data")],["staff",P("staff")],["tracks",P("tracks")],["schedule",P("schedule")],["events",P("events")],["contact",P("contact")]];
+  const stat=(v,l)=>`<div class="sv-stat"><b>${v}</b><span>${l}</span></div>`;
+  $("#schoolView").innerHTML=`
+  <div class="sv-hero" style="--sch:${d.hue}">
+    <div class="wrap">
+      <a class="sv-back" href="#schools">${arrow} ${P("back")}</a>
+      <div class="sv-head">
+        <div class="sv-mono" aria-hidden="true">${L(s.short).replace(/^(ال|אל|Al-)/,"").charAt(0)}</div>
+        <div>
+          <div class="sv-chips"><span class="sv-chip on">${S("active")}</span><span class="sv-chip">${L(s.level)}</span><span class="sv-chip">${L(s.town)}</span><span class="sv-chip">${P("joined")} ${s.founded}</span><span class="sv-chip">${P("symbol")} ${d.symbol}</span></div>
+          <h1>${L(s.name)}</h1>
+          <p class="sv-sub">${P("principal")}: <b>${personName(...d.principal)}</b> · ${L(s.focus)}</p>
+          <div class="cta"><a class="btn sv-btn" href="#enroll">${P("enroll")}</a><button class="btn sv-btn-ghost" id="tourBtn" type="button">${P("tour")}</button></div>
+        </div>
+      </div>
+      <div class="sv-stats">${stat(fmt(s.students),P("students"))}${stat(s.teachers,P("teachers"))}${stat(d.classes,P("classes"))}${stat(d.avgClass,P("avgClass"))}${stat(d.attendance+"%",P("attendance"))}${stat(s.bagrut+"%",P("bagrut"))}</div>
+    </div>
+  </div>
+  <nav class="sv-nav" aria-label="${L(s.name)}"><div class="wrap">${secs.map(([k,v])=>`<a href="#${id}-${k}">${v}</a>`).join("")}</div></nav>
+
+  <section id="${id}-overview" class="sv-sec"><div class="wrap sv-over">
+    <div><span class="eyebrow">${P("vision")}</span><p class="sv-vision">${L(d.vision)}</p>
+      <div class="card sv-msg"><div class="av" style="background:${d.hue}">${initials(...d.principal)}</div><div><small class="muted">${P("fromPrincipal")}</small><p>${L(d.msg)}</p><b>${personName(...d.principal)}</b></div></div>
+    </div>
+    <div><span class="eyebrow">${P("pride")}</span><div class="sv-high">${d.highlights.map(h=>`<div class="card"><b><bdi dir="ltr">${h[0]}</bdi></b><span>${L(h[1])}</span></div>`).join("")}</div></div>
+  </div></section>
+
+  <section id="${id}-data" class="sv-sec alt"><div class="wrap">
+    <span class="eyebrow">${P("data")}</span><h2>${P("dataLead")}</h2>
+    <div class="grid charts">
+      <div class="card chart-card"><div class="chart-top"><div><h3>${P("bagrutT")}</h3><div class="sub">${P("bagrutS")}</div></div>
+        <div class="seg"><button aria-pressed="true" data-sview="chart" data-target="sc1">${T[LANG]["v.chart"]}</button><button aria-pressed="false" data-sview="table" data-target="sc1">${T[LANG]["v.table"]}</button></div></div>
+        <div class="legend"><span><i style="background:var(--s1)"></i>${L(s.short)}</span><span><i style="background:var(--s2)"></i>${P("nat")}</span></div>
+        <div class="chart" id="sc1"></div><div id="sc1-table" class="hidden"></div></div>
+      <div class="card chart-card"><div class="chart-top"><div><h3>${P("gradesT")}</h3><div class="sub">${P("gradesS")}</div></div>
+        <div class="seg"><button aria-pressed="true" data-sview="chart" data-target="sc2">${T[LANG]["v.chart"]}</button><button aria-pressed="false" data-sview="table" data-target="sc2">${T[LANG]["v.table"]}</button></div></div>
+        <div class="chart" id="sc2"></div><div id="sc2-table" class="hidden"></div></div>
+    </div>
+    <div class="grid sv-data2">
+      <div class="card chart-card"><div class="chart-top"><div><h3>${P("fiveT")}</h3><div class="sub">${P("fiveS")}</div></div>
+        <div class="seg"><button aria-pressed="true" data-sview="chart" data-target="sc3">${T[LANG]["v.chart"]}</button><button aria-pressed="false" data-sview="table" data-target="sc3">${T[LANG]["v.table"]}</button></div></div>
+        <div class="chart" id="sc3"></div><div id="sc3-table" class="hidden"></div></div>
+      <div class="card sv-rings">
+        ${[[d.attendance,P("attendance")],[s.bagrut,P("bagrut")],[d.girls,S("kGirls")]].map(([v,l])=>`<div class="ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="50" fill="none" stroke="var(--bg-2)" stroke-width="12"/><circle cx="60" cy="60" r="50" fill="none" stroke="var(--s1)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(v/100*314.16).toFixed(1)} 314.16" transform="rotate(-90 60 60)"/></svg><b>${v}%</b><span>${l}</span></div>`).join("")}
+      </div>
+    </div>
+  </div></section>
+
+  <section id="${id}-staff" class="sv-sec"><div class="wrap">
+    <div class="sec-head" style="margin-bottom:22px"><div><span class="eyebrow">${P("staff")}</span><h2>${P("staffLead")}</h2></div></div>
+    <div class="filters" id="staffFilters"></div>
+    <p class="muted" id="staffCount" style="margin:0 0 14px"></p>
+    <div class="staff-grid" id="staffGrid"></div>
+  </div></section>
+
+  <section id="${id}-tracks" class="sv-sec alt"><div class="wrap">
+    <span class="eyebrow">${P("tracks")}</span><h2>${P("tracksLead")}</h2>
+    <div class="sv-tracks">${d.tracks.map(t=>`<div class="card"><div class="sv-track-top"><h3>${L(SUBJ[t[0]])}</h3><span class="tag">${t[2]} ${P("inTrack")}</span></div><p>${L(t[1])}</p></div>`).join("")}</div>
+    <h3 style="margin:34px 0 12px">${P("facilities")}</h3>
+    <div class="sv-fac">${L(d.facilities).map(f=>`<span>${f}</span>`).join("")}</div>
+  </div></section>
+
+  <section id="${id}-schedule" class="sv-sec"><div class="wrap sv-sched">
+    <div class="card sv-bells"><h3>${P("bells")}</h3><ol id="bells">${BELLS.map((b,i)=>`<li data-i="${i}" class="${b[0]==="b"||b[0]==="l"?"brk":""}"><span>${b[0]==="b"?P("brk"):b[0]==="l"?P("lunch"):P("period")+" "+b[0]}</span><time>${b[1]}–${b[2]}</time></li>`).join("")}</ol></div>
+    <div class="card sv-week"><h3>${P("week")} · ${P("klass")} ${hr(d.klass)}</h3>
+      <div class="tt-wrap"><table class="tt"><thead><tr><th></th>${P("days").map(x=>`<th>${x}</th>`).join("")}</tr></thead>
+      <tbody>${d.week.map((row,i)=>`<tr><th>${i+1}</th>${row.map((c,j)=>`<td data-d="${j}" data-p="${i+1}">${c?L(SUBJ[c]):"–"}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>
+  </div></section>
+
+  <section id="${id}-events" class="sv-sec alt"><div class="wrap sv-evgrid">
+    <div class="card events"><h3>${P("upcoming")}</h3>${d.events.map(e=>`<div class="ev"><div class="date">${e[0]}<small>${L(e[1])}</small></div><div><b>${L(e[2])}</b><span>${L(s.short)} · ${e[3]}</span></div></div>`).join("")}</div>
+    <div class="card sv-board"><h3>${P("news")}</h3>${d.news.map(n=>`<div class="note"><time>${n[0]}</time><p>${L(n[1])}</p></div>`).join("")}</div>
+  </div></section>
+
+  <section id="${id}-contact" class="sv-sec"><div class="wrap">
+    <span class="eyebrow">${P("contact")}</span><h2>${L(s.name)}</h2>
+    <div class="contact">
+      <div class="card"><h3>${P("phone")}</h3><p class="sel">${d.phone}</p><button class="chip copy" data-copy="${d.phone}" type="button">${P("copy")}</button></div>
+      <div class="card"><h3>${P("email")}</h3><p class="sel">${d.email}</p><button class="chip copy" data-copy="${d.email}" type="button">${P("copy")}</button></div>
+      <div class="card"><h3>${P("secretary")}</h3><p class="muted" style="margin:0 0 6px">${P("hours")}</p><p style="margin:0">${L(d.addr)}</p><a class="chip" style="display:inline-block;margin-top:10px;text-decoration:none" href="https://www.google.com/maps?q=${s.lat},${s.lon}" target="_blank" rel="noopener">${P("nav")}</a></div>
+    </div>
+  </div></section>`;
+
+  drawLine($("#sc1"),$("#sc1-table"),d.years,d.bagrut,d.national,L(s.short),P("nat"),P("bagrutT"));
+  drawBars($("#sc2"),$("#sc2-table"),d.grades.map(g=>({k:gradeName(g[0]),v:g[1]})),P("grade"),P("students"),P("gradesT"));
+  drawBars($("#sc3"),$("#sc3-table"),d.five.map(f=>({k:L(SUBJ[f[0]]),v:f[1]})),P("subject"),P("students"),P("fiveT"));
+  renderStaff(); markNow();
+  $("#tourBtn").onclick=()=>toast(P("tourOk"));
+  $$("#schoolView [data-sview]").forEach(b=>b.onclick=()=>{const t=b.dataset.target;b.parentNode.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));$("#"+t).classList.toggle("hidden",b.dataset.sview==="table");$("#"+t+"-table").classList.toggle("hidden",b.dataset.sview!=="table")});
+  $$("#schoolView .copy").forEach(b=>b.onclick=()=>{const v=b.dataset.copy;const done=()=>{b.textContent=P("copied");setTimeout(()=>b.textContent=P("copy"),1500)};
+    try{navigator.clipboard.writeText(v).then(done,()=>{selectText(b.previousElementSibling);done()})}catch(e){selectText(b.previousElementSibling);done()}});
+}
+function selectText(el){const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r)}
+function renderStaff(){
+  const d=SCHOOL_PAGES[CUR]; if(!d) return;
+  const depts=["all",...new Set(d.staff.map(x=>x[2]))];
+  $("#staffFilters").innerHTML=depts.map(k=>`<button class="chip" type="button" data-dept="${k}" aria-pressed="${staffDept===k}">${k==="all"?P("allDepts"):L(DEPTS[k])}</button>`).join("")+`<input class="search" id="staffSearch" type="search" placeholder="${P("search")}" value="${staffQ.replace(/"/g,"&quot;")}">`;
+  $$("#staffFilters [data-dept]").forEach(b=>b.onclick=()=>{staffDept=b.dataset.dept;renderStaff()});
+  const inp=$("#staffSearch"); inp.oninput=e=>{staffQ=e.target.value;renderStaffGrid()};
+  renderStaffGrid();
+}
+function renderStaffGrid(){
+  const d=SCHOOL_PAGES[CUR]; const q=staffQ.trim().toLowerCase();
+  const list=d.staff.filter(x=>(staffDept==="all"||x[2]===staffDept)&&(!q||["he","ar","en"].some(l=>(NAMES.f[x[0]][l]+" "+NAMES.l[x[1]][l]+" "+x[4].map(k=>SUBJ[k][l]).join(" ")).toLowerCase().includes(q))));
+  $("#staffCount").textContent=`${P("shown")} ${list.length} ${P("of")} ${d.staff.length}`;
+  const tint=["#4a6b12","#b7791f","#2f4508","#c2542a","#5f6f52"];
+  $("#staffGrid").innerHTML=list.length?list.map((x,i)=>{const lead=x[3]==="principal"||x[3]==="deputy";return `<article class="card person ${lead?"lead":""}">
+    <div class="av" style="background:${tint[(x[0]+x[1])%tint.length]}">${initials(x[0],x[1])}</div>
+    <div class="pinfo"><h3>${personName(x[0],x[1])}</h3><div class="role">${L(ROLES[x[3]])} · ${L(DEPTS[x[2]])}</div>
+      <div class="subs">${x[4].map(k=>`<span class="tag">${L(SUBJ[k])}</span>`).join("")}${x[6]?`<span class="tag plan">${P("homeroom")} ${hr(x[6])}</span>`:""}</div>
+      <div class="pfoot"><span class="muted">${x[5]} ${P("yrs")}</span><button class="chip pmsg" type="button">${P("msg")}</button></div></div></article>`}).join(""):`<div class="empty">${P("noStaff")}</div>`;
+  $$("#staffGrid .pmsg").forEach(b=>b.onclick=()=>toast(P("msgOk")));
+}
+function markNow(){
+  const n=new Date(), day=n.getDay(), mins=n.getHours()*60+n.getMinutes();
+  const toM=t=>{const [h,m]=t.split(":").map(Number);return h*60+m};
+  $$("#bells li").forEach(li=>{const b=BELLS[li.dataset.i];const on=day<=4&&mins>=toM(b[1])&&mins<toM(b[2]);li.classList.toggle("now",on);if(on)li.setAttribute("data-now",P("now"));
+    if(on&&!isNaN(+b[0])) $$(`.tt td[data-d="${day}"][data-p="${b[0]}"]`).forEach(td=>td.classList.add("now"))});
+}
+function route(){
+  const h=decodeURIComponent(location.hash.slice(1)); const [id,sec]=h.split("-");
+  const s=DATA.schools.find(x=>x.id===id&&x.status==="active"&&SCHOOL_PAGES[x.id]);
+  if(s){
+    if(CUR!==id){CUR=id;staffDept="all";staffQ="";$("#top").hidden=true;$("#schoolView").hidden=false;renderSchoolPage();}
+    const target=sec?document.getElementById(h):null;
+    requestAnimationFrame(()=>target?target.scrollIntoView():window.scrollTo(0,0));
+  } else {
+    if(CUR){CUR=null;$("#schoolView").hidden=true;$("#top").hidden=false;document.title=T[LANG].brand+" | "+T[LANG].brandSub;}
+    const el=h&&document.getElementById(h); if(el) requestAnimationFrame(()=>el.scrollIntoView());
+  }
+}
+window.addEventListener("hashchange",route);
 
 /* ============ interactions ============ */
 $$("[data-lang]").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
@@ -1076,6 +1371,7 @@ $$(".reveal").forEach(el=>io.observe(el));
 const savedTheme=load("tamar-theme"); if(savedTheme) document.documentElement.dataset.theme=savedTheme;
 setLang(load("tamar-lang")||"he");
 showStep();
+route();
 </script>
 </body>
 </html>
