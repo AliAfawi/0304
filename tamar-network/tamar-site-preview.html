@@ -26,6 +26,7 @@
     --accent:#f07a50; --accent-2:#f3b04e; --accent-soft:#35231b;
     --s1:#557515; --s2:#c68332; --grid:#2a2e24;
     --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.35);
+    color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
@@ -34,6 +35,7 @@
   --accent:#f07a50; --accent-2:#f3b04e; --accent-soft:#35231b;
   --s1:#557515; --s2:#c68332; --grid:#2a2e24;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 28px rgba(0,0,0,.35);
+  color-scheme:dark;
 }
 html[lang="ar"]{--font:"Noto Kufi Arabic","Heebo",system-ui,sans-serif}
 *{box-sizing:border-box}
@@ -69,17 +71,17 @@ h2{font-size:clamp(1.8rem,3.6vw,2.7rem);font-weight:900;margin:10px 0 14px;lette
 .tag{display:inline-block;font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--brand-soft);color:var(--brand)}
 .tag.plan{background:var(--accent-soft);color:var(--accent)}
 .muted{color:var(--muted)}
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
-.reveal.in{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+@media (prefers-reduced-motion:no-preference){.reveal.in{animation:rise .7s ease both}}
+@keyframes rise{from{transform:translateY(16px)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
 /* demo ribbon */
 .demo{background:repeating-linear-gradient(45deg,var(--accent-2) 0 14px,#f5b95a 14px 28px);color:#2b1d05;text-align:center;font-size:.85rem;font-weight:700;padding:6px 12px}
 
 /* header */
-header.top{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--line)}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--line)}
 .nav{display:flex;align-items:center;gap:18px;height:68px}
-.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:900;font-size:1.25rem}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:900;font-size:1.25rem;white-space:nowrap}
 .brand img{width:46px;height:46px;border-radius:10px;object-fit:contain;background:#fff;padding:2px}
 .brand small{display:block;font-size:.7rem;font-weight:500;color:var(--muted);line-height:1}
 .links{display:flex;gap:4px;margin-inline-start:auto}
@@ -434,10 +436,10 @@ footer{background:var(--bg-2);border-top:1px solid var(--line);padding:50px 0 30
       </div>
     </div>
     <div class="stats card reveal">
-      <div class="stat"><div class="num" data-count="1240">0</div><div class="lbl" data-i18n="stats.students">תלמידות ותלמידים</div></div>
-      <div class="stat"><div class="num" data-count="96">0</div><div class="lbl" data-i18n="stats.teachers">אנשי ונשות חינוך</div></div>
-      <div class="stat"><div class="num" data-count="87" data-suffix="%">0</div><div class="lbl" data-i18n="stats.bagrut">זכאות לבגרות</div></div>
-      <div class="stat"><div class="num" data-count="2">0</div><div class="lbl" data-i18n="stats.schools">בתי ספר פעילים · 6 בתכנון</div></div>
+      <div class="stat"><div class="num" data-count="1240">1,240</div><div class="lbl" data-i18n="stats.students">תלמידות ותלמידים</div></div>
+      <div class="stat"><div class="num" data-count="96">96</div><div class="lbl" data-i18n="stats.teachers">אנשי ונשות חינוך</div></div>
+      <div class="stat"><div class="num" data-count="87" data-suffix="%">87%</div><div class="lbl" data-i18n="stats.bagrut">זכאות לבגרות</div></div>
+      <div class="stat"><div class="num" data-count="2">2</div><div class="lbl" data-i18n="stats.schools">בתי ספר פעילים · 6 בתכנון</div></div>
     </div>
   </div>
 </section>
