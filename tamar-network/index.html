@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>רשת תמר | מחוללים שינוי</title>
-<meta name="description" content="רשת החינוך תמר – מחוללים שינוי בחינוך בנגב. בתי ספר, תכניות מצוינות, נתונים, משרות והרשמה.">
-<link rel="icon" href="assets/tamar-logo.jpg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Noto+Kufi+Arabic:wght@400;600;800&display=swap" rel="stylesheet">
-<style>
+<meta data-keep name="description" content="רשת החינוך תמר – מחוללים שינוי בחינוך בנגב. בתי ספר, תכניות מצוינות, נתונים, משרות והרשמה.">
+<link data-keep rel="icon" href="assets/tamar-logo.jpg">
+<link data-keep rel="preconnect" href="https://fonts.googleapis.com">
+<link data-keep rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link data-keep href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Noto+Kufi+Arabic:wght@400;600;800&display=swap" rel="stylesheet">
+<style id="site-style" data-keep>
 :root{
   --bg:#fbf8f2; --bg-2:#f3eee3; --surface:#ffffff; --ink:#1f2418; --ink-2:#4d5443; --muted:#7a7f70;
   --line:#e4dfd2; --brand:#4a6b12; --brand-2:#6f8f25; --brand-soft:#eef3e1;
@@ -466,15 +466,81 @@ html[dir="rtl"] .sel{text-align:right}
 .school.plan .go{color:var(--muted);font-weight:400}
 @media (max-width:980px){.sv-stats{grid-template-columns:repeat(3,1fr)}.sv-stat:nth-child(4){border-inline-start:0}.sv-stat:nth-child(n+4){border-top:1px solid var(--line)}.sv-over,.sv-data2,.sv-evgrid,.sv-sched{grid-template-columns:1fr}}
 @media (max-width:600px){.sv-head{grid-template-columns:1fr}.sv-mono{width:78px;height:78px;font-size:2.6rem;border-radius:20px}.sv-high{grid-template-columns:1fr 1fr}.sv-stat{padding:14px}.sv-stat b{font-size:1.5rem}.sv-rings{grid-template-columns:repeat(3,1fr)}.school .go{display:none}}
+
+/* ===== admin / edit mode ===== */
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.ed-pen{position:relative;color:var(--brand)}
+.ed-pen .ed-dot{position:absolute;top:6px;inset-inline-end:6px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+body.editing .ed-pen{background:var(--brand);color:#fff;border-color:var(--brand)}
+body.editing{--edc:#2f6fdb}
+.edi{position:relative}
+.ed-bar{position:absolute;top:-15px;inset-inline-end:10px;z-index:6;display:flex;gap:2px;background:var(--ink);border-radius:10px;padding:3px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.ed-bar.static{position:static;box-shadow:none}
+@media (hover:hover){body.editing .edi>.ed-bar{opacity:0;transition:opacity .15s}body.editing .edi:hover>.ed-bar,body.editing .edi:focus-within>.ed-bar{opacity:1}}
+.ed-bar button{width:26px;height:26px;border:0;border-radius:7px;background:transparent;color:var(--bg);font-size:.9rem;display:grid;place-items:center;line-height:1}
+.ed-bar button:hover{background:rgba(255,255,255,.16)}
+.ed-bar button.del:hover,.ed-bar button.armed{background:#d4462a;color:#fff}
+body.editing .edi{outline:1.5px dashed color-mix(in srgb,var(--edc) 55%,transparent);outline-offset:3px}
+.ed-add{border:1.5px dashed var(--edc,#2f6fdb);color:var(--edc,#2f6fdb);background:color-mix(in srgb,#2f6fdb 6%,var(--surface));border-radius:14px;padding:14px 18px;font-weight:700;min-height:52px}
+.ed-add:hover{background:color-mix(in srgb,#2f6fdb 12%,var(--surface))}
+.ed-pill{border:0;background:#2f6fdb;color:#fff;border-radius:999px;padding:6px 14px;font-weight:700;font-size:.82rem;box-shadow:0 4px 14px rgba(47,111,219,.35)}
+.ed-corner{position:absolute;top:12px;inset-inline-end:12px;z-index:5}
+.ed-dyn{display:contents}
+.ticker{position:relative}
+.ticker .ed-dyn .ed-pill{position:absolute;top:50%;transform:translateY(-50%);inset-inline-end:12px;z-index:3}
+.ed-inline{display:flex;gap:8px;flex-wrap:wrap;margin:-8px 0 16px}
+.ed-text{outline:1.5px dashed color-mix(in srgb,#2f6fdb 60%,transparent);outline-offset:3px;border-radius:4px;cursor:text;transition:background .15s}
+.ed-text:hover{background:color-mix(in srgb,#2f6fdb 8%,transparent)}
+.ed-text:focus{outline:2px solid #2f6fdb;background:color-mix(in srgb,#2f6fdb 10%,transparent)}
+.ed-img{outline:2px dashed #2f6fdb;outline-offset:2px;cursor:pointer}
+body.editing .timeline{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+body.editing .fab{bottom:96px}
+
+.ed-adminbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:90;width:min(860px,calc(100vw - 24px));display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#141a0b;color:#fff;border-radius:18px;padding:10px 12px 10px 16px;box-shadow:0 18px 50px rgba(0,0,0,.35)}
+.ed-mode{display:flex;align-items:center;gap:10px;font-size:.9rem}
+.ed-live{width:10px;height:10px;border-radius:50%;background:#4f8df5;box-shadow:0 0 0 4px rgba(79,141,245,.25)}
+.ed-count{opacity:.75}
+.ed-btns{display:flex;gap:6px;flex-wrap:wrap}
+.ed-b{border:1px solid rgba(255,255,255,.22);background:transparent;color:#fff;border-radius:11px;padding:8px 14px;font-weight:700;font-size:.86rem}
+.ed-b:disabled{opacity:.4;cursor:not-allowed}
+.ed-b.pri{background:#4f8df5;border-color:#4f8df5}
+.ed-b.armed{background:#d4462a;border-color:#d4462a}
+.ed-draft{position:fixed;top:calc(80px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:95;background:var(--surface);border:1.5px solid #2f6fdb;border-radius:14px;padding:10px 14px;display:flex;gap:10px;align-items:center;box-shadow:var(--shadow);font-weight:700;max-width:calc(100vw - 24px);flex-wrap:wrap}
+.modal .box.ed-box{max-width:720px}
+.ed-title{font-size:1.35rem;margin:0 0 18px;padding-inline-end:40px}
+.l10n{display:grid;gap:6px}
+.lrow{display:grid;grid-template-columns:34px 1fr;gap:8px;align-items:start}
+.lrow span{font-size:.75rem;font-weight:800;color:var(--muted);background:var(--bg-2);border-radius:8px;text-align:center;padding:9px 0}
+.lrow input,.lrow textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:8px 12px}
+.lrow textarea{resize:vertical}
+.multi{display:flex;flex-wrap:wrap;gap:6px}
+.mchip{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.88rem;font-weight:500;cursor:pointer}
+.mchip:has(input:checked){border-color:var(--brand);background:var(--brand-soft)}
+.imgf{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.imgprev{width:120px;height:80px;border-radius:12px;background:var(--bg-2);display:grid;place-items:center;overflow:hidden;font-size:.8rem;color:var(--muted)}
+.imgprev img{width:100%;height:100%;object-fit:cover}
+.ed-actions{display:flex;gap:10px;align-items:center;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);flex-wrap:wrap}
+.ed-danger{color:#c2361b;border-color:color-mix(in srgb,#c2361b 45%,transparent)}
+.ed-danger.armed{background:#c2361b;color:#fff}
+.lm{display:grid;gap:6px;max-height:52vh;overflow:auto}
+.lm-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;background:var(--bg-2)}
+.lm-row>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ed-menu{display:grid;gap:8px}
+.ed-mi{display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--bg-2)}
+.tt-sel{font:inherit;font-size:.8rem;width:100%;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);padding:4px 2px}
+img.av{object-fit:cover}
+body.editing .partner.edi{padding-inline-end:120px}
+@media (max-width:600px){.ed-mi{grid-template-columns:1fr auto;}.ed-adminbar{border-radius:14px;padding:10px}.ed-mode{width:100%}.ed-btns{width:100%}.ed-b{flex:1}}
 </style>
 </head>
 <body>
+<div id="shell">
 
 <div class="demo" data-i18n="demo">גרסת הדגמה · כל הנתונים באתר הם נתוני דמה להמחשה בלבד</div>
 
 <header class="top">
   <nav class="wrap nav" aria-label="ראשי">
-    <a class="brand" href="#top"><img src="assets/tamar-logo.jpg" alt="לוגו תמר"><span><span data-i18n="brand">רשת תמר</span><small data-i18n="brandSub">מחוללים שינוי</small></span></a>
+    <a class="brand" href="#top"><img data-img="logo" src="assets/tamar-logo.jpg" alt="לוגו תמר"><span><span data-i18n="brand">רשת תמר</span><small data-i18n="brandSub">מחוללים שינוי</small></span></a>
     <div class="links" id="links">
       <a href="#about" data-i18n="nav.about">אודות</a>
       <a href="#schools" data-i18n="nav.schools">בתי הספר</a>
@@ -515,7 +581,7 @@ html[dir="rtl"] .sel{text-align:right}
       <div class="hero-art reveal" aria-hidden="true">
         <div class="orbit"><span></span></div>
         <div class="orbit o2"><span></span></div>
-        <div class="logo-card"><img src="assets/tamar-logo.jpg" alt=""></div>
+        <div class="logo-card"><img data-img="logo" src="assets/tamar-logo.jpg" alt=""></div>
         <div class="floaty f1"><span class="n">10</span><span data-i18n="hero.f1">שנות עשייה</span></div>
         <div class="floaty f2"><span class="n">3</span><span data-i18n="hero.f2">שפות · קהילה אחת</span></div>
       </div>
@@ -524,7 +590,7 @@ html[dir="rtl"] .sel{text-align:right}
       <div class="stat"><div class="num" data-count="1240">1,240</div><div class="lbl" data-i18n="stats.students">תלמידות ותלמידים</div></div>
       <div class="stat"><div class="num" data-count="96">96</div><div class="lbl" data-i18n="stats.teachers">אנשי ונשות חינוך</div></div>
       <div class="stat"><div class="num" data-count="87" data-suffix="%">87%</div><div class="lbl" data-i18n="stats.bagrut">זכאות לבגרות</div></div>
-      <div class="stat"><div class="num" data-count="2">2</div><div class="lbl" data-i18n="stats.schools">בתי ספר פעילים · 6 בתכנון</div></div>
+      <div class="stat"><div class="num" data-count="2">2</div><div class="lbl"><span data-i18n="stats.schools">בתי ספר פעילים</span><span id="planNote"></span></div></div>
     </div>
   </div>
 </section>
@@ -741,8 +807,8 @@ html[dir="rtl"] .sel{text-align:right}
 <footer>
   <div class="wrap">
     <div class="foot">
-      <div><a class="brand" href="#top" style="margin:0 0 10px"><img src="assets/tamar-logo.jpg" alt=""><span data-i18n="brand">רשת תמר</span></a><p class="muted" data-i18n="f.about">מחוללים שינוי · تحدث التغيير · Igniting Change. רשת חינוך בנגב.</p></div>
-      <div><h4 data-i18n="f.net">הרשת</h4><a href="#alsana" data-sname="alsana">בית ספר אלסנא</a><a href="#hura" data-sname="hura">תמר מנהיגות – חורה</a><a href="#about" data-i18n="nav.about">אודות</a><a href="#schools" data-i18n="nav.schools">בתי הספר</a><a href="#data" data-i18n="nav.data">נתונים</a></div>
+      <div><a class="brand" href="#top" style="margin:0 0 10px"><img data-img="logo" src="assets/tamar-logo.jpg" alt=""><span data-i18n="brand">רשת תמר</span></a><p class="muted" data-i18n="f.about">מחוללים שינוי · تحدث التغيير · Igniting Change. רשת חינוך בנגב.</p></div>
+      <div><h4 data-i18n="f.net">הרשת</h4><span id="footSchools"></span><a href="#about" data-i18n="nav.about">אודות</a><a href="#schools" data-i18n="nav.schools">בתי הספר</a><a href="#data" data-i18n="nav.data">נתונים</a></div>
       <div><h4 data-i18n="f.join">הצטרפות</h4><a href="#enroll" data-i18n="nav.enroll">הרשמה</a><a href="#jobs" data-i18n="nav.jobs">דרושים</a><a href="#top" data-i18n="f.donate">תרומות</a></div>
       <div><h4 data-i18n="f.info">מידע</h4><a href="#top" data-i18n="f.a11y">הצהרת נגישות</a><a href="#top" data-i18n="f.privacy">מדיניות פרטיות</a><a href="#contact" data-i18n="nav.contact">צור קשר</a></div>
     </div>
@@ -770,8 +836,13 @@ html[dir="rtl"] .sel{text-align:right}
   <form class="bot-in" id="botForm"><input id="botInput" data-i18n-ph="bot.ph" placeholder="שאלו אותי משהו…"><button aria-label="שליחה">➤</button></form>
 </div>
 <div class="toast" id="toast"></div>
-
-<script>
+</div>
+<script type="application/json" id="site-state">null</script>
+<script id="site-main">
+/* capture this page's own source before anything changes it (used to publish edits) */
+const SRC={head:[...document.querySelectorAll("[data-keep]")].filter(e=>!e.closest("#shell")).map(e=>e.outerHTML).join("\n"),
+  shell:document.getElementById("shell").outerHTML, main:document.getElementById("site-main").outerHTML};
+const IMG={logo:""};
 /* =========================================================
    DATA — כל נתוני הדמה במקום אחד. להחלפה בנתונים הרשמיים.
    ========================================================= */
@@ -801,7 +872,7 @@ const T = {
 he:{demo:"גרסת הדגמה · כל הנתונים באתר הם נתוני דמה להמחשה בלבד",brand:"רשת תמר",brandSub:"מחוללים שינוי",
 "nav.about":"אודות","nav.schools":"בתי הספר","nav.data":"נתונים","nav.programs":"תכניות","nav.news":"חדשות","nav.jobs":"דרושים","nav.enroll":"הרשמה","nav.contact":"צור קשר",
 "hero.badge":"2026","hero.status":"בדרך להכרה כרשת חינוך רשמית","hero.t1":"חינוך שמצית","hero.t2":"שינוי בנגב","hero.lead":"רשת תמר מובילה חינוך של מצוינות, העצמה ונגישות בחברה הבדואית בנגב. מדע, אנגלית ומנהיגות – מהכיתה ועד האקדמיה, בשלוש שפות ובלב אחד.","hero.cta1":"גלו את בתי הספר ←","hero.cta2":"הנתונים שלנו","hero.f1":"שנות עשייה","hero.f2":"שפות · קהילה אחת",
-"stats.students":"תלמידות ותלמידים","stats.teachers":"אנשי ונשות חינוך","stats.bagrut":"זכאות לבגרות","stats.schools":"בתי ספר פעילים · 6 בתכנון",
+"stats.students":"תלמידות ותלמידים","stats.teachers":"אנשי ונשות חינוך","stats.bagrut":"זכאות לבגרות","stats.schools":"בתי ספר פעילים",
 "about.eye":"מי אנחנו","about.title":"מארגון שטח – לרשת חינוך","about.lead":"תמר נוסדה בשנת 2015 על ידי מחנכים ומנהיגים מהחברה הבדואית בנגב, מתוך אמונה שכל ילד וילדה ראויים לחינוך ברמה הגבוהה ביותר. אחרי עשור של תכניות מצוינות, אנחנו הופכים לרשת בתי ספר – עם מודל פדגוגי מוכח, נתונים שקופים וחזון ברור.",
 "p1.t":"מצוינות","p1.d":"מתמטיקה, פיזיקה ואנגלית ברמה מוגברת, מכיתה י' ועד שערי האוניברסיטה.","p2.t":"העצמה","p2.d":"מנהיגות, זהות ושייכות. בנות ובנים שמאמינים ביכולתם להוביל את הקהילה.","p3.t":"נגישות","p3.d":"חינוך איכותי קרוב לבית – בכל יישוב, בכל כפר, לכל משפחה בנגב.",
 "quote.t":"אנחנו לא מחכים לשינוי. אנחנו מציתים אותו – תלמיד אחרי תלמיד, כיתה אחרי כיתה, בית ספר אחרי בית ספר.","quote.by":"מתוך חזון רשת תמר",
@@ -826,7 +897,7 @@ s:{students:"תלמידים",teachers:"צוות",bagrut:"בגרות",opening:"פ
 ar:{demo:"نسخة تجريبية · جميع البيانات في الموقع للتوضيح فقط",brand:"شبكة تمار",brandSub:"نُحدِث التغيير",
 "nav.about":"من نحن","nav.schools":"المدارس","nav.data":"معطيات","nav.programs":"برامج","nav.news":"أخبار","nav.jobs":"وظائف","nav.enroll":"تسجيل","nav.contact":"اتصل بنا",
 "hero.badge":"2026","hero.status":"في الطريق للاعتراف كشبكة تعليمية رسمية","hero.t1":"تعليم يُشعل","hero.t2":"التغيير في النقب","hero.lead":"شبكة تمار تقود تعليمًا قائمًا على التميّز والتمكين وإتاحة الفرص في المجتمع البدوي في النقب. علوم وإنجليزية وقيادة – من الصف حتى الأكاديمية، بثلاث لغات وقلب واحد.","hero.cta1":"اكتشفوا مدارسنا ←","hero.cta2":"معطياتنا","hero.f1":"سنوات عطاء","hero.f2":"لغات · مجتمع واحد",
-"stats.students":"طالبات وطلاب","stats.teachers":"معلمات ومعلمون","stats.bagrut":"أهلية البجروت","stats.schools":"مدارس فعّالة · 6 قيد التخطيط",
+"stats.students":"طالبات وطلاب","stats.teachers":"معلمات ومعلمون","stats.bagrut":"أهلية البجروت","stats.schools":"مدارس فعّالة",
 "about.eye":"من نحن","about.title":"من مبادرة ميدانية – إلى شبكة تعليمية","about.lead":"تأسست تمار عام 2015 على يد مربّين وقادة من المجتمع البدوي في النقب، إيمانًا بأن كل طفل وطفلة يستحقون تعليمًا بأعلى مستوى. بعد عقد من برامج التميّز، نتحول إلى شبكة مدارس – بنموذج تربوي مُثبت ومعطيات شفافة ورؤية واضحة.",
 "p1.t":"التميّز","p1.d":"رياضيات وفيزياء وإنجليزية بمستوى مكثّف، من الصف العاشر حتى أبواب الجامعة.","p2.t":"التمكين","p2.d":"قيادة وهوية وانتماء. طالبات وطلاب يؤمنون بقدرتهم على قيادة المجتمع.","p3.t":"الإتاحة","p3.d":"تعليم نوعي قريب من البيت – في كل بلدة وقرية ولكل عائلة في النقب.",
 "quote.t":"نحن لا ننتظر التغيير. نحن نُشعله – طالبًا بعد طالب، صفًا بعد صف، مدرسة بعد مدرسة.","quote.by":"من رؤية شبكة تمار",
@@ -851,7 +922,7 @@ s:{students:"طلاب",teachers:"طاقم",bagrut:"بجروت",opening:"افتت
 en:{demo:"Demo version · all data on this site is placeholder data for illustration only",brand:"Tamar Network",brandSub:"Igniting Change",
 "nav.about":"About","nav.schools":"Schools","nav.data":"Data","nav.programs":"Programs","nav.news":"News","nav.jobs":"Careers","nav.enroll":"Enroll","nav.contact":"Contact",
 "hero.badge":"2026","hero.status":"On the way to official school-network recognition","hero.t1":"Education that ignites","hero.t2":"change in the Negev","hero.lead":"Tamar leads education built on excellence, empowerment and access for Bedouin society in the Negev. Science, English and leadership – from the classroom to the university, in three languages and one heart.","hero.cta1":"Explore our schools →","hero.cta2":"Our data","hero.f1":"years of impact","hero.f2":"languages · one community",
-"stats.students":"students","stats.teachers":"educators","stats.bagrut":"Bagrut eligibility","stats.schools":"active schools · 6 planned",
+"stats.students":"students","stats.teachers":"educators","stats.bagrut":"Bagrut eligibility","stats.schools":"active schools",
 "about.eye":"Who we are","about.title":"From grassroots – to a school network","about.lead":"Tamar was founded in 2015 by Bedouin educators and community leaders in the Negev, believing every child deserves the highest quality education. After a decade of excellence programs, we are becoming a network of schools – with a proven pedagogy, transparent data and a clear vision.",
 "p1.t":"Excellence","p1.d":"Advanced math, physics and English from 10th grade to the gates of university.","p2.t":"Empowerment","p2.d":"Leadership, identity and belonging. Girls and boys who believe they can lead their community.","p3.t":"Access","p3.d":"Quality education close to home – in every town and village, for every Negev family.",
 "quote.t":"We don't wait for change. We ignite it – student by student, class by class, school by school.","quote.by":"From the Tamar Network vision",
@@ -935,8 +1006,11 @@ const CONTENT = {
 /* ============ helpers ============ */
 let LANG = "he";
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
-const L = o => o[LANG] ?? o.he;
+const esc = v => String(v ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const Lr = o => o==null?"":typeof o==="string"?o:(o[LANG] ?? o.he ?? "");
+const L = o => esc(Lr(o));
 const S = k => T[LANG].s[k];
+const Sr = S;
 const fmt = n => n.toLocaleString(LANG==="ar"?"ar-EG":LANG==="en"?"en-US":"he-IL");
 const num = n => n.toLocaleString("en-US");
 function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2400)}
@@ -953,12 +1027,15 @@ function setLang(l){
   document.title = T[l].brand+" | "+T[l].brandSub;
   renderAll();
   if(typeof CUR!=="undefined"&&CUR) renderSchoolPage();
+  if(typeof EDIT!=="undefined"){applyImages();if(EDIT)setInline(true);updateBar()}
   if(typeof showStep==="function") try{showStep()}catch(e){}
 }
 
 /* ============ renderers ============ */
-function renderTicker(){const items=L(CONTENT.ticker);$("#ticker").innerHTML=[...items,...items].map(x=>`<span>${x}</span>`).join("")}
-function renderTimeline(){$("#timeline").innerHTML=CONTENT.timeline.map(x=>`<div class="tl ${x.c}"><div class="yr">${x.y}</div><p>${L(x.t)}</p></div>`).join("")}
+function renderTicker(){const items=CONTENT.ticker.map(L);$("#ticker").innerHTML=[...items,...items].map(x=>`<span>${x}</span>`).join("");dynBtn($(".ticker"),`<button type="button" class="ed-pill" data-ed-list="ticker">✎ ${E("manage")}</button>`)}
+function dynBtn(host,html){if(!host)return;let b=host.querySelector(":scope > .ed-dyn");if(!EDIT){if(b)b.remove();return}if(!b){b=document.createElement("span");b.className="ed-dyn";host.appendChild(b)}b.innerHTML=html}
+function renderHeroStats(){const act=DATA.schools.filter(s=>s.status==="active"),plan=DATA.schools.length-act.length;const v=[act.reduce((a,s)=>a+(+s.students||0),0),act.reduce((a,s)=>a+(+s.teachers||0),0),DATA.bagrut.tamar.at(-1)||0,act.length];$$(".stats .num").forEach((el,i)=>{el.dataset.count=v[i];el.textContent=num(v[i])+(el.dataset.suffix||"")});$("#planNote").textContent=plan?` · ${plan} ${Sr("plan")}`:""}
+function renderTimeline(){$("#timeline").innerHTML=CONTENT.timeline.map((x,i)=>`<div class="tl ${esc(x.c)} edi">${edb("tl",i)}<div class="yr">${esc(x.y)}</div><p>${L(x.t)}</p></div>`).join("")+eda("tl")}
 
 let schFilter="all", schQuery="", activeSchool=null;
 function proj(s){return {x:(s.lon-34.62)*1000, y:(31.46-s.lat)*1000}}
@@ -985,10 +1062,10 @@ function matchSchool(s){
 }
 function renderSchools(){
   const list=DATA.schools.filter(matchSchool);
-  $("#schoolList").innerHTML=list.length?list.map(s=>`<div class="card school ${s.status==="plan"?"plan":""}" data-id="${s.id}" tabindex="0" role="button">
+  $("#schoolList").innerHTML=(list.length?list.map(s=>`<div class="card school edi ${s.status==="plan"?"plan":""}" data-id="${esc(s.id)}" tabindex="0" role="button">${edb("school",DATA.schools.indexOf(s))}
     <div class="badge">${L(s.town).charAt(0)}</div>
-    <div><h3>${L(s.name)}</h3><div class="meta"><span class="tag ${s.status==="plan"?"plan":""}">${S(s.status)}</span><span>${L(s.level)}</span>${s.status==="active"?`<span>${fmt(s.students)} ${S("students")}</span>`:`<span>${S("opening")}: ${s.opening}</span>`}</div></div>
-    <div class="go">${s.status==="active"?SPT[LANG].open+" "+(LANG==="en"?"→":"←"):(LANG==="en"?"→":"←")}</div></div>`).join(""):`<div class="empty">${S("noRes")}</div>`;
+    <div><h3>${L(s.name)}</h3><div class="meta"><span class="tag ${s.status==="plan"?"plan":""}">${S(s.status)}</span><span>${L(s.level)}</span>${s.status==="active"?`<span>${fmt(s.students)} ${S("students")}</span>`:`<span>${S("opening")}: ${esc(s.opening)}</span>`}</div></div>
+    <div class="go">${s.status==="active"?SPT[LANG].open+" "+(LANG==="en"?"→":"←"):(LANG==="en"?"→":"←")}</div></div>`).join(""):`<div class="empty">${S("noRes")}</div>`)+eda("school");
   $$(".school").forEach(c=>{c.onclick=()=>openSchool(c.dataset.id);c.onkeydown=e=>{if(e.key==="Enter")openSchool(c.dataset.id)};c.onmouseenter=()=>hl(c.dataset.id,true);c.onmouseleave=()=>hl(c.dataset.id,false)});
   renderMap();
 }
@@ -1008,6 +1085,7 @@ function closeModal(){$("#modal").classList.remove("open")}
 let dashScope="all";
 function scopeFactor(){ if(dashScope==="all") return null; return DATA.schools.find(s=>s.id===dashScope); }
 function renderSeg(){
+  if(dashScope!=="all"&&!DATA.schools.some(s=>s.id===dashScope&&s.status==="active"))dashScope="all";
   const opts=[["all",S("all")],...DATA.schools.filter(s=>s.status==="active").map(s=>[s.id,L(s.short)])];
   $("#schoolSeg").innerHTML=opts.map(([k,v])=>`<button data-scope="${k}" aria-pressed="${dashScope===k}">${v}</button>`).join("");
   $$("#schoolSeg button").forEach(b=>b.onclick=()=>{dashScope=b.dataset.scope;renderDash()});
@@ -1026,12 +1104,15 @@ function renderKpis(){
     {l:S("kStudents"),v:fmt(students),d:"+18%",sp:[610,680,760,820,900,1050,1240].map(v=>s?Math.round(v*s.students/1240):v)},
     {l:S("kTeachers"),v:fmt(teachers),d:"+12",sp:[40,48,55,62,71,84,96]},
     {l:S("kBagrut"),v:bag+"%",d:"+2pt",sp:DATA.bagrut.tamar},
-    {l:S("kFive"),v:(s?(s.id==="alsana"?34:24):31)+"%",d:"+4pt",sp:[14,17,19,22,25,27,31]},
-    {l:S("kGirls"),v:"58%",d:"+6pt",sp:[38,41,45,48,52,55,58]}
+    {l:S("kFive"),v:esc(s?(s.fivePct??0):DATA.kpi.five)+"%",d:"+4pt",sp:[14,17,19,22,25,27,31]},
+    {l:S("kGirls"),v:esc(DATA.kpi.girls)+"%",d:"+6pt",sp:[38,41,45,48,52,55,58]}
   ];
   $("#kpis").innerHTML=k.map(x=>`<div class="card kpi"><div class="l">${x.l}</div><div class="v">${x.v}</div>${sparkline(x.sp)}<div class="d">▲ ${x.d} <span class="muted" style="font-weight:400">${S("vsLast")}</span></div></div>`).join("");
 }
 function drawLine(el,tableEl,Y,A,B,la,lb,title){
+  const n=Math.min(Y.length,A.length,B.length); Y=Y.slice(0,n);A=A.slice(0,n).map(Number);B=B.slice(0,n).map(Number);
+  if(n<2){el.innerHTML=`<p class="muted">—</p>`;tableEl.innerHTML="";return}
+  la=esc(la);lb=esc(lb);
   const W=640,H=300,m={t:20,r:64,b:30,l:36};
   const lo=Math.max(0,Math.floor((Math.min(...A,...B)-5)/10)*10);
   const x=i=>m.l+i*(W-m.l-m.r)/(Y.length-1), y=v=>m.t+(1-(v-lo)/(100-lo))*(H-m.t-m.b);
@@ -1059,6 +1140,8 @@ function drawLine(el,tableEl,Y,A,B,la,lb,title){
   tableEl.innerHTML=`<table class="data"><thead><tr><th>${S("year")}</th><th>${la}</th><th>${lb}</th></tr></thead><tbody>${Y.map((yr,i)=>`<tr><td>${yr}</td><td>${A[i]}%</td><td>${B[i]}%</td></tr>`).join("")}</tbody></table>`;
 }
 function drawBars(el,tableEl,d,keyLabel,unit,title){
+  if(!d.length){el.innerHTML=`<p class="muted">—</p>`;tableEl.innerHTML="";return}
+  d=d.map(r=>({k:esc(r.k),v:r.v}));
   const W=400,rowH=44,H=d.length*rowH+10,lw=110,mx=Math.max(...d.map(x=>x.v));
   const rtl=LANG!=="en";
   let g="";
@@ -1086,31 +1169,31 @@ function barChart(){
   drawBars($("#c2"),$("#c2-table"),d,S("subject"),S("students"),T[LANG]["c2.t"]);
 }
 function renderGoals(){
-  $("#goals").innerHTML=DATA.goals.map(g=>{const p=Math.round(g.v/g.t*100);return `<div class="goal-row"><span>${L(g.k)}</span><div class="bar-goal" title="${p}%"><span data-w="${p}"></span></div><b>${g.pct?g.v+"%":fmt(g.v)} <span class="muted" style="font-weight:400">/ ${g.pct?g.t+"%":fmt(g.t)}</span></b></div>`}).join("");
+  $("#goals").innerHTML=DATA.goals.map(g=>{const p=Math.max(0,Math.min(100,Math.round((+g.v||0)/(+g.t||1)*100)));return `<div class="goal-row"><span>${L(g.k)}</span><div class="bar-goal" title="${p}%"><span data-w="${p}"></span></div><b>${g.pct?g.v+"%":fmt(g.v)} <span class="muted" style="font-weight:400">/ ${g.pct?g.t+"%":fmt(g.t)}</span></b></div>`}).join("");
   requestAnimationFrame(()=>setTimeout(()=>$$("#goals .bar-goal span").forEach(s=>s.style.width=s.dataset.w+"%"),100));
 }
-function renderDash(){renderSeg();renderKpis();lineChart();barChart();renderGoals()}
+function renderDash(){renderSeg();renderKpis();lineChart();barChart();renderGoals();dynBtn($("#data .sec-head"),`<button type="button" class="ed-pill" data-ed-obj="net">✎ ${E("editData")}</button>`);dynBtn($("#c2").parentNode,`<button type="button" class="ed-pill ed-corner" data-ed-list="five">✎ ${E("manage")}</button>`);dynBtn($("#goals").parentNode,`<button type="button" class="ed-pill ed-corner" data-ed-list="goal">✎ ${E("manage")}</button>`)}
 
 /* ---- programs ---- */
 let progAge="all";
 function renderPrograms(){
   const ageName={el:T[LANG]["a.el"],mid:T[LANG]["a.mid"],hi:T[LANG]["a.hi"],adult:T[LANG]["a.adult"]};
-  $("#programs-grid").innerHTML=CONTENT.programs.filter(p=>progAge==="all"||p.a.includes(progAge)).map(p=>`<div class="card prog"><div class="ic">${p.ic}</div><h3>${L(p.t)}</h3><p>${L(p.d)}</p><div class="ages">${p.a.map(a=>`<span class="tag">${ageName[a]}</span>`).join("")}</div></div>`).join("");
+  $("#programs-grid").innerHTML=CONTENT.programs.map((p,i)=>[p,i]).filter(([p])=>progAge==="all"||(p.a||[]).includes(progAge)).map(([p,i])=>`<div class="card prog edi">${edb("program",i)}<div class="ic">${esc(p.ic)}</div><h3>${L(p.t)}</h3><p>${L(p.d)}</p><div class="ages">${(p.a||[]).map(a=>`<span class="tag">${ageName[a]||""}</span>`).join("")}</div></div>`).join("")+eda("program");
 }
-function renderStories(){$("#stories").innerHTML=CONTENT.stories.map(s=>`<div class="story reveal in"><p>${L(s.q)}</p><div class="who"><div class="av" style="background:${s.c}">${L(s.n).charAt(0)}</div><div><b>${L(s.n)}</b><small>${L(s.r)}</small></div></div></div>`).join("")}
+function renderStories(){$("#stories").innerHTML=CONTENT.stories.map((s,i)=>`<div class="story edi">${edb("story",i)}<p>${L(s.q)}</p><div class="who">${s.photo?`<img class="av" src="${s.photo}" alt="">`:`<div class="av" style="background:${esc(s.c||"#4a6b12")}">${esc(Lr(s.n).charAt(0))}</div>`}<div><b>${L(s.n)}</b><small>${L(s.r)}</small></div></div></div>`).join("")+eda("story")}
 function renderNews(){
-  $("#newsCards").innerHTML=CONTENT.news.map(n=>`<article class="card post"><div class="img" style="background:${n.g}"><span>${L(n.tag)}</span></div><div class="body"><small class="muted">${n.d}</small><h3>${L(n.t)}</h3><p>${L(n.p)}</p></div></article>`).join("");
-  $("#events").innerHTML=CONTENT.events.map(e=>`<div class="ev"><div class="date">${e.d}<small>${L(e.m)}</small></div><div><b>${L(e.t)}</b><span>${L(e.w)}</span></div></div>`).join("");
+  $("#newsCards").innerHTML=CONTENT.news.map((n,i)=>`<article class="card post edi">${edb("news",i)}<div class="img" style="background:${n.img?`url(${n.img}) center/cover`:esc(n.g||"linear-gradient(135deg,#4a6b12,#9dbb4a)")}"><span>${L(n.tag)}</span></div><div class="body"><small class="muted">${esc(n.d)}</small><h3>${L(n.t)}</h3><p>${L(n.p)}</p></div></article>`).join("")+eda("news");
+  $("#events").innerHTML=CONTENT.events.map((e,i)=>`<div class="ev edi">${edb("event",i)}<div class="date">${esc(e.d)}<small>${L(e.m)}</small></div><div><b>${L(e.t)}</b><span>${L(e.w)}</span></div></div>`).join("")+eda("event");
 }
 let jobCat="all";
 function renderJobs(){
   const cats=[["all",T[LANG]["j.all"]],...Object.entries(CONTENT.jobCats).map(([k,v])=>[k,L(v)])];
   $("#jobFilters").innerHTML=cats.map(([k,v])=>`<button class="chip" data-c="${k}" aria-pressed="${jobCat===k}">${v}</button>`).join("");
   $$("#jobFilters .chip").forEach(b=>b.onclick=()=>{jobCat=b.dataset.c;renderJobs()});
-  $("#jobList").innerHTML=CONTENT.jobs.filter(j=>jobCat==="all"||j.cat===jobCat).map(j=>{const s=DATA.schools.find(x=>x.id===j.s);return `<div class="card job"><div><h3>${L(j.t)}</h3><div class="meta"><span>📍 ${L(s.name)}</span><span>🕒 ${L(j.p)}</span></div></div><span class="tag ${s.status==="plan"?"plan":""}">${L(CONTENT.jobCats[j.cat])}</span><button class="btn btn-primary apply">${T[LANG]["j.apply"]}</button></div>`}).join("");
+  $("#jobList").innerHTML=CONTENT.jobs.map((j,i)=>[j,i]).filter(([j])=>jobCat==="all"||j.cat===jobCat).map(([j,i])=>{const s=DATA.schools.find(x=>x.id===j.s)||{name:{he:"—"},status:"plan"};return `<div class="card job edi">${edb("job",i)}<div><h3>${L(j.t)}</h3><div class="meta"><span>📍 ${L(s.name)}</span><span>🕒 ${L(j.p)}</span></div></div><span class="tag ${s.status==="plan"?"plan":""}">${L(CONTENT.jobCats[j.cat]||{he:j.cat})}</span><button class="btn btn-primary apply">${T[LANG]["j.apply"]}</button></div>`}).join("")+eda("job");
   $$(".apply").forEach(b=>b.onclick=()=>toast(S("applied")));
 }
-function renderPartners(){$("#partners").innerHTML=L(CONTENT.partners).map(p=>`<div class="partner">${p}</div>`).join("")}
+function renderPartners(){$("#partners").innerHTML=CONTENT.partners.map((p,i)=>`<div class="partner edi">${edb("partner",i)}${L(p)}</div>`).join("")+eda("partner")}
 let amount=500;
 function renderDonate(){
   $("#amounts").innerHTML=CONTENT.amounts.map(a=>`<button data-v="${a.v}" aria-pressed="${a.v===amount}">₪${num(a.v)}</button>`).join("");
@@ -1119,15 +1202,15 @@ function renderDonate(){
 }
 function renderSelectSchools(){$("#sc").innerHTML=DATA.schools.filter(s=>s.status==="active"||s.opening===2027).map(s=>`<option>${L(s.name)}${s.status==="plan"?` (${s.opening})`:""}</option>`).join("")}
 function renderBot(){
-  const qs=L(CONTENT.bot);
+  const qs=Lr(CONTENT.bot);
   $("#botQ").innerHTML=qs.map((q,i)=>`<button data-i="${i}">${q[0]}</button>`).join("");
   $$("#botQ button").forEach(b=>b.onclick=()=>botAsk(qs[b.dataset.i][0],qs[b.dataset.i][1]));
   if(!$("#botBody").children.length) addMsg(T[LANG]["bot.hi"],"b");
 }
 function addMsg(t,who){const d=document.createElement("div");d.className="msg "+who;d.textContent=t;$("#botBody").appendChild(d);$("#botBody").scrollTop=1e6}
 function botAsk(q,a){addMsg(q,"u");setTimeout(()=>addMsg(a,"b"),450)}
-function renderFootSchools(){$$("[data-sname]").forEach(a=>{const s=DATA.schools.find(x=>x.id===a.dataset.sname);if(s)a.textContent=L(s.name)})}
-function renderAll(){renderFootSchools();renderTicker();renderTimeline();renderSchools();renderDash();renderPrograms();renderStories();renderNews();renderJobs();renderPartners();renderDonate();renderSelectSchools();renderBot()}
+function renderFootSchools(){$("#footSchools").innerHTML=DATA.schools.filter(s=>s.status==="active").map(s=>`<a href="#${esc(s.id)}">${L(s.name)}</a>`).join("")}
+function renderAll(){renderHeroStats();renderFootSchools();renderTicker();renderTimeline();renderSchools();renderDash();renderPrograms();renderStories();renderNews();renderJobs();renderPartners();renderDonate();renderSelectSchools();renderBot()}
 
 /* =========================================================
    SCHOOL PAGES — עמוד מלא לכל בית ספר פעיל (נתוני דמה)
@@ -1189,59 +1272,60 @@ en:{back:"All network schools",open:"School page",overview:"Overview",data:"Data
 const GRADE_EN={"ז":"7","ח":"8","ט":"9","י":"10","יא":"11","יב":"12"}, GRADE_AR={"ז":"السابع","ח":"الثامن","ט":"التاسع","י":"العاشر","יא":"الحادي عشر","יב":"الثاني عشر"};
 const gradeName=g=>LANG==="en"?GRADE_EN[g]:LANG==="ar"?GRADE_AR[g]:(g.length>1?g[0]+"״"+g[1]:g+"׳");
 const hr=h=>!h?"":h.replace(/^(יב|יא|[זחטי])(\d)$/,(m,g,n)=>LANG==="he"?gradeName(g)+n:GRADE_EN[g]+"-"+n);
-const P=k=>SPT[LANG][k];
+const P=k=>SPT[LANG][k], Pr=P;
 let CUR=null, staffDept="all", staffQ="";
-const personName=(f,l)=>L(NAMES.f[f])+" "+L(NAMES.l[l]);
-const initials=(f,l)=>L(NAMES.f[f]).charAt(0)+L(NAMES.l[l]).charAt(0);
+const ini=o=>esc(Lr(o).trim().split(/\s+/).filter(Boolean).map(w=>w[0]).slice(0,2).join("")||"•");
 
 function renderSchoolPage(){
-  const s=DATA.schools.find(x=>x.id===CUR), d=SCHOOL_PAGES[CUR]; if(!s||!d) return;
+  const si=DATA.schools.findIndex(x=>x.id===CUR), s=DATA.schools[si], d=SCHOOL_PAGES[CUR]; if(!s||!d) return;
   const id=CUR, arrow=LANG==="en"?"←":"→";
-  document.title=L(s.name)+" | "+T[LANG].brand;
+  document.title=Lr(s.name)+" | "+T[LANG].brand;
   const secs=[["overview",P("overview")],["data",P("data")],["staff",P("staff")],["tracks",P("tracks")],["schedule",P("schedule")],["events",P("events")],["contact",P("contact")]];
   const stat=(v,l)=>`<div class="sv-stat"><b>${v}</b><span>${l}</span></div>`;
+  const hue=/^#[0-9a-f]{6}$/i.test(d.hue||"")?d.hue:"#4a6b12";
+  const cover=d.cover?`;background-image:linear-gradient(135deg,${hue}e0,#1f2a0cf2),url(${d.cover});background-size:cover;background-position:center`:"";
+  const pAv=d.principalPhoto?`<img class="av" src="${d.principalPhoto}" alt="">`:`<div class="av" style="background:${hue}">${ini(d.principal)}</div>`;
+  const seg=t=>`<div class="seg"><button aria-pressed="true" data-sview="chart" data-target="${t}">${T[LANG]["v.chart"]}</button><button aria-pressed="false" data-sview="table" data-target="${t}">${T[LANG]["v.table"]}</button></div>`;
   $("#schoolView").innerHTML=`
-  <div class="sv-hero" style="--sch:${d.hue}">
+  <div class="sv-hero" style="--sch:${hue}${cover}">
     <div class="wrap">
       <a class="sv-back" href="#schools">${arrow} ${P("back")}</a>
+      ${EDIT?`<div class="ed-inline"><button type="button" class="ed-pill" data-ed-item="school:${si}">✎ ${E("editGeneral")}</button><button type="button" class="ed-pill" data-ed-obj="schoolinfo">✎ ${E("editPage")}</button></div>`:""}
       <div class="sv-head">
-        <div class="sv-mono" aria-hidden="true">${L(s.short).replace(/^(ال|אל|Al-)/,"").charAt(0)}</div>
+        <div class="sv-mono" aria-hidden="true">${esc(Lr(s.short).replace(/^(ال|אל|Al-)/,"").charAt(0))}</div>
         <div>
-          <div class="sv-chips"><span class="sv-chip on">${S("active")}</span><span class="sv-chip">${L(s.level)}</span><span class="sv-chip">${L(s.town)}</span><span class="sv-chip">${P("joined")} ${s.founded}</span><span class="sv-chip">${P("symbol")} ${d.symbol}</span></div>
+          <div class="sv-chips"><span class="sv-chip on">${S("active")}</span><span class="sv-chip">${L(s.level)}</span><span class="sv-chip">${L(s.town)}</span><span class="sv-chip">${P("joined")} ${esc(s.founded??"")}</span>${d.symbol?`<span class="sv-chip">${P("symbol")} ${esc(d.symbol)}</span>`:""}</div>
           <h1>${L(s.name)}</h1>
-          <p class="sv-sub">${P("principal")}: <b>${personName(...d.principal)}</b> · ${L(s.focus)}</p>
+          <p class="sv-sub">${Lr(d.principal)?`${P("principal")}: <b>${L(d.principal)}</b> · `:""}${L(s.focus)}</p>
           <div class="cta"><a class="btn sv-btn" href="#enroll">${P("enroll")}</a><button class="btn sv-btn-ghost" id="tourBtn" type="button">${P("tour")}</button></div>
         </div>
       </div>
-      <div class="sv-stats">${stat(fmt(s.students),P("students"))}${stat(s.teachers,P("teachers"))}${stat(d.classes,P("classes"))}${stat(d.avgClass,P("avgClass"))}${stat(d.attendance+"%",P("attendance"))}${stat(s.bagrut+"%",P("bagrut"))}</div>
+      <div class="sv-stats">${stat(fmt(+s.students||0),P("students"))}${stat(esc(s.teachers??0),P("teachers"))}${stat(esc(d.classes??0),P("classes"))}${stat(esc(d.avgClass??0),P("avgClass"))}${stat(esc(d.attendance??0)+"%",P("attendance"))}${stat(esc(s.bagrut??0)+"%",P("bagrut"))}</div>
     </div>
   </div>
   <nav class="sv-nav" aria-label="${L(s.name)}"><div class="wrap">${secs.map(([k,v])=>`<a href="#${id}-${k}">${v}</a>`).join("")}</div></nav>
 
   <section id="${id}-overview" class="sv-sec"><div class="wrap sv-over">
     <div><span class="eyebrow">${P("vision")}</span><p class="sv-vision">${L(d.vision)}</p>
-      <div class="card sv-msg"><div class="av" style="background:${d.hue}">${initials(...d.principal)}</div><div><small class="muted">${P("fromPrincipal")}</small><p>${L(d.msg)}</p><b>${personName(...d.principal)}</b></div></div>
+      <div class="card sv-msg">${pAv}<div><small class="muted">${P("fromPrincipal")}</small><p>${L(d.msg)}</p><b>${L(d.principal)}</b></div></div>
     </div>
-    <div><span class="eyebrow">${P("pride")}</span><div class="sv-high">${d.highlights.map(h=>`<div class="card"><b><bdi dir="ltr">${h[0]}</bdi></b><span>${L(h[1])}</span></div>`).join("")}</div></div>
+    <div><span class="eyebrow">${P("pride")}</span><div class="sv-high">${d.highlights.map((h,i)=>`<div class="card edi">${edb("hl",i)}<b><bdi dir="ltr">${esc(h.v)}</bdi></b><span>${L(h.l)}</span></div>`).join("")}${eda("hl")}</div></div>
   </div></section>
 
   <section id="${id}-data" class="sv-sec alt"><div class="wrap">
     <span class="eyebrow">${P("data")}</span><h2>${P("dataLead")}</h2>
     <div class="grid charts">
-      <div class="card chart-card"><div class="chart-top"><div><h3>${P("bagrutT")}</h3><div class="sub">${P("bagrutS")}</div></div>
-        <div class="seg"><button aria-pressed="true" data-sview="chart" data-target="sc1">${T[LANG]["v.chart"]}</button><button aria-pressed="false" data-sview="table" data-target="sc1">${T[LANG]["v.table"]}</button></div></div>
+      <div class="card chart-card">${edo("sseries")}<div class="chart-top"><div><h3>${P("bagrutT")}</h3><div class="sub">${P("bagrutS")}</div></div>${seg("sc1")}</div>
         <div class="legend"><span><i style="background:var(--s1)"></i>${L(s.short)}</span><span><i style="background:var(--s2)"></i>${P("nat")}</span></div>
         <div class="chart" id="sc1"></div><div id="sc1-table" class="hidden"></div></div>
-      <div class="card chart-card"><div class="chart-top"><div><h3>${P("gradesT")}</h3><div class="sub">${P("gradesS")}</div></div>
-        <div class="seg"><button aria-pressed="true" data-sview="chart" data-target="sc2">${T[LANG]["v.chart"]}</button><button aria-pressed="false" data-sview="table" data-target="sc2">${T[LANG]["v.table"]}</button></div></div>
+      <div class="card chart-card">${edl("grade")}<div class="chart-top"><div><h3>${P("gradesT")}</h3><div class="sub">${P("gradesS")}</div></div>${seg("sc2")}</div>
         <div class="chart" id="sc2"></div><div id="sc2-table" class="hidden"></div></div>
     </div>
     <div class="grid sv-data2">
-      <div class="card chart-card"><div class="chart-top"><div><h3>${P("fiveT")}</h3><div class="sub">${P("fiveS")}</div></div>
-        <div class="seg"><button aria-pressed="true" data-sview="chart" data-target="sc3">${T[LANG]["v.chart"]}</button><button aria-pressed="false" data-sview="table" data-target="sc3">${T[LANG]["v.table"]}</button></div></div>
+      <div class="card chart-card">${edl("sfive")}<div class="chart-top"><div><h3>${P("fiveT")}</h3><div class="sub">${P("fiveS")}</div></div>${seg("sc3")}</div>
         <div class="chart" id="sc3"></div><div id="sc3-table" class="hidden"></div></div>
       <div class="card sv-rings">
-        ${[[d.attendance,P("attendance")],[s.bagrut,P("bagrut")],[d.girls,S("kGirls")]].map(([v,l])=>`<div class="ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="50" fill="none" stroke="var(--bg-2)" stroke-width="12"/><circle cx="60" cy="60" r="50" fill="none" stroke="var(--s1)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(v/100*314.16).toFixed(1)} 314.16" transform="rotate(-90 60 60)"/></svg><b>${v}%</b><span>${l}</span></div>`).join("")}
+        ${[[d.attendance,P("attendance")],[s.bagrut,P("bagrut")],[d.girls,S("kGirls")]].map(([v,l])=>{v=Math.max(0,Math.min(100,+v||0));return `<div class="ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="50" fill="none" stroke="var(--bg-2)" stroke-width="12"/><circle cx="60" cy="60" r="50" fill="none" stroke="var(--s1)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(v/100*314.16).toFixed(1)} 314.16" transform="rotate(-90 60 60)"/></svg><b>${v}%</b><span>${l}</span></div>`}).join("")}
       </div>
     </div>
   </div></section>
@@ -1255,61 +1339,63 @@ function renderSchoolPage(){
 
   <section id="${id}-tracks" class="sv-sec alt"><div class="wrap">
     <span class="eyebrow">${P("tracks")}</span><h2>${P("tracksLead")}</h2>
-    <div class="sv-tracks">${d.tracks.map(t=>`<div class="card"><div class="sv-track-top"><h3>${L(SUBJ[t[0]])}</h3><span class="tag">${t[2]} ${P("inTrack")}</span></div><p>${L(t[1])}</p></div>`).join("")}</div>
-    <h3 style="margin:34px 0 12px">${P("facilities")}</h3>
-    <div class="sv-fac">${L(d.facilities).map(f=>`<span>${f}</span>`).join("")}</div>
+    <div class="sv-tracks">${d.tracks.map((t,i)=>`<div class="card edi">${edb("track",i)}<div class="sv-track-top"><h3>${L(SUBJ[t.k]||{he:t.k})}</h3><span class="tag">${esc(t.n??0)} ${P("inTrack")}</span></div><p>${L(t.d)}</p></div>`).join("")}${eda("track")}</div>
+    <h3 style="margin:34px 0 12px">${P("facilities")} ${edl("fac",true)}</h3>
+    <div class="sv-fac">${d.facilities.map(f=>`<span>${L(f)}</span>`).join("")}</div>
   </div></section>
 
   <section id="${id}-schedule" class="sv-sec"><div class="wrap sv-sched">
     <div class="card sv-bells"><h3>${P("bells")}</h3><ol id="bells">${BELLS.map((b,i)=>`<li data-i="${i}" class="${b[0]==="b"||b[0]==="l"?"brk":""}"><span>${b[0]==="b"?P("brk"):b[0]==="l"?P("lunch"):P("period")+" "+b[0]}</span><time>${b[1]}–${b[2]}</time></li>`).join("")}</ol></div>
-    <div class="card sv-week"><h3>${P("week")} · ${P("klass")} ${hr(d.klass)}</h3>
+    <div class="card sv-week"><h3>${P("week")} · ${P("klass")} ${esc(hr(d.klass))}</h3>
       <div class="tt-wrap"><table class="tt"><thead><tr><th></th>${P("days").map(x=>`<th>${x}</th>`).join("")}</tr></thead>
-      <tbody>${d.week.map((row,i)=>`<tr><th>${i+1}</th>${row.map((c,j)=>`<td data-d="${j}" data-p="${i+1}">${c?L(SUBJ[c]):"–"}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>
+      <tbody>${d.week.map((row,i)=>`<tr><th>${i+1}</th>${row.map((c,j)=>`<td data-d="${j}" data-p="${i+1}">${EDIT?`<select class="tt-sel" data-tt="${i},${j}" aria-label="${P("period")} ${i+1}"><option value="">–</option>${Object.keys(SUBJ).map(k=>`<option value="${k}" ${k===c?"selected":""}>${L(SUBJ[k])}</option>`).join("")}</select>`:(c&&SUBJ[c]?L(SUBJ[c]):"–")}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>
   </div></section>
 
   <section id="${id}-events" class="sv-sec alt"><div class="wrap sv-evgrid">
-    <div class="card events"><h3>${P("upcoming")}</h3>${d.events.map(e=>`<div class="ev"><div class="date">${e[0]}<small>${L(e[1])}</small></div><div><b>${L(e[2])}</b><span>${L(s.short)} · ${e[3]}</span></div></div>`).join("")}</div>
-    <div class="card sv-board"><h3>${P("news")}</h3>${d.news.map(n=>`<div class="note"><time>${n[0]}</time><p>${L(n[1])}</p></div>`).join("")}</div>
+    <div class="card events"><h3>${P("upcoming")}</h3>${d.events.map((e,i)=>`<div class="ev edi">${edb("sev",i)}<div class="date">${esc(e.d)}<small>${L(e.m)}</small></div><div><b>${L(e.t)}</b><span>${L(s.short)} · ${esc(e.time)}</span></div></div>`).join("")}${eda("sev")}</div>
+    <div class="card sv-board"><h3>${P("news")}</h3>${d.news.map((n,i)=>`<div class="note edi">${edb("snews",i)}<time>${esc(n.date)}</time><p>${L(n.t)}</p></div>`).join("")}${eda("snews")}</div>
   </div></section>
 
   <section id="${id}-contact" class="sv-sec"><div class="wrap">
     <span class="eyebrow">${P("contact")}</span><h2>${L(s.name)}</h2>
     <div class="contact">
-      <div class="card"><h3>${P("phone")}</h3><p class="sel">${d.phone}</p><button class="chip copy" data-copy="${d.phone}" type="button">${P("copy")}</button></div>
-      <div class="card"><h3>${P("email")}</h3><p class="sel">${d.email}</p><button class="chip copy" data-copy="${d.email}" type="button">${P("copy")}</button></div>
-      <div class="card"><h3>${P("secretary")}</h3><p class="muted" style="margin:0 0 6px">${P("hours")}</p><p style="margin:0">${L(d.addr)}</p><a class="chip" style="display:inline-block;margin-top:10px;text-decoration:none" href="https://www.google.com/maps?q=${s.lat},${s.lon}" target="_blank" rel="noopener">${P("nav")}</a></div>
+      <div class="card"><h3>${P("phone")}</h3><p class="sel">${esc(d.phone)}</p><button class="chip copy" data-copy="${esc(d.phone)}" type="button">${P("copy")}</button></div>
+      <div class="card"><h3>${P("email")}</h3><p class="sel">${esc(d.email)}</p><button class="chip copy" data-copy="${esc(d.email)}" type="button">${P("copy")}</button></div>
+      <div class="card"><h3>${P("secretary")}</h3><p class="muted" style="margin:0 0 6px">${P("hours")}</p><p style="margin:0">${L(d.addr)}</p><a class="chip" style="display:inline-block;margin-top:10px;text-decoration:none" href="https://www.google.com/maps?q=${+s.lat},${+s.lon}" target="_blank" rel="noopener">${P("nav")}</a></div>
     </div>
   </div></section>`;
 
-  drawLine($("#sc1"),$("#sc1-table"),d.years,d.bagrut,d.national,L(s.short),P("nat"),P("bagrutT"));
-  drawBars($("#sc2"),$("#sc2-table"),d.grades.map(g=>({k:gradeName(g[0]),v:g[1]})),P("grade"),P("students"),P("gradesT"));
-  drawBars($("#sc3"),$("#sc3-table"),d.five.map(f=>({k:L(SUBJ[f[0]]),v:f[1]})),P("subject"),P("students"),P("fiveT"));
+  drawLine($("#sc1"),$("#sc1-table"),d.years,d.bagrut,d.national,Lr(s.short),P("nat"),P("bagrutT"));
+  drawBars($("#sc2"),$("#sc2-table"),d.grades.map(g=>({k:gradeName(g.g),v:+g.v||0})),P("grade"),P("students"),P("gradesT"));
+  drawBars($("#sc3"),$("#sc3-table"),d.five.map(f=>({k:Lr(SUBJ[f.k]||{he:f.k}),v:+f.v||0})),P("subject"),P("students"),P("fiveT"));
   renderStaff(); markNow();
   $("#tourBtn").onclick=()=>toast(P("tourOk"));
   $$("#schoolView [data-sview]").forEach(b=>b.onclick=()=>{const t=b.dataset.target;b.parentNode.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));$("#"+t).classList.toggle("hidden",b.dataset.sview==="table");$("#"+t+"-table").classList.toggle("hidden",b.dataset.sview!=="table")});
   $$("#schoolView .copy").forEach(b=>b.onclick=()=>{const v=b.dataset.copy;const done=()=>{b.textContent=P("copied");setTimeout(()=>b.textContent=P("copy"),1500)};
     try{navigator.clipboard.writeText(v).then(done,()=>{selectText(b.previousElementSibling);done()})}catch(e){selectText(b.previousElementSibling);done()}});
+  $$("#schoolView .tt-sel").forEach(sel=>sel.onchange=()=>{const [i,j]=sel.dataset.tt.split(",").map(Number);d.week[i][j]=sel.value;commit(false)});
 }
 function selectText(el){const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r)}
 function renderStaff(){
   const d=SCHOOL_PAGES[CUR]; if(!d) return;
-  const depts=["all",...new Set(d.staff.map(x=>x[2]))];
-  $("#staffFilters").innerHTML=depts.map(k=>`<button class="chip" type="button" data-dept="${k}" aria-pressed="${staffDept===k}">${k==="all"?P("allDepts"):L(DEPTS[k])}</button>`).join("")+`<input class="search" id="staffSearch" type="search" placeholder="${P("search")}" value="${staffQ.replace(/"/g,"&quot;")}">`;
+  const depts=["all",...new Set(d.staff.map(x=>x.dept))];
+  if(staffDept!=="all"&&!depts.includes(staffDept)) staffDept="all";
+  $("#staffFilters").innerHTML=depts.map(k=>`<button class="chip" type="button" data-dept="${k}" aria-pressed="${staffDept===k}">${k==="all"?P("allDepts"):L(DEPTS[k]||{he:k})}</button>`).join("")+`<input class="search" id="staffSearch" type="search" placeholder="${P("search")}" value="${esc(staffQ)}">`;
   $$("#staffFilters [data-dept]").forEach(b=>b.onclick=()=>{staffDept=b.dataset.dept;renderStaff()});
-  const inp=$("#staffSearch"); inp.oninput=e=>{staffQ=e.target.value;renderStaffGrid()};
+  $("#staffSearch").oninput=e=>{staffQ=e.target.value;renderStaffGrid()};
   renderStaffGrid();
 }
 function renderStaffGrid(){
   const d=SCHOOL_PAGES[CUR]; const q=staffQ.trim().toLowerCase();
-  const list=d.staff.filter(x=>(staffDept==="all"||x[2]===staffDept)&&(!q||["he","ar","en"].some(l=>(NAMES.f[x[0]][l]+" "+NAMES.l[x[1]][l]+" "+x[4].map(k=>SUBJ[k][l]).join(" ")).toLowerCase().includes(q))));
-  $("#staffCount").textContent=`${P("shown")} ${list.length} ${P("of")} ${d.staff.length}`;
+  const list=d.staff.map((x,i)=>[x,i]).filter(([x])=>(staffDept==="all"||x.dept===staffDept)&&(!q||["he","ar","en"].some(l=>((x.n[l]||"")+" "+(x.subj||[]).map(k=>SUBJ[k]?SUBJ[k][l]:"").join(" ")).toLowerCase().includes(q))));
+  $("#staffCount").textContent=`${Pr("shown")} ${list.length} ${Pr("of")} ${d.staff.length}`;
   const tint=["#4a6b12","#b7791f","#2f4508","#c2542a","#5f6f52"];
-  $("#staffGrid").innerHTML=list.length?list.map((x,i)=>{const lead=x[3]==="principal"||x[3]==="deputy";return `<article class="card person ${lead?"lead":""}">
-    <div class="av" style="background:${tint[(x[0]+x[1])%tint.length]}">${initials(x[0],x[1])}</div>
-    <div class="pinfo"><h3>${personName(x[0],x[1])}</h3><div class="role">${L(ROLES[x[3]])} · ${L(DEPTS[x[2]])}</div>
-      <div class="subs">${x[4].map(k=>`<span class="tag">${L(SUBJ[k])}</span>`).join("")}${x[6]?`<span class="tag plan">${P("homeroom")} ${hr(x[6])}</span>`:""}</div>
-      <div class="pfoot"><span class="muted">${x[5]} ${P("yrs")}</span><button class="chip pmsg" type="button">${P("msg")}</button></div></div></article>`}).join(""):`<div class="empty">${P("noStaff")}</div>`;
-  $$("#staffGrid .pmsg").forEach(b=>b.onclick=()=>toast(P("msgOk")));
+  $("#staffGrid").innerHTML=(list.length?list.map(([x,i])=>{const lead=x.role==="principal"||x.role==="deputy";return `<article class="card person edi ${lead?"lead":""}">${edb("staff",i)}
+    ${x.photo?`<img class="av" src="${x.photo}" alt="">`:`<div class="av" style="background:${tint[i%tint.length]}">${ini(x.n)}</div>`}
+    <div class="pinfo"><h3>${L(x.n)}</h3><div class="role">${L(ROLES[x.role]||{he:x.role})} · ${L(DEPTS[x.dept]||{he:x.dept})}</div>
+      <div class="subs">${(x.subj||[]).filter(k=>SUBJ[k]).map(k=>`<span class="tag">${L(SUBJ[k])}</span>`).join("")}${x.home?`<span class="tag plan">${P("homeroom")} ${esc(hr(x.home))}</span>`:""}</div>
+      <div class="pfoot"><span class="muted">${esc(x.yrs??0)} ${P("yrs")}</span><button class="chip pmsg" type="button">${P("msg")}</button></div></div></article>`}).join(""):`<div class="empty">${P("noStaff")}</div>`)+eda("staff");
+  $$("#staffGrid .pmsg").forEach(b=>b.onclick=()=>toast(Pr("msgOk")));
 }
 function markNow(){
   const n=new Date(), day=n.getDay(), mins=n.getHours()*60+n.getMinutes();
@@ -1320,6 +1406,7 @@ function markNow(){
 function route(){
   const h=decodeURIComponent(location.hash.slice(1)); const [id,sec]=h.split("-");
   const s=DATA.schools.find(x=>x.id===id&&x.status==="active"&&SCHOOL_PAGES[x.id]);
+  if(!s&&CUR===id) CUR=null;
   if(s){
     if(CUR!==id){CUR=id;staffDept="all";staffQ="";$("#top").hidden=true;$("#schoolView").hidden=false;renderSchoolPage();}
     const target=sec?document.getElementById(h):null;
@@ -1330,6 +1417,319 @@ function route(){
   }
 }
 window.addEventListener("hashchange",route);
+
+/* =========================================================
+   ADMIN — מצב עריכה: עריכת כל תוכן האתר ופרסום לכל הצופים
+   ========================================================= */
+let EDIT=false, CHANGES=0, ART=null, CAN_EDIT=false, ORIGINAL="", PICKING=null, FORM_IMG={}, PUB_RETRY=false;
+const DRAFT_KEY="tamar-admin-draft";
+const E=k=>(ED[LANG]&&ED[LANG][k])||ED.he[k]||k;
+const ED={
+he:{editMode:"מצב עריכה",hint:"לחצו על כל טקסט כדי לשנות אותו, או על ✎ ליד פריט. השינויים נשמרים כטיוטה עד שתפרסמו.",changes:"שינויים שלא פורסמו",noChanges:"אין שינויים",publish:"פרסום לכולם",publishing:"מפרסם…",discard:"ביטול שינויים",sure:"בטוח? לחצו שוב",done:"סיום עריכה",add:"הוספה",more:"ניהול",edit:"עריכה",del:"מחיקה",up:"למעלה",down:"למטה",save:"שמירה",cancel:"ביטול",back:"חזרה לרשימה",upload:"העלאת תמונה",remove:"הסרה",noImg:"אין תמונה",pick:"בחירה על המפה",pickHint:"לחצו על המפה כדי לקבוע את מיקום בית הספר",picked:"המיקום עודכן",changeImg:"החלפת תמונה",imgTooBig:"התמונה גדולה מדי",imgErr:"לא ניתן לקרוא את הקובץ. נסו תמונת JPG או PNG.",conflict:"מישהו אחר פרסם גרסה חדשה. הדף נטען מחדש והטיוטה שלכם נשמרה לשחזור.",readonly:"אין לכם הרשאת עריכה לאתר הזה.",tooBig:"האתר גדול מדי לפרסום. הסירו או הקטינו חלק מהתמונות.",slow:"פרסמתם הרבה בזמן קצר. המתינו רגע ונסו שוב.",invalid:"הפרסום נדחה בגלל תוכן לא תקין.",failed:"הפרסום נכשל. נסו שוב בעוד רגע.",draftFound:"נמצאה טיוטה שלא פורסמה",restore:"שחזור",drop:"מחיקה",restored:"הטיוטה שוחזרה",editGeneral:"פרטים כלליים",editPage:"פרטי העמוד",editData:"עריכת נתונים",manage:"ניהול רשימה",items:"פריטים",empty:"הרשימה ריקה",
+ k_school:"בית ספר",k_program:"תכנית",k_news:"כתבה",k_event:"אירוע",k_story:"סיפור",k_job:"משרה",k_tl:"אבן דרך",k_partner:"שותף",k_ticker:"מבזק",k_goal:"יעד",k_five:"מקצוע (5 יח')",k_staff:"איש/אשת צוות",k_track:"מגמה",k_hl:"הישג",k_sev:"אירוע",k_snews:"מודעה",k_grade:"שכבה",k_sfive:"מקצוע (5 יח')",k_fac:"מתקן",o_schoolinfo:"פרטי עמוד בית הספר",o_sseries:"נתוני בגרות של בית הספר",o_net:"נתוני הרשת",past:"עבר",now:"עכשיו",future:"חזון",menuTitle:"מה להוסיף או לנהל?",csvHint:"מספרים מופרדים בפסיקים",published:"פורסם. כל הצופים רואים את הגרסה החדשה."},
+ar:{editMode:"وضع التحرير",hint:"اضغطوا على أي نص لتغييره، أو على ✎ بجانب أي عنصر. تُحفظ التغييرات كمسودة حتى تنشروها.",changes:"تغييرات غير منشورة",noChanges:"لا توجد تغييرات",publish:"نشر للجميع",publishing:"جارٍ النشر…",discard:"إلغاء التغييرات",sure:"متأكد؟ اضغط مرة أخرى",done:"إنهاء التحرير",add:"إضافة",more:"إدارة",edit:"تحرير",del:"حذف",up:"أعلى",down:"أسفل",save:"حفظ",cancel:"إلغاء",back:"عودة للقائمة",upload:"رفع صورة",remove:"إزالة",noImg:"لا توجد صورة",pick:"اختيار على الخريطة",pickHint:"اضغطوا على الخريطة لتحديد موقع المدرسة",picked:"تم تحديث الموقع",changeImg:"تغيير الصورة",imgTooBig:"الصورة كبيرة جدًا",imgErr:"تعذّرت قراءة الملف. جرّبوا صورة JPG أو PNG.",conflict:"نشر شخص آخر نسخة جديدة. سيُعاد تحميل الصفحة ومسودتكم محفوظة للاستعادة.",readonly:"ليست لديكم صلاحية تحرير هذا الموقع.",tooBig:"الموقع كبير جدًا للنشر. احذفوا أو صغّروا بعض الصور.",slow:"نشرتم كثيرًا في وقت قصير. انتظروا قليلًا وحاولوا مجددًا.",invalid:"رُفض النشر بسبب محتوى غير صالح.",failed:"فشل النشر. حاولوا مجددًا بعد لحظة.",draftFound:"وُجدت مسودة غير منشورة",restore:"استعادة",drop:"حذف",restored:"تمت استعادة المسودة",editGeneral:"تفاصيل عامة",editPage:"تفاصيل الصفحة",editData:"تحرير المعطيات",manage:"إدارة القائمة",items:"عناصر",empty:"القائمة فارغة",
+ k_school:"مدرسة",k_program:"برنامج",k_news:"خبر",k_event:"فعالية",k_story:"قصة",k_job:"وظيفة",k_tl:"محطة",k_partner:"شريك",k_ticker:"خبر عاجل",k_goal:"هدف",k_five:"موضوع (5 وحدات)",k_staff:"فرد طاقم",k_track:"مسار",k_hl:"إنجاز",k_sev:"فعالية",k_snews:"إعلان",k_grade:"طبقة",k_sfive:"موضوع (5 وحدات)",k_fac:"مرفق",o_schoolinfo:"تفاصيل صفحة المدرسة",o_sseries:"معطيات البجروت للمدرسة",o_net:"معطيات الشبكة",past:"ماضٍ",now:"الآن",future:"رؤية",menuTitle:"ماذا تريدون أن تضيفوا أو تديروا؟",csvHint:"أرقام مفصولة بفواصل",published:"تم النشر. جميع الزوار يرون النسخة الجديدة."},
+en:{editMode:"Edit mode",hint:"Click any text to change it, or ✎ next to an item. Changes stay a draft until you publish.",changes:"unpublished changes",noChanges:"No changes",publish:"Publish to everyone",publishing:"Publishing…",discard:"Discard changes",sure:"Sure? Click again",done:"Done editing",add:"Add",more:"Manage",edit:"Edit",del:"Delete",up:"Move up",down:"Move down",save:"Save",cancel:"Cancel",back:"Back to list",upload:"Upload image",remove:"Remove",noImg:"No image",pick:"Pick on map",pickHint:"Click the map to set the school's location",picked:"Location updated",changeImg:"Change image",imgTooBig:"Image is too large",imgErr:"Couldn't read the file. Try a JPG or PNG image.",conflict:"Someone else published a new version. The page will reload and your draft is kept for restoring.",readonly:"You don't have edit access to this site.",tooBig:"The site is too large to publish. Remove or shrink some images.",slow:"You published a lot in a short time. Wait a moment and try again.",invalid:"Publishing was refused because of invalid content.",failed:"Publishing failed. Try again in a moment.",draftFound:"Unpublished draft found",restore:"Restore",drop:"Delete",restored:"Draft restored",editGeneral:"General details",editPage:"Page details",editData:"Edit data",manage:"Manage list",items:"items",empty:"The list is empty",
+ k_school:"School",k_program:"Program",k_news:"News story",k_event:"Event",k_story:"Story",k_job:"Job",k_tl:"Milestone",k_partner:"Partner",k_ticker:"Ticker item",k_goal:"Goal",k_five:"Subject (5 units)",k_staff:"Staff member",k_track:"Track",k_hl:"Highlight",k_sev:"Event",k_snews:"Notice",k_grade:"Grade",k_sfive:"Subject (5 units)",k_fac:"Facility",o_schoolinfo:"School page details",o_sseries:"School Bagrut data",o_net:"Network data",past:"Past",now:"Now",future:"Vision",menuTitle:"What do you want to add or manage?",csvHint:"Numbers separated by commas",published:"Published. Everyone sees the new version."}
+};
+const LB=(he,ar,en)=>({he,ar,en});
+const SP=()=>SCHOOL_PAGES[CUR];
+const OPT={
+  ages:()=>[["el",T[LANG]["a.el"]],["mid",T[LANG]["a.mid"]],["hi",T[LANG]["a.hi"]],["adult",T[LANG]["a.adult"]]],
+  jobCat:()=>Object.entries(CONTENT.jobCats).map(([k,v])=>[k,Lr(v)]),
+  school:()=>DATA.schools.map(s=>[s.id,Lr(s.name)]),
+  status:()=>[["active",Sr("active")],["plan",Sr("plan")]],
+  dept:()=>Object.entries(DEPTS).map(([k,v])=>[k,Lr(v)]),
+  role:()=>Object.entries(ROLES).map(([k,v])=>[k,Lr(v)]),
+  subj:()=>Object.entries(SUBJ).map(([k,v])=>[k,Lr(v)]),
+  grade:()=>["ז","ח","ט","י","יא","יב"].map(g=>[g,gradeName(g)]),
+  tlc:()=>[["",E("past")],["now",E("now")],["future",E("future")]]
+};
+const F={
+  name:LB("שם","الاسم","Name"),title:LB("כותרת","العنوان","Title"),desc:LB("תיאור","الوصف","Description"),date:LB("תאריך","التاريخ","Date"),day:LB("יום בחודש","اليوم","Day"),month:LB("חודש","الشهر","Month"),
+  place:LB("מקום ושעה","المكان والوقت","Place & time"),image:LB("תמונה","صورة","Image"),photo:LB("תמונה","صورة","Photo"),role:LB("תפקיד","الدور","Role"),text:LB("טקסט","النص","Text"),
+  students:LB("מספר תלמידים","عدد الطلاب","Students"),value:LB("ערך","القيمة","Value")
+};
+const SCH={
+  school:{list:()=>DATA.schools,fields:[["name","l10n",F.name],["short","l10n",LB("שם קצר","اسم قصير","Short name")],["town","l10n",LB("יישוב","البلدة","Town")],["level","l10n",LB("שכבות גיל","المراحل","Grades")],["focus","l10n",LB("תחומי התמחות","مجالات التخصص","Focus")],["status","select",LB("סטטוס","الحالة","Status"),"status"],["students","num",F.students],["teachers","num",LB("אנשי צוות","أفراد الطاقم","Staff")],["bagrut","num",LB("% זכאות לבגרות","% أهلية البجروت","Bagrut %")],["fivePct","num",LB("% 5 יח' מתמטיקה","% 5 وحدات رياضيات","5-unit math %")],["founded","num",LB("שנת הצטרפות לרשת","سنة الانضمام","Year joined")],["opening","num",LB("שנת פתיחה מתוכננת","سنة الافتتاح المخططة","Planned opening")],["lat","num",LB("קו רוחב","خط العرض","Latitude")],["lon","num",LB("קו אורך","خط الطول","Longitude")],["_pick","pick",LB("מיקום","الموقع","Location")]],
+    blank:()=>({id:"s"+Date.now().toString(36),status:"plan",lat:31.25,lon:34.95,students:0,teachers:0,bagrut:0,fivePct:0,founded:2026,opening:2027,name:LB("בית ספר חדש","مدرسة جديدة","New school"),short:LB("חדש","جديدة","New"),town:LB("","",""),level:LB("","",""),focus:LB("","","")})},
+  program:{list:()=>CONTENT.programs,fields:[["ic","text",LB("אייקון (אימוג׳י)","أيقونة (إيموجي)","Icon (emoji)")],["t","l10n",F.title],["d","l10nl",F.desc],["a","multi",LB("שכבות","المراحل","Ages"),"ages"]],blank:()=>({ic:"✨",a:["hi"],t:LB("תכנית חדשה","برنامج جديد","New program"),d:LB("","","")})},
+  news:{list:()=>CONTENT.news,fields:[["tag","l10n",LB("קטגוריה","التصنيف","Category")],["d","text",F.date],["t","l10n",F.title],["p","l10nl",F.text],["img","image",F.image]],blank:()=>({tag:LB("חדשות","أخبار","News"),d:today(),t:LB("כותרת חדשה","عنوان جديد","New headline"),p:LB("","",""),g:"linear-gradient(135deg,#4a6b12,#9dbb4a)",img:""})},
+  event:{list:()=>CONTENT.events,fields:[["d","text",F.day],["m","l10n",F.month],["t","l10n",F.title],["w","l10n",F.place]],blank:()=>({d:"01",m:LB("ינו׳","ك2","Jan"),t:LB("אירוע חדש","فعالية جديدة","New event"),w:LB("","","")})},
+  story:{list:()=>CONTENT.stories,fields:[["n","l10n",F.name],["r","l10n",F.role],["q","l10nl",LB("ציטוט","الاقتباس","Quote")],["photo","image",F.photo]],blank:()=>({n:LB("","",""),r:LB("","",""),q:LB("","",""),c:"#4a6b12",photo:""})},
+  job:{list:()=>CONTENT.jobs,fields:[["t","l10n",F.title],["cat","select",LB("תחום","المجال","Category"),"jobCat"],["s","select",LB("בית ספר","المدرسة","School"),"school"],["p","l10n",LB("היקף משרה","نطاق الوظيفة","Scope")]],blank:()=>({cat:"teach",s:(DATA.schools[0]||{}).id||"",t:LB("משרה חדשה","وظيفة جديدة","New job"),p:LB("משרה מלאה","وظيفة كاملة","Full time")})},
+  tl:{list:()=>CONTENT.timeline,fields:[["y","text",LB("שנה","السنة","Year")],["t","l10n",F.text],["c","select",LB("סוג","النوع","Type"),"tlc"]],blank:()=>({y:String(new Date().getFullYear()),c:"",t:LB("","","")})},
+  partner:{list:()=>CONTENT.partners,self:true,fields:[["_","l10n",F.name]],blank:()=>LB("שותף חדש","شريك جديد","New partner")},
+  ticker:{list:()=>CONTENT.ticker,self:true,fields:[["_","l10n",F.text]],blank:()=>LB("","","")},
+  goal:{list:()=>DATA.goals,fields:[["k","l10n",F.name],["v","num",LB("מצב נוכחי","الوضع الحالي","Current")],["t","num",LB("יעד","الهدف","Target")],["pct","bool",LB("באחוזים","بالنسبة المئوية","Percentage")]],blank:()=>({k:LB("יעד חדש","هدف جديد","New goal"),v:0,t:100,pct:false})},
+  five:{list:()=>DATA.fiveUnits,fields:[["k","l10n",LB("מקצוע","الموضوع","Subject")],["v","num",F.students]],blank:()=>({k:LB("","",""),v:0})},
+  staff:{list:()=>SP().staff,fields:[["n","l10n",F.name],["role","select",F.role,"role"],["dept","select",LB("מחלקה","القسم","Department"),"dept"],["subj","multi",LB("מקצועות","المواضيع","Subjects"),"subj"],["yrs","num",LB("שנים בבית הספר","سنوات في المدرسة","Years at school")],["home","text",LB("מחנך/ת כיתה (למשל י1)","مربي صف (مثلًا י1)","Homeroom (e.g. י1)")],["photo","image",F.photo]],blank:()=>({n:LB("","",""),role:"teacher",dept:"math",subj:[],yrs:1,home:"",photo:""})},
+  track:{list:()=>SP().tracks,fields:[["k","select",LB("מקצוע","الموضوع","Subject"),"subj"],["d","l10nl",F.desc],["n","num",F.students]],blank:()=>({k:"math",d:LB("","",""),n:0})},
+  hl:{list:()=>SP().highlights,fields:[["v","text",F.value],["l","l10n",F.text]],blank:()=>({v:"0",l:LB("","","")})},
+  sev:{list:()=>SP().events,fields:[["d","text",F.day],["m","l10n",F.month],["t","l10n",F.title],["time","text",LB("שעה","الساعة","Time")]],blank:()=>({d:"01",m:LB("ינו׳","ك2","Jan"),t:LB("אירוע חדש","فعالية جديدة","New event"),time:"08:00"})},
+  snews:{list:()=>SP().news,fields:[["date","text",F.date],["t","l10nl",F.text]],blank:()=>({date:today().slice(0,5),t:LB("","","")})},
+  grade:{list:()=>SP().grades,fields:[["g","select",LB("שכבה","الطبقة","Grade"),"grade"],["v","num",F.students]],blank:()=>({g:"ז",v:0})},
+  sfive:{list:()=>SP().five,fields:[["k","select",LB("מקצוע","الموضوع","Subject"),"subj"],["v","num",F.students]],blank:()=>({k:"math",v:0})},
+  fac:{list:()=>SP().facilities,self:true,fields:[["_","l10n",F.name]],blank:()=>LB("","","")}
+};
+const OBJ={
+  schoolinfo:{get:()=>SP(),fields:[["principal","l10n",LB("שם המנהל/ת","اسم المدير/ة","Principal name")],["principalPhoto","image",LB("תמונת המנהל/ת","صورة المدير/ة","Principal photo")],["cover","image",LB("תמונת רקע לראש העמוד","صورة خلفية لرأس الصفحة","Header background image")],["hue","color",LB("צבע בית הספר","لون المدرسة","School color")],["symbol","text",LB("סמל מוסד","رمز المؤسسة","School ID")],["phone","text",LB("טלפון","هاتف","Phone")],["email","text",LB("דוא\"ל","بريد إلكتروني","Email")],["addr","l10n",LB("כתובת","العنوان","Address")],["classes","num",LB("כיתות","صفوف","Classes")],["avgClass","num",LB("ממוצע תלמידים בכיתה","معدل الطلاب في الصف","Average class size")],["attendance","num",LB("% נוכחות","% حضور","Attendance %")],["girls","num",LB("% בנות במגמות מדע","% فتيات في العلوم","Girls in STEM %")],["vision","l10nl",LB("החזון","الرؤية","Vision")],["msg","l10nl",LB("דבר המנהל/ת","كلمة المدير/ة","Principal's message")],["klass","text",LB("כיתה במערכת לדוגמה (למשל י1)","الصف في البرنامج النموذجي","Sample timetable class")]]},
+  sseries:{get:()=>SP(),fields:[["years","csv",LB("שנים","السنوات","Years")],["bagrut","csv",LB("% בגרות בבית הספר","% البجروت في المدرسة","School Bagrut %")],["national","csv",LB("% ממוצע ארצי","% المعدل القطري","National average %")]]},
+  net:{get:()=>DATA,fields:[["years","csv",LB("שנים","السنوات","Years")],["bagrut.tamar","csv",LB("% בגרות ברשת","% البجروت في الشبكة","Network Bagrut %")],["bagrut.national","csv",LB("% ממוצע ארצי","% المعدل القطري","National average %")],["kpi.five","num",LB("% 5 יח' מתמטיקה ברשת","% 5 وحدات رياضيات","Network 5-unit math %")],["kpi.girls","num",LB("% בנות במגמות מדע","% فتيات في العلوم","Girls in STEM %")]]}
+};
+function today(){const d=new Date();return String(d.getDate()).padStart(2,"0")+"."+String(d.getMonth()+1).padStart(2,"0")+"."+d.getFullYear()}
+const getPath=(o,p)=>p.split(".").reduce((a,k)=>a==null?a:a[k],o);
+function setPath(o,p,v){const ks=p.split(".");const last=ks.pop();const t=ks.reduce((a,k)=>(a[k]=a[k]||{}),o);t[last]=v}
+
+/* ---- inline edit affordances used by renderers ---- */
+function edb(k,i){return EDIT?`<div class="ed-bar" data-k="${k}" data-i="${i}"><button type="button" data-ed="edit" title="${E("edit")}" aria-label="${E("edit")}">✎</button><button type="button" data-ed="up" title="${E("up")}" aria-label="${E("up")}">↑</button><button type="button" data-ed="down" title="${E("down")}" aria-label="${E("down")}">↓</button><button type="button" data-ed="del" class="del" title="${E("del")}" aria-label="${E("del")}">✕</button></div>`:""}
+function eda(k){return EDIT?`<button type="button" class="ed-add" data-ed-add="${k}">+ ${E("add")} ${E("k_"+k)}</button>`:""}
+function edo(o){return EDIT?`<button type="button" class="ed-pill ed-corner" data-ed-obj="${o}">✎ ${E("editData")}</button>`:""}
+function edl(k,inline){return EDIT?`<button type="button" class="ed-pill ${inline?"":"ed-corner"}" data-ed-list="${k}">✎ ${E("manage")}</button>`:""}
+
+/* ---- state ---- */
+function normalize(){
+  const arr=o=>Array.isArray(o)?o:((o&&o.he)||[]).map((_,i)=>({he:o.he[i]||"",ar:(o.ar||[])[i]||"",en:(o.en||[])[i]||""}));
+  CONTENT.ticker=arr(CONTENT.ticker); CONTENT.partners=arr(CONTENT.partners);
+  DATA.kpi=DATA.kpi||{five:31,girls:58};
+  DATA.schools.forEach(s=>{if(s.fivePct==null) s.fivePct=s.id==="alsana"?34:s.id==="hura"?24:0; s.short=s.short||s.town||LB("","",""); s.focus=s.focus||LB("","",""); s.level=s.level||LB("","",""); s.town=s.town||LB("","","");
+    if(s.status==="active"&&!SCHOOL_PAGES[s.id]) SCHOOL_PAGES[s.id]=blankPage(s)});
+  const nm=(f,l)=>({he:NAMES.f[f].he+" "+NAMES.l[l].he,ar:NAMES.f[f].ar+" "+NAMES.l[l].ar,en:NAMES.f[f].en+" "+NAMES.l[l].en});
+  Object.values(SCHOOL_PAGES).forEach(d=>{
+    if(Array.isArray(d.principal)) d.principal=nm(d.principal[0],d.principal[1]);
+    d.principal=d.principal||LB("","","");
+    d.staff=(d.staff||[]).map(x=>Array.isArray(x)?{n:nm(x[0],x[1]),dept:x[2],role:x[3],subj:x[4],yrs:x[5],home:x[6],photo:""}:x);
+    d.highlights=(d.highlights||[]).map(h=>Array.isArray(h)?{v:h[0],l:h[1]}:h);
+    d.tracks=(d.tracks||[]).map(t=>Array.isArray(t)?{k:t[0],d:t[1],n:t[2]}:t);
+    d.events=(d.events||[]).map(e=>Array.isArray(e)?{d:e[0],m:e[1],t:e[2],time:e[3]}:e);
+    d.news=(d.news||[]).map(n=>Array.isArray(n)?{date:n[0],t:n[1]}:n);
+    d.grades=(d.grades||[]).map(g=>Array.isArray(g)?{g:g[0],v:g[1]}:g);
+    d.five=(d.five||[]).map(f=>Array.isArray(f)?{k:f[0],v:f[1]}:f);
+    d.facilities=arr(d.facilities||[]);
+    d.week=d.week||Array.from({length:8},()=>["","","","",""]);
+    ["years","bagrut","national"].forEach(k=>d[k]=d[k]||[]);
+  });
+}
+function blankPage(s){return {symbol:"",principal:LB("","",""),principalPhoto:"",hue:"#4a6b12",phone:"",email:"",addr:LB("","",""),classes:0,avgClass:0,attendance:0,girls:0,years:[2025,2026],bagrut:[s.bagrut||0,s.bagrut||0],national:[73,73],grades:[],five:[],vision:LB("","",""),msg:LB("","",""),highlights:[],tracks:[],facilities:[],staff:[],week:Array.from({length:8},()=>["","","","",""]),klass:"י1",events:[],news:[],cover:""}}
+const getState=()=>({v:1,DATA,CONTENT,SCHOOL_PAGES,T,IMG});
+function applyState(st){
+  if(!st||typeof st!=="object") return;
+  if(st.DATA) Object.assign(DATA,st.DATA);
+  if(st.CONTENT) Object.assign(CONTENT,st.CONTENT);
+  if(st.SCHOOL_PAGES){Object.keys(SCHOOL_PAGES).forEach(k=>{if(!(k in st.SCHOOL_PAGES)) delete SCHOOL_PAGES[k]});Object.assign(SCHOOL_PAGES,st.SCHOOL_PAGES)}
+  if(st.T) ["he","ar","en"].forEach(l=>{if(st.T[l]) Object.assign(T[l],st.T[l])});
+  if(st.IMG) Object.assign(IMG,st.IMG);
+  normalize();
+}
+function buildHTML(st){
+  const json=JSON.stringify(st).replace(/</g,"\\u003c").replace(/[\u2028\u2029]/g,c=>c==="\u2028"?"\\u2028":"\\u2029");
+  return "<!doctype html>\n<html lang=\"he\" dir=\"rtl\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n<title>רשת תמר</title>\n"
+    +SRC.head+"\n</head>\n<body>\n"+SRC.shell+"\n<script type=\"application/json\" id=\"site-state\">"+json+"<\/script>\n"+SRC.main+"\n</body>\n</html>\n";
+}
+function saveDraft(){try{sessionStorage.setItem(DRAFT_KEY,JSON.stringify(getState()))}catch(e){}}
+function clearDraft(){try{sessionStorage.removeItem(DRAFT_KEY)}catch(e){}}
+function applyImages(){
+  if(IMG.logo){$$('[data-img="logo"]').forEach(i=>{i.src=IMG.logo});const fav=document.querySelector('link[rel="icon"]');if(fav)fav.href=IMG.logo}
+}
+function rerender(){renderAll();if(CUR)renderSchoolPage();applyImages();if(EDIT)setInline(true);updateBar()}
+function commit(full=true){CHANGES++;saveDraft();if(full)rerender();else updateBar()}
+
+/* ---- inline text ---- */
+function setInline(on){
+  $$("#shell [data-i18n]").forEach(el=>{
+    if(el.closest("header.top,.lang,.form-nav,.fab,.panel,.copy")) return;
+    if(on){el.setAttribute("contenteditable","plaintext-only");if(el.contentEditable!=="plaintext-only")el.setAttribute("contenteditable","true");el.classList.add("ed-text");el.spellcheck=false}
+    else{el.removeAttribute("contenteditable");el.classList.remove("ed-text")}
+  });
+  $$('[data-img="logo"]').forEach(i=>i.classList.toggle("ed-img",on));
+}
+document.addEventListener("input",e=>{const el=e.target.closest&&e.target.closest(".ed-text[data-i18n]");if(!el||!EDIT)return;T[LANG][el.dataset.i18n]=el.textContent;el.dataset.dirty="1"});
+document.addEventListener("focusout",e=>{const el=e.target.closest&&e.target.closest(".ed-text[data-i18n]");if(!el||el.dataset.dirty!=="1")return;delete el.dataset.dirty;
+  $$(`[data-i18n="${el.dataset.i18n}"]`).forEach(o=>{if(o!==el)o.textContent=el.textContent});commit(false)});
+document.addEventListener("keydown",e=>{if(EDIT&&e.key==="Enter"&&e.target.classList&&e.target.classList.contains("ed-text")){e.preventDefault();e.target.blur()}});
+
+/* ---- images ---- */
+function readImage(file,max){
+  return new Promise((res,rej)=>{
+    if(!file||!/^image\//.test(file.type)) return rej(new Error("type"));
+    const url=URL.createObjectURL(file); const im=new Image();
+    im.onload=()=>{const sc=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement("canvas");c.width=Math.max(1,Math.round(im.width*sc));c.height=Math.max(1,Math.round(im.height*sc));
+      const x=c.getContext("2d");const keepAlpha=/png|svg|webp|gif/.test(file.type);if(!keepAlpha){x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height)}
+      x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);res(c.toDataURL(keepAlpha?"image/png":"image/jpeg",0.84))};
+    im.onerror=()=>{URL.revokeObjectURL(url);rej(new Error("read"))}; im.src=url;
+  });
+}
+function pickFile(cb,max){const i=document.createElement("input");i.type="file";i.accept="image/*";i.onchange=async()=>{try{cb(await readImage(i.files[0],max))}catch(e){toast(E("imgErr"))}};i.click()}
+
+/* ---- forms ---- */
+function fieldHTML(f,val,idx){
+  const [k,t,lab,opt]=f, id="edf"+idx, label=L(lab);
+  const tags={he:"עב",ar:"ع",en:"EN"};
+  if(t==="l10n"||t==="l10nl") return `<div class="field"><label>${label}</label><div class="l10n">${["he","ar","en"].map(l=>`<div class="lrow"><span>${tags[l]}</span>${t==="l10n"?`<input data-f="${idx}" data-l="${l}" dir="${l==="en"?"ltr":"rtl"}" value="${esc((val||{})[l]??"")}">`:`<textarea rows="3" data-f="${idx}" data-l="${l}" dir="${l==="en"?"ltr":"rtl"}">${esc((val||{})[l]??"")}</textarea>`}</div>`).join("")}</div></div>`;
+  if(t==="select") return `<div class="field"><label for="${id}">${label}</label><select id="${id}" data-f="${idx}">${OPT[opt]().map(([v,n])=>`<option value="${esc(v)}" ${v===val?"selected":""}>${esc(n)}</option>`).join("")}</select></div>`;
+  if(t==="multi") return `<div class="field"><label>${label}</label><div class="multi">${OPT[opt]().map(([v,n])=>`<label class="mchip"><input type="checkbox" data-f="${idx}" value="${esc(v)}" ${(val||[]).includes(v)?"checked":""}><span>${esc(n)}</span></label>`).join("")}</div></div>`;
+  if(t==="bool") return `<div class="field"><label class="mchip"><input type="checkbox" id="${id}" data-f="${idx}" ${val?"checked":""}><span>${label}</span></label></div>`;
+  if(t==="image"){FORM_IMG[idx]=val||"";return `<div class="field"><label>${label}</label><div class="imgf"><div class="imgprev" data-prev="${idx}">${val?`<img src="${val}" alt="">`:`<span>${E("noImg")}</span>`}</div><button type="button" class="chip" data-img-up="${idx}">${E("upload")}</button><button type="button" class="chip" data-img-clear="${idx}">${E("remove")}</button></div></div>`}
+  if(t==="pick") return `<div class="field"><label>${label}</label><button type="button" class="chip" data-pick="1">📍 ${E("pick")}</button></div>`;
+  if(t==="csv") return `<div class="field"><label for="${id}">${label} <small class="muted">(${E("csvHint")})</small></label><input id="${id}" data-f="${idx}" dir="ltr" value="${esc((val||[]).join(", "))}"></div>`;
+  if(t==="color") return `<div class="field"><label for="${id}">${label}</label><input id="${id}" data-f="${idx}" type="color" value="${esc(/^#[0-9a-f]{6}$/i.test(val||"")?val:"#4a6b12")}"></div>`;
+  return `<div class="field"><label for="${id}">${label}</label><input id="${id}" data-f="${idx}" ${t==="num"?'type="number" step="any" dir="ltr"':""} value="${esc(val??"")}"></div>`;
+}
+function readForm(fields,target){
+  fields.forEach((f,idx)=>{const [k,t]=f;let v;const q=$(`#edForm [data-f="${idx}"]`);
+    if(t==="pick") return;
+    if(t==="l10n"||t==="l10nl"){v={};$$(`#edForm [data-f="${idx}"][data-l]`).forEach(i=>v[i.dataset.l]=i.value.trim())}
+    else if(t==="num"){v=q.value===""?null:Number(q.value)}
+    else if(t==="csv"){v=q.value.split(/[,،]/).map(s=>s.trim()).filter(s=>s!=="").map(Number).filter(n=>!isNaN(n))}
+    else if(t==="multi"){v=$$(`#edForm input[data-f="${idx}"]:checked`).map(i=>i.value)}
+    else if(t==="bool"){v=q.checked}
+    else if(t==="image"){v=FORM_IMG[idx]||""}
+    else v=q.value;
+    setPath(target,k,v)});
+}
+function openModal(html,wide){$("#modalBody").innerHTML=html;const box=$("#modal .box");box.classList.toggle("ed-box",!!wide);$("#modal").classList.add("open");const first=$("#modalBody input,#modalBody select,#modalBody textarea,#modalBody button");if(first)first.focus()}
+function formShell(title,fields,obj,extra){
+  FORM_IMG={};
+  return `<h2 class="ed-title">${title}</h2><form id="edForm" novalidate>${fields.map((f,i)=>fieldHTML(f,f[0]==="_"?obj:getPath(obj,f[0]),i)).join("")}
+    <div class="ed-actions">${extra||""}<span style="flex:1"></span><button type="button" class="btn btn-ghost" id="edCancel">${E("cancel")}</button><button type="submit" class="btn btn-primary">${E("save")}</button></div></form>`;
+}
+function wireForm(fields,onSave,onCancel){
+  const form=$("#edForm");
+  form.onsubmit=e=>{e.preventDefault();onSave()};
+  $("#edCancel").onclick=onCancel||closeModal;
+  $$("#edForm [data-img-up]").forEach(b=>b.onclick=()=>{const idx=b.dataset.imgUp;const isCover=fields[idx][0]==="cover";pickFile(url=>{FORM_IMG[idx]=url;$(`[data-prev="${idx}"]`).innerHTML=`<img src="${url}" alt="">`},isCover?1600:900)});
+  $$("#edForm [data-img-clear]").forEach(b=>b.onclick=()=>{const idx=b.dataset.imgClear;FORM_IMG[idx]="";$(`[data-prev="${idx}"]`).innerHTML=`<span>${E("noImg")}</span>`});
+  const pick=$("#edForm [data-pick]"); if(pick) pick.onclick=()=>{PICKING=true;$("#modal").classList.remove("open");location.hash="schools";setTimeout(()=>{document.getElementById("map").scrollIntoView({block:"center"})},60);toast(E("pickHint"))};
+}
+function openItem(k,i,fromList){
+  const sc=SCH[k], list=sc.list(), isNew=i<0;
+  const item=isNew?sc.blank():JSON.parse(JSON.stringify(list[i]));
+  const wrap=sc.self?{_:item}:item;
+  const back=fromList?()=>openList(k):closeModal;
+  openModal(formShell(`${isNew?E("add"):E("edit")} · ${E("k_"+k)}`,sc.fields,sc.self?item:item,
+    isNew?"":`<button type="button" class="btn btn-ghost ed-danger" id="edDel">${E("del")}</button>`),true);
+  wireForm(sc.fields,()=>{
+    readForm(sc.fields,wrap);
+    const val=sc.self?wrap._:wrap;
+    if(isNew) list.push(val); else list[i]=val;
+    afterSave(k,val,isNew);
+    commit(); fromList?openList(k):closeModal();
+  },back);
+  const del=$("#edDel"); if(del) armDelete(del,()=>{removeItem(k,i);fromList?openList(k):closeModal()});
+}
+function openObj(o){
+  const def=OBJ[o], target=def.get(); const copy=JSON.parse(JSON.stringify(target));
+  openModal(formShell(E("o_"+o),def.fields,copy),true);
+  wireForm(def.fields,()=>{readForm(def.fields,copy);Object.assign(target,copy);commit();closeModal()});
+}
+function openList(k){
+  const sc=SCH[k], list=sc.list();
+  const label=x=>{const v=sc.self?x:x[sc.fields[0][0]];const s=typeof v==="object"&&v?Lr(v):String(v??"");const sub=sc.fields[1]&&!sc.self?getPath(x,sc.fields[1][0]):"";return esc(s||"—")+(sub!=null&&typeof sub!=="object"&&sub!==""?` <small class="muted">· ${esc(sub)}</small>`:"")};
+  openModal(`<h2 class="ed-title">${E("manage")} · ${E("k_"+k)} <small class="muted">(${list.length} ${E("items")})</small></h2>
+    <div class="lm">${list.length?list.map((x,i)=>`<div class="lm-row"><span>${label(x)}</span><div class="ed-bar static" data-k="${k}" data-i="${i}" data-lm="1"><button type="button" data-ed="edit" aria-label="${E("edit")}">✎</button><button type="button" data-ed="up" aria-label="${E("up")}">↑</button><button type="button" data-ed="down" aria-label="${E("down")}">↓</button><button type="button" data-ed="del" class="del" aria-label="${E("del")}">✕</button></div></div>`).join(""):`<p class="muted">${E("empty")}</p>`}</div>
+    <div class="ed-actions"><button type="button" class="ed-add" data-ed-add="${k}" data-lm="1">+ ${E("add")} ${E("k_"+k)}</button><span style="flex:1"></span><button type="button" class="btn btn-primary" id="lmDone">${E("done")}</button></div>`,true);
+  $("#lmDone").onclick=closeModal;
+}
+function afterSave(k,val,isNew){
+  if(k==="school"){if(val.status==="active"&&!SCHOOL_PAGES[val.id]) SCHOOL_PAGES[val.id]=blankPage(val)}
+}
+function removeItem(k,i){
+  const list=SCH[k].list(); const [gone]=list.splice(i,1);
+  if(k==="school"&&gone){delete SCHOOL_PAGES[gone.id];CONTENT.jobs=CONTENT.jobs.filter(j=>j.s!==gone.id);if(dashScope===gone.id)dashScope="all";if(CUR===gone.id){commit();location.hash="schools";return}}
+  commit();
+}
+function moveItem(k,i,dir){const list=SCH[k].list();const j=i+dir;if(j<0||j>=list.length)return;[list[i],list[j]]=[list[j],list[i]];commit()}
+function armDelete(btn,fn){btn.onclick=()=>{if(btn.dataset.armed){fn();return}btn.dataset.armed="1";const o=btn.innerHTML;btn.textContent=E("sure");btn.classList.add("armed");setTimeout(()=>{if(btn.isConnected){delete btn.dataset.armed;btn.innerHTML=o;btn.classList.remove("armed")}},3000)}}
+
+/* click routing for every edit affordance (capture phase, so cards don't also open) */
+document.addEventListener("click",e=>{
+  if(!EDIT) return;
+  const t=e.target;
+  if(PICKING&&t.closest("#map")){e.preventDefault();e.stopPropagation();const svg=$("#map");const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(svg.getScreenCTM().inverse());
+    const lat=+(31.46-p.y/1000).toFixed(4), lon=+(p.x/1000+34.62).toFixed(4);PICKING=false;
+    const f=$("#edForm"); if(f){const inputs=[...f.querySelectorAll("[data-f]")];const li=SCH.school.fields.findIndex(x=>x[0]==="lat"),lo=SCH.school.fields.findIndex(x=>x[0]==="lon");
+      const a=f.querySelector(`[data-f="${li}"]`),b=f.querySelector(`[data-f="${lo}"]`);if(a)a.value=lat;if(b)b.value=lon;$("#modal").classList.add("open");toast(E("picked"))} return}
+  const bar=t.closest(".ed-bar button"), add=t.closest("[data-ed-add]"), obj=t.closest("[data-ed-obj]"), lst=t.closest("[data-ed-list]"), itm=t.closest("[data-ed-item]"), img=t.closest('.ed-img[data-img="logo"]');
+  if(!bar&&!add&&!obj&&!lst&&!itm&&!img){if(t.closest("a.ed-text,a [contenteditable],a[contenteditable]"))e.preventDefault();return}
+  e.preventDefault();e.stopPropagation();
+  if(img){pickFile(url=>{IMG.logo=url;commit()},600);return}
+  if(add){openItem(add.dataset.edAdd,-1,!!add.dataset.lm);return}
+  if(obj){openObj(obj.dataset.edObj);return}
+  if(lst){openList(lst.dataset.edList);return}
+  if(itm){const [k,i]=itm.dataset.edItem.split(":");openItem(k,+i);return}
+  const box=bar.parentNode, k=box.dataset.k, i=+box.dataset.i, act=bar.dataset.ed, inList=!!box.dataset.lm;
+  if(act==="edit") openItem(k,i,inList);
+  else if(act==="up"){moveItem(k,i,-1);if(inList)openList(k)}
+  else if(act==="down"){moveItem(k,i,1);if(inList)openList(k)}
+  else if(act==="del"){if(bar.dataset.armed){removeItem(k,i);if(inList&&$("#modal").classList.contains("open"))openList(k)}else{bar.dataset.armed="1";bar.classList.add("armed");bar.textContent="?";setTimeout(()=>{if(bar.isConnected){delete bar.dataset.armed;bar.classList.remove("armed");bar.textContent="✕"}},3000)}}
+},true);
+
+/* ---- admin bar ---- */
+function buildAdminUI(){
+  const pen=document.createElement("button");pen.className="icon-btn ed-pen";pen.id="edPen";pen.type="button";pen.setAttribute("aria-label",E("editMode"));pen.title=E("editMode");pen.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><i class="ed-dot" hidden></i>`;
+  $(".tools").prepend(pen); pen.onclick=()=>EDIT?exitEdit():enterEdit();
+  const bar=document.createElement("div");bar.id="edBar";bar.className="ed-adminbar";bar.hidden=true;document.body.appendChild(bar);
+  updateBar();
+}
+function updateBar(){
+  const bar=$("#edBar"); if(!bar) return;
+  const dot=$("#edPen .ed-dot"); if(dot) dot.hidden=!CHANGES;
+  if(!EDIT){bar.hidden=true;return}
+  bar.hidden=false;
+  bar.innerHTML=`<div class="ed-mode"><span class="ed-live"></span><b>${E("editMode")}</b><span class="ed-count">${CHANGES?`${CHANGES} ${E("changes")}`:E("noChanges")}</span></div>
+    <div class="ed-btns"><button type="button" class="ed-b" id="edMenu">+ ${E("more")}</button><button type="button" class="ed-b" id="edDiscard" ${CHANGES?"":"disabled"}>${E("discard")}</button><button type="button" class="ed-b pri" id="edPublish" ${CHANGES?"":"disabled"}>${E("publish")}</button><button type="button" class="ed-b" id="edDone" aria-label="${E("done")}">✕</button></div>`;
+  $("#edMenu").onclick=openMenu; $("#edDone").onclick=exitEdit; $("#edPublish").onclick=()=>publishSite();
+  const dis=$("#edDiscard"); armDelete(dis,discardAll);
+}
+function openMenu(){
+  const lists=["school","news","event","program","job","story","tl","partner","ticker","goal","five"];
+  openModal(`<h2 class="ed-title">${E("menuTitle")}</h2><div class="ed-menu">
+    ${lists.map(k=>`<div class="ed-mi"><b>${E("k_"+k)}</b><span class="muted">${SCH[k].list().length} ${E("items")}</span><button type="button" class="chip" data-ed-add="${k}">+ ${E("add")}</button><button type="button" class="chip" data-ed-list="${k}">${E("manage")}</button></div>`).join("")}
+    <div class="ed-mi"><b>${E("o_net")}</b><span></span><button type="button" class="chip" data-ed-obj="net">✎ ${E("edit")}</button><span></span></div>
+    <div class="ed-mi"><b>${E("changeImg")} · ${T[LANG].brand}</b><span></span><button type="button" class="chip" id="edLogo">${E("upload")}</button><span></span></div>
+    </div><div class="ed-actions"><span style="flex:1"></span><button type="button" class="btn btn-primary" id="menuDone">${E("done")}</button></div>`,true);
+  $("#menuDone").onclick=closeModal; $("#edLogo").onclick=()=>pickFile(url=>{IMG.logo=url;commit();closeModal()},600);
+}
+function enterEdit(){EDIT=true;document.body.classList.add("editing");rerender();toast(E("hint"))}
+function exitEdit(){EDIT=false;PICKING=false;document.body.classList.remove("editing");setInline(false);rerender()}
+function discardAll(){applyState(JSON.parse(ORIGINAL));CHANGES=0;clearDraft();rerender()}
+async function publishSite(){
+  if(!ART) return;
+  const b=$("#edPublish"); if(b){b.disabled=true;b.textContent=E("publishing")}
+  const st=getState(); saveDraft();
+  const html=buildHTML(st);
+  if(html.length>15.5e6){toast(E("tooBig"));updateBar();return}
+  try{ await ART.publish(html); CHANGES=0; toast(E("published")); updateBar(); }
+  catch(err){
+    const c=err&&err.code;
+    if(c==="conflict") toast(E("conflict"));
+    else if(["not_writer","not_granted","not_declared","consent_required","capability_disabled","capability_removed"].includes(c)){CAN_EDIT=false;toast(E("readonly"));exitEdit();const p=$("#edPen");if(p)p.remove()}
+    else if(c==="too_large") toast(E("tooBig"));
+    else if(c==="rate_limited") toast(E("slow"));
+    else if(c==="invalid_content"||c==="transform_error") toast(E("invalid"));
+    else if(!PUB_RETRY){PUB_RETRY=true;await new Promise(r=>setTimeout(r,700+Math.random()*1300));PUB_RETRY=false;return publishSite()}
+    else toast(E("failed"));
+    updateBar();
+  }
+}
+function offerDraft(){
+  let raw=null; try{raw=sessionStorage.getItem(DRAFT_KEY)}catch(e){}
+  if(!raw) return;
+  if(raw===JSON.stringify(getState())){clearDraft();return}
+  const n=document.createElement("div");n.className="ed-draft";n.innerHTML=`<span>${E("draftFound")}</span><button type="button" class="chip" id="drRestore">${E("restore")}</button><button type="button" class="chip" id="drDrop">${E("drop")}</button>`;
+  document.body.appendChild(n);
+  $("#drRestore").onclick=()=>{try{applyState(JSON.parse(raw));CHANGES=Math.max(1,CHANGES);n.remove();if(!EDIT)enterEdit();else rerender();toast(E("restored"))}catch(e){n.remove()}};
+  $("#drDrop").onclick=()=>{clearDraft();n.remove()};
+}
+async function initAdmin(){
+  if(!window.claude||typeof window.claude.use!=="function") return;
+  try{ART=await window.claude.use("artifact")}catch(e){ART=null}
+  if(!ART) return;
+  let user=null; try{user=await window.claude.use("user")}catch(e){}
+  CAN_EDIT=user?await user.canEdit().catch(()=>false):true;
+  if(!CAN_EDIT) return;
+  buildAdminUI(); offerDraft();
+}
 
 /* ============ interactions ============ */
 $$("[data-lang]").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
@@ -1346,7 +1746,7 @@ $("#a11yBtn").onclick=()=>$("#a11yPanel").classList.toggle("open");
 $$("[data-a11y]").forEach(b=>b.onclick=()=>{const c=b.dataset.a11y;if(c==="reset"){document.body.classList.remove("a11y-big","a11y-contrast","a11y-links")}else document.body.classList.toggle(c)});
 $("#botBtn").onclick=()=>$("#botPanel").classList.toggle("open");
 $("#botForm").onsubmit=e=>{e.preventDefault();const v=$("#botInput").value.trim();if(!v)return;$("#botInput").value="";
-  const qs=L(CONTENT.bot);const low=v.toLowerCase();
+  const qs=Lr(CONTENT.bot);const low=v.toLowerCase();
   const hit=qs.find(q=>q[0].toLowerCase().split(/\s+/).some(w=>w.length>2&&low.includes(w.replace(/[?؟]/g,""))));
   botAsk(v,hit?hit[1]:(LANG==="en"?"Great question! A team member will get back to you soon (demo).":LANG==="ar"?"سؤال رائع! سيعود إليكم أحد أفراد الطاقم قريبًا (تجريبي).":"שאלה מצוינת! נציג/ה יחזרו אליכם בקרוב (הדגמה)."))};
 $("#donateBtn").onclick=()=>toast(S("donated"));
@@ -1369,9 +1769,13 @@ $$(".reveal").forEach(el=>io.observe(el));
 
 /* init */
 const savedTheme=load("tamar-theme"); if(savedTheme) document.documentElement.dataset.theme=savedTheme;
+try{applyState(JSON.parse(document.getElementById("site-state").textContent))}catch(e){}
+normalize();
+ORIGINAL=JSON.stringify(getState());
 setLang(load("tamar-lang")||"he");
 showStep();
 route();
+initAdmin();
 </script>
 </body>
 </html>
