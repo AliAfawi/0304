@@ -2,6 +2,12 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta property="og:title" content="רשת תמר – מחוללים שינוי">
+<meta property="og:description" content="רשת החינוך תמר בנגב: בתי ספר, תוצאות בוגרים, תכניות, משרות והרשמה.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/tamar-logo.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>רשת תמר | מחוללים שינוי</title>
 <meta data-keep name="description" content="רשת החינוך תמר – מחוללים שינוי בחינוך בנגב. בתי ספר, תכניות מצוינות, נתונים, משרות והרשמה.">
@@ -1936,7 +1942,7 @@ ORIGINAL=JSON.stringify(getState());
 setLang(load("tamar-lang")||"he");
 showStep();
 route();
-initAdmin();
+/* public build: no admin */
 </script>
 </body>
 </html>
