@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://script.google.com https://script.googleusercontent.com; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com https://script.google.com https://script.googleusercontent.com; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://tamar-84154.firebaseapp.com">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta property="og:title" content="רשת תמר – מחוללים שינוי">
 <meta property="og:description" content="רשת החינוך תמר בנגב: בתי ספר, תוצאות בוגרים, תכניות, משרות והרשמה.">
@@ -2290,7 +2290,7 @@ function legalPage(kind){
    FIREBASE — תוכן חי, טפסים ותיבת פניות, וכניסת מנהל בקישור למייל
    הגנה אמיתית נאכפת בשרת (firestore.rules): רק המייל המאומת של המנהל כותב.
    ========================================================= */
-const FB_CONFIG = null; /* public web config, filled by build-public.py --firebase firebase-config.json */
+const FB_CONFIG = {"apiKey": "AIzaSyChZk9ebI5tBF8PZXFA1Z8aBlj44Qzcec4", "authDomain": "tamar-84154.firebaseapp.com", "projectId": "tamar-84154", "storageBucket": "tamar-84154.firebasestorage.app", "messagingSenderId": "779463627120", "appId": "1:779463627120:web:aed7149e738ca0d6623fb5"}; /* public web config, filled by build-public.py --firebase firebase-config.json */
 const ADMIN_EMAIL = "aliafawi116@gmail.com";
 const FB_BASE = "https://www.gstatic.com/firebasejs/10.12.2/";
 const PART_CHARS = 300000;   // Hebrew/Arabic can be 2–3 bytes per char; keeps each doc well under 1 MiB
