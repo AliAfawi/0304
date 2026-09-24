@@ -10,6 +10,8 @@ Usage:  python3 build-public.py [state.json] [--endpoint URL] [--site-url https:
   --endpoint (optional): the forms Apps Script URL, if it isn't already in the state.
   --site-url (optional): the official address; adds canonical, og:url, sitemap.xml and structured data.
   --cf-analytics (optional): Cloudflare Web Analytics token (cookieless, privacy-friendly).
+  --firebase (optional): firebase-config.json (the public web config). Turns on live content,
+    the Firestore inbox and admin sign-in by email link (#admin). See firebase/README.md.
 """
 import json, os, re, shutil, sys
 
@@ -37,6 +39,15 @@ def take(flag):
         i = sys.argv.index(flag); v = sys.argv[i + 1]; del sys.argv[i:i + 2]; return v
     return ""
 site_url = take("--site-url").rstrip("/")
+fb_file = take("--firebase")
+fb_cfg = None
+if fb_file:
+    fb_cfg = json.load(open(fb_file, encoding="utf-8"))
+    allowed = {"apiKey", "authDomain", "projectId", "storageBucket", "messagingSenderId", "appId", "measurementId"}
+    assert set(fb_cfg) <= allowed and all(isinstance(v, str) and re.fullmatch(r"[\w.:/-]+", v) for v in fb_cfg.values()), "bad firebase config"
+    CSP = CSP.replace("script-src 'self' 'unsafe-inline'", "script-src 'self' 'unsafe-inline' https://www.gstatic.com")
+    CSP = CSP.replace("connect-src ", "connect-src https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.googleapis.com ")
+    CSP += "; frame-src https://" + fb_cfg.get("authDomain", "") 
 cf_token = take("--cf-analytics")
 if site_url:
     assert re.fullmatch(r"https://[a-z0-9.-]+", site_url), "bad site url"
@@ -56,9 +67,10 @@ out = src.replace('<meta charset="utf-8">\n', '<meta charset="utf-8">\n' + head_
 if cf_token:
     head, sep, tail = out.rpartition("</body>")
     out = head + f'<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon=\'{{"token":"{cf_token}"}}\'></script>\n' + sep + tail
-assert "\ninitAdmin();" in out
-out = out.replace("\ninitAdmin();", "\n/* public build: no admin */", 1)
 
+if fb_cfg:
+    assert "const FB_CONFIG = null;" in out
+    out = out.replace("const FB_CONFIG = null;", "const FB_CONFIG = " + json.dumps(fb_cfg) + ";", 1)
 args = sys.argv[1:]
 if "--endpoint" in args:
     i = args.index("--endpoint"); ep = args[i + 1]; del args[i:i + 2]
