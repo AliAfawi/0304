@@ -480,6 +480,16 @@ html[dir="rtl"] .sel{text-align:right}
 .lbody{padding:20px 22px 24px}
 .lbody h3{font-size:1.25rem;margin:10px 0 8px}
 .lbody p{margin:0;color:var(--ink-2);font-size:.95rem}
+.hpf{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:.9rem;margin:6px 0 4px;cursor:pointer}
+.consent input{margin-top:4px;width:18px;height:18px;flex:none}
+.form-msg{min-height:1.2em;margin:8px 0 0;font-weight:700;font-size:.9rem}
+.form-msg.bad{color:#c2361b}
+#pubForm .bad{border-color:#c2361b}
+.req{color:#c2361b}
+.contact-cta{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.contact .card .btn{margin-top:auto}
+.contact .card{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
 .coh-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
 .coh-kpis{margin-bottom:0}
 .stats .ed-add{width:100%;height:100%}
@@ -770,24 +780,26 @@ body.editing .partner.edi{padding-inline-end:120px}
     <form class="card form reveal" id="enrollForm" novalidate>
       <div class="steps"><span class="on"></span><span></span><span></span></div>
       <div data-step="1">
-        <div class="field"><label for="pn" data-i18n="e.parent">שם ההורה</label><input id="pn" required></div>
+        <div class="field"><label for="pn" data-i18n="e.parent">שם ההורה</label><input id="pn" required maxlength="200" autocomplete="name"></div>
         <div class="row2">
-          <div class="field"><label for="ph" data-i18n="e.phone">טלפון</label><input id="ph" type="tel" required></div>
-          <div class="field"><label for="em" data-i18n="e.email">דוא"ל</label><input id="em" type="email"></div>
+          <div class="field"><label for="ph" data-i18n="e.phone">טלפון</label><input id="ph" type="tel" required inputmode="tel" dir="ltr" maxlength="20" autocomplete="tel"></div>
+          <div class="field"><label for="em" data-i18n="e.email">דוא"ל</label><input id="em" type="email" dir="ltr" maxlength="200" autocomplete="email"></div>
         </div>
       </div>
       <div data-step="2" class="hidden">
-        <div class="field"><label for="cn" data-i18n="e.child">שם התלמיד/ה</label><input id="cn" required></div>
+        <div class="field"><label for="cn" data-i18n="e.child">שם התלמיד/ה</label><input id="cn" required maxlength="200"></div>
         <div class="row2">
-          <div class="field"><label for="gr" data-i18n="e.grade">כיתה בשנה הבאה</label><select id="gr"><option>א'</option><option>ז'</option><option>ט'</option><option selected>י'</option><option>י"א</option></select></div>
+          <div class="field"><label for="gr" data-i18n="e.grade">כיתה בשנה הבאה</label><select id="gr"><option>א'</option><option>ז'</option><option>ח'</option><option>ט'</option><option selected>י'</option><option>י"א</option><option>י"ב</option></select></div>
           <div class="field"><label for="sc" data-i18n="e.school">בית ספר מבוקש</label><select id="sc"></select></div>
         </div>
       </div>
       <div data-step="3" class="hidden">
         <div class="field"><label for="in" data-i18n="e.interest">תחומי עניין</label><select id="in"><option data-i18n="e.i1">מדעים והנדסה</option><option data-i18n="e.i2">אנגלית ותקשורת</option><option data-i18n="e.i3">מנהיגות וקהילה</option><option data-i18n="e.i4">טכנולוגיה ו-AI</option></select></div>
-        <div class="field"><label for="nt" data-i18n="e.notes">משהו שחשוב לנו לדעת?</label><textarea id="nt" rows="3"></textarea></div>
+        <div class="field"><label for="nt" data-i18n="e.notes">משהו שחשוב לנו לדעת?</label><textarea id="nt" rows="3" maxlength="2000"></textarea></div>
+        <div class="hpf" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
+        <label class="consent"><input type="checkbox" id="enConsent"> <span data-i18n="e.consent">אני מאשר/ת שמירת הפרטים לצורך טיפול בהרשמה בלבד</span></label>
       </div>
-      <div data-step="4" class="hidden ok"><div class="big">🌱</div><h3 data-i18n="e.done">תודה! הפנייה התקבלה</h3><p class="muted" data-i18n="e.doneD">(גרסת הדגמה – הטופס אינו נשלח בפועל)</p></div>
+      <div data-step="4" class="hidden ok"><div class="big">🌱</div><h3 data-i18n="e.done">תודה! הפנייה התקבלה</h3><p class="muted" data-i18n="e.doneD">נחזור אליכם תוך 48 שעות לתיאום שיחת היכרות.</p></div>
       <div class="form-nav" id="formNav">
         <button type="button" class="btn btn-ghost" id="prevBtn" data-i18n="e.prev" style="visibility:hidden">הקודם</button>
         <button type="button" class="btn btn-primary" id="nextBtn" data-i18n="e.next">המשך</button>
@@ -817,9 +829,9 @@ body.editing .partner.edi{padding-inline-end:120px}
   <div class="wrap">
     <div class="reveal" style="margin-bottom:34px"><span class="eyebrow" data-i18n="c.eye">צור קשר</span><h2 data-i18n="c.title">נשמח לשמוע מכם</h2></div>
     <div class="contact">
-      <div class="card reveal"><h3 data-i18n="c.office">הנהלת הרשת</h3><p class="muted" data-i18n="c.addr">באר שבע, הנגב (כתובת לדוגמה)</p><p>08-000-0000</p></div>
-      <div class="card reveal"><h3 data-i18n="c.parents">מוקד הורים</h3><p class="muted" data-i18n="c.hours">א'–ה', 08:00–16:00</p><p>parents@tamar.example</p></div>
-      <div class="card reveal"><h3 data-i18n="c.jobs">גיוס והשמה</h3><p class="muted" data-i18n="c.cv">שלחו קורות חיים</p><p>jobs@tamar.example</p></div>
+      <div class="card reveal contact-cta"><h3 data-i18n="c.form">שליחת פנייה</h3><p class="muted" data-i18n="c.formD">שאלה, תיאום סיור, תקשורת או כל דבר אחר – נחזור אליכם.</p><button type="button" class="btn btn-primary" id="contactBtn" data-i18n="c.form">שליחת פנייה</button></div>
+      <div class="card reveal"><h3 data-i18n="nav.enroll">הרשמה</h3><p class="muted" data-i18n="e.lead">שלושה צעדים פשוטים ונחזור אליכם תוך 48 שעות לתיאום שיחת היכרות.</p><a class="btn btn-ghost" href="#enroll" data-i18n="nav.enroll">הרשמה</a></div>
+      <div class="card reveal"><h3 data-i18n="nav.jobs">דרושים</h3><p class="muted" data-i18n="j.lead">אנחנו מגייסים מורים, רכזים ומובילים לבתי הספר הקיימים ולבתי הספר החדשים של הרשת.</p><a class="btn btn-ghost" href="#jobs" data-i18n="nav.jobs">דרושים</a></div>
     </div>
   </div>
 </section>
@@ -908,7 +920,7 @@ he:{demo:"גרסת הדגמה · כל הנתונים באתר הם נתוני ד
 "st.eye":"קולות מהרשת","st.title":"הסיפורים שמאחורי המספרים","n.eye":"חדשות ואירועים","n.title":"מה קורה ברשת","ev.t":"אירועים קרובים",
 "j.eye":"קריירה","j.title":"בואו להצית שינוי איתנו","j.lead":"אנחנו מגייסים מורים, רכזים ומובילים לבתי הספר הקיימים ולבתי הספר החדשים של הרשת.","j.apply":"הגשת מועמדות","j.all":"כל המשרות",
 "e.eye":"הרשמה","e.title":"הרשמה לשנת הלימודים תשפ\"ז","e.lead":"שלושה צעדים פשוטים ונחזור אליכם תוך 48 שעות לתיאום שיחת היכרות.","e.c1":"ללא עלות רישום","e.c2":"הסעות מכל היישובים הסמוכים","e.c3":"יום פתוח לכל משפחה חדשה","e.c4":"מלגות מצוינות ותכניות תגבור",
-"e.parent":"שם ההורה","e.phone":"טלפון","e.email":"דוא\"ל","e.child":"שם התלמיד/ה","e.grade":"כיתה בשנה הבאה","e.school":"בית ספר מבוקש","e.interest":"תחומי עניין","e.i1":"מדעים והנדסה","e.i2":"אנגלית ותקשורת","e.i3":"מנהיגות וקהילה","e.i4":"טכנולוגיה ו-AI","e.notes":"משהו שחשוב לנו לדעת?","e.done":"תודה! הפנייה התקבלה","e.doneD":"(גרסת הדגמה – הטופס אינו נשלח בפועל)","e.prev":"הקודם","e.next":"המשך","e.send":"שליחה","e.req":"נא למלא את שדות החובה",
+"e.parent":"שם ההורה","e.phone":"טלפון","e.email":"דוא\"ל","e.child":"שם התלמיד/ה","e.grade":"כיתה בשנה הבאה","e.school":"בית ספר מבוקש","e.interest":"תחומי עניין","e.i1":"מדעים והנדסה","e.i2":"אנגלית ותקשורת","e.i3":"מנהיגות וקהילה","e.i4":"טכנולוגיה ו-AI","e.notes":"משהו שחשוב לנו לדעת?","e.done":"תודה! הפנייה התקבלה","e.doneD":"נחזור אליכם תוך 48 שעות לתיאום שיחת היכרות.","e.consent":"אני מאשר/ת שמירת הפרטים לצורך טיפול בהרשמה בלבד","c.form":"שליחת פנייה","c.formD":"שאלה, תיאום סיור, תקשורת או כל דבר אחר – נחזור אליכם.","e.prev":"הקודם","e.next":"המשך","e.send":"שליחה","e.req":"נא למלא את שדות החובה",
 "pa.eye":"שותפים","pa.title":"יחד עם השותפים שלנו","do.eye":"תמיכה","do.title":"כל תרומה מציתה עתיד","do.lead":"עזרו לנו לפתוח את בתי הספר הבאים ברשת ולהביא חינוך מצוין לעוד אלפי ילדים בנגב.","do.btn":"לתרומה מאובטחת",
 "c.eye":"צור קשר","c.title":"נשמח לשמוע מכם","c.office":"הנהלת הרשת","c.addr":"באר שבע, הנגב (כתובת לדוגמה)","c.parents":"מוקד הורים","c.hours":"א'–ה', 08:00–16:00","c.jobs":"גיוס והשמה","c.cv":"שלחו קורות חיים",
 "f.about":"מחוללים שינוי · تحدث التغيير · Igniting Change. רשת חינוך בנגב.","f.net":"הרשת","f.join":"הצטרפות","f.info":"מידע","f.donate":"תרומות","f.a11y":"הצהרת נגישות","f.privacy":"מדיניות פרטיות",
@@ -933,7 +945,7 @@ ar:{demo:"نسخة تجريبية · جميع البيانات في الموقع
 "st.eye":"أصوات من الشبكة","st.title":"القصص خلف الأرقام","n.eye":"أخبار وفعاليات","n.title":"ماذا يحدث في الشبكة","ev.t":"فعاليات قريبة",
 "j.eye":"مسيرة مهنية","j.title":"انضموا لإشعال التغيير معنا","j.lead":"نبحث عن معلمين ومركّزين وقادة للمدارس القائمة والمدارس الجديدة في الشبكة.","j.apply":"تقديم طلب","j.all":"كل الوظائف",
 "e.eye":"تسجيل","e.title":"التسجيل للعام الدراسي 2026–2027","e.lead":"ثلاث خطوات بسيطة ونعود إليكم خلال 48 ساعة لتنسيق لقاء تعارف.","e.c1":"بدون رسوم تسجيل","e.c2":"سفريات من جميع البلدات المجاورة","e.c3":"يوم مفتوح لكل عائلة جديدة","e.c4":"منح تميّز وبرامج تقوية",
-"e.parent":"اسم ولي الأمر","e.phone":"هاتف","e.email":"بريد إلكتروني","e.child":"اسم الطالب/ة","e.grade":"الصف في العام القادم","e.school":"المدرسة المطلوبة","e.interest":"مجالات الاهتمام","e.i1":"علوم وهندسة","e.i2":"إنجليزية واتصال","e.i3":"قيادة ومجتمع","e.i4":"تكنولوجيا وذكاء اصطناعي","e.notes":"هل هناك ما يهمنا معرفته؟","e.done":"شكرًا! تم استلام الطلب","e.doneD":"(نسخة تجريبية – النموذج لا يُرسل فعليًا)","e.prev":"السابق","e.next":"متابعة","e.send":"إرسال","e.req":"يرجى تعبئة الحقول الإلزامية",
+"e.parent":"اسم ولي الأمر","e.phone":"هاتف","e.email":"بريد إلكتروني","e.child":"اسم الطالب/ة","e.grade":"الصف في العام القادم","e.school":"المدرسة المطلوبة","e.interest":"مجالات الاهتمام","e.i1":"علوم وهندسة","e.i2":"إنجليزية واتصال","e.i3":"قيادة ومجتمع","e.i4":"تكنولوجيا وذكاء اصطناعي","e.notes":"هل هناك ما يهمنا معرفته؟","e.done":"شكرًا! تم استلام الطلب","e.doneD":"سنعود إليكم خلال 48 ساعة لتنسيق لقاء تعارف.","e.consent":"أوافق على حفظ التفاصيل لغرض معالجة التسجيل فقط","c.form":"إرسال استفسار","c.formD":"سؤال، تنسيق جولة، إعلام أو أي أمر آخر – سنعود إليكم.","e.prev":"السابق","e.next":"متابعة","e.send":"إرسال","e.req":"يرجى تعبئة الحقول الإلزامية",
 "pa.eye":"شركاء","pa.title":"معًا مع شركائنا","do.eye":"دعم","do.title":"كل تبرّع يُشعل مستقبلًا","do.lead":"ساعدونا في افتتاح المدارس القادمة في الشبكة وإيصال تعليم متميّز لآلاف الأطفال في النقب.","do.btn":"للتبرع الآمن",
 "c.eye":"اتصل بنا","c.title":"يسعدنا سماعكم","c.office":"إدارة الشبكة","c.addr":"بئر السبع، النقب (عنوان للتوضيح)","c.parents":"مركز الأهالي","c.hours":"الأحد–الخميس، 08:00–16:00","c.jobs":"توظيف","c.cv":"أرسلوا سيرة ذاتية",
 "f.about":"מחוללים שינוי · تحدث التغيير · Igniting Change. شبكة تعليمية في النقب.","f.net":"الشبكة","f.join":"انضمام","f.info":"معلومات","f.donate":"تبرعات","f.a11y":"بيان الإتاحة","f.privacy":"سياسة الخصوصية",
@@ -958,7 +970,7 @@ en:{demo:"Demo version · all data on this site is placeholder data for illustra
 "st.eye":"Voices","st.title":"The stories behind the numbers","n.eye":"News & events","n.title":"What's happening","ev.t":"Upcoming events",
 "j.eye":"Careers","j.title":"Ignite change with us","j.lead":"We're hiring teachers, coordinators and leaders for our current and new schools.","j.apply":"Apply","j.all":"All jobs",
 "e.eye":"Enrollment","e.title":"Enroll for 2026–27","e.lead":"Three simple steps and we'll be in touch within 48 hours to schedule an intro call.","e.c1":"No registration fee","e.c2":"Transport from all nearby towns","e.c3":"Open day for every new family","e.c4":"Excellence scholarships & support",
-"e.parent":"Parent name","e.phone":"Phone","e.email":"Email","e.child":"Student name","e.grade":"Grade next year","e.school":"Preferred school","e.interest":"Interests","e.i1":"Science & engineering","e.i2":"English & communication","e.i3":"Leadership & community","e.i4":"Technology & AI","e.notes":"Anything we should know?","e.done":"Thank you! Request received","e.doneD":"(Demo – the form is not actually sent)","e.prev":"Back","e.next":"Next","e.send":"Submit","e.req":"Please fill in the required fields",
+"e.parent":"Parent name","e.phone":"Phone","e.email":"Email","e.child":"Student name","e.grade":"Grade next year","e.school":"Preferred school","e.interest":"Interests","e.i1":"Science & engineering","e.i2":"English & communication","e.i3":"Leadership & community","e.i4":"Technology & AI","e.notes":"Anything we should know?","e.done":"Thank you! Request received","e.doneD":"We'll get back to you within 48 hours to schedule an intro call.","e.consent":"I agree to my details being stored only to handle this enrollment","c.form":"Send a message","c.formD":"A question, a school visit, media or anything else – we'll get back to you.","e.prev":"Back","e.next":"Next","e.send":"Submit","e.req":"Please fill in the required fields",
 "pa.eye":"Partners","pa.title":"Together with our partners","do.eye":"Support","do.title":"Every gift ignites a future","do.lead":"Help us open the next schools in the network and bring excellent education to thousands more children in the Negev.","do.btn":"Donate securely",
 "c.eye":"Contact","c.title":"We'd love to hear from you","c.office":"Network HQ","c.addr":"Beersheba, Negev (sample address)","c.parents":"Parent hotline","c.hours":"Sun–Thu, 08:00–16:00","c.jobs":"Recruitment","c.cv":"Send your CV",
 "f.about":"מחוללים שינוי · تحدث التغيير · Igniting Change. A school network in the Negev.","f.net":"Network","f.join":"Join","f.info":"Info","f.donate":"Donate","f.a11y":"Accessibility statement","f.privacy":"Privacy policy",
@@ -1203,8 +1215,8 @@ function renderJobs(){
   const cats=[["all",T[LANG]["j.all"]],...Object.entries(CONTENT.jobCats).map(([k,v])=>[k,L(v)])];
   $("#jobFilters").innerHTML=cats.map(([k,v])=>`<button class="chip" data-c="${k}" aria-pressed="${jobCat===k}">${v}</button>`).join("");
   $$("#jobFilters .chip").forEach(b=>b.onclick=()=>{jobCat=b.dataset.c;renderJobs()});
-  $("#jobList").innerHTML=CONTENT.jobs.map((j,i)=>[j,i]).filter(([j])=>jobCat==="all"||j.cat===jobCat).map(([j,i])=>{const s=DATA.schools.find(x=>x.id===j.s)||{name:{he:"—"},status:"plan"};return `<div class="card job edi">${edb("job",i)}<div><h3>${L(j.t)}</h3><div class="meta"><span>📍 ${L(s.name)}</span><span>🕒 ${L(j.p)}</span></div></div><span class="tag ${s.status==="plan"?"plan":""}">${L(CONTENT.jobCats[j.cat]||{he:j.cat})}</span><button class="btn btn-primary apply">${Tx("j.apply")}</button></div>`}).join("")+eda("job");
-  $$(".apply").forEach(b=>b.onclick=()=>toast(S("applied")));
+  $("#jobList").innerHTML=CONTENT.jobs.map((j,i)=>[j,i]).filter(([j])=>jobCat==="all"||j.cat===jobCat).map(([j,i])=>{const s=DATA.schools.find(x=>x.id===j.s)||{name:{he:"—"},status:"plan"};return `<div class="card job edi">${edb("job",i)}<div><h3>${L(j.t)}</h3><div class="meta"><span>📍 ${L(s.name)}</span><span>🕒 ${L(j.p)}</span></div></div><span class="tag ${s.status==="plan"?"plan":""}">${L(CONTENT.jobCats[j.cat]||{he:j.cat})}</span><button class="btn btn-primary apply" type="button" data-job="${i}">${Tx("j.apply")}</button></div>`}).join("")+eda("job");
+  $$(".apply").forEach(b=>b.onclick=()=>openApply(+b.dataset.job));
 }
 function renderPartners(){$("#partners").innerHTML=CONTENT.partners.map((p,i)=>`<div class="partner edi">${edb("partner",i)}${L(p)}</div>`).join("")+eda("partner")}
 let amount=500;
@@ -1369,7 +1381,7 @@ function renderSchoolPage(){
   drawBars($("#sc3"),$("#sc3-table"),d.five.map(f=>({k:Lr(SUBJ[f.k]||{he:f.k}),v:+f.v||0})),P("subject"),P("students"),P("fiveT"));
   }
   renderStaff(); markNow();
-  $("#tourBtn").onclick=()=>toast(P("tourOk"));
+  $("#tourBtn").onclick=()=>openContact({subject:"tour",school:Lr(s.name)});
   $$("#schoolView [data-sview]").forEach(b=>b.onclick=()=>{const t=b.dataset.target;b.parentNode.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));$("#"+t).classList.toggle("hidden",b.dataset.sview==="table");$("#"+t+"-table").classList.toggle("hidden",b.dataset.sview!=="table")});
   $$("#schoolView .copy").forEach(b=>b.onclick=()=>{const v=b.dataset.copy;const done=()=>{b.textContent=P("copied");setTimeout(()=>b.textContent=P("copy"),1500)};
     try{navigator.clipboard.writeText(v).then(done,()=>{selectText(b.previousElementSibling);done()})}catch(e){selectText(b.previousElementSibling);done()}});
@@ -1450,11 +1462,11 @@ const DRAFT_KEY="tamar-admin-draft";
 const E=k=>(ED[LANG]&&ED[LANG][k])||ED.he[k]||k;
 const ED={
 he:{editMode:"מצב עריכה",hint:"לחצו על כל טקסט כדי לשנות אותו, או על ✎ ליד פריט. השינויים נשמרים כטיוטה עד שתפרסמו.",changes:"שינויים שלא פורסמו",noChanges:"אין שינויים",publish:"פרסום לכולם",publishing:"מפרסם…",discard:"ביטול שינויים",sure:"בטוח? לחצו שוב",done:"סיום עריכה",add:"הוספה",more:"ניהול",edit:"עריכה",del:"מחיקה",up:"למעלה",down:"למטה",save:"שמירה",cancel:"ביטול",back:"חזרה לרשימה",upload:"העלאת תמונה",remove:"הסרה",noImg:"אין תמונה",pick:"בחירה על המפה",pickHint:"לחצו על המפה כדי לקבוע את מיקום בית הספר",picked:"המיקום עודכן",changeImg:"החלפת תמונה",imgTooBig:"התמונה גדולה מדי",imgErr:"לא ניתן לקרוא את הקובץ. נסו תמונת JPG או PNG.",conflict:"מישהו אחר פרסם גרסה חדשה. הדף נטען מחדש והטיוטה שלכם נשמרה לשחזור.",readonly:"אין לכם הרשאת עריכה לאתר הזה.",tooBig:"האתר גדול מדי לפרסום. הסירו או הקטינו חלק מהתמונות.",slow:"פרסמתם הרבה בזמן קצר. המתינו רגע ונסו שוב.",invalid:"הפרסום נדחה בגלל תוכן לא תקין.",failed:"הפרסום נכשל. נסו שוב בעוד רגע.",draftFound:"נמצאה טיוטה שלא פורסמה",restore:"שחזור",drop:"מחיקה",restored:"הטיוטה שוחזרה",editGeneral:"פרטים כלליים",editPage:"פרטי העמוד",editData:"עריכת נתונים",manage:"ניהול רשימה",items:"פריטים",empty:"הרשימה ריקה",
- k_school:"בית ספר",k_program:"תכנית",k_news:"כתבה",k_event:"אירוע",k_story:"סיפור",k_job:"משרה",k_tl:"אבן דרך",k_partner:"שותף",k_ticker:"מבזק",k_goal:"יעד",k_five:"מקצוע (5 יח')",k_staff:"איש/אשת צוות",k_track:"מגמה",k_hl:"הישג",k_sev:"אירוע",k_snews:"מודעה",k_grade:"שכבה",k_sfive:"מקצוע (5 יח')",k_fac:"מתקן",k_hero:"נתון בראש העמוד",k_leader:"חבר/ת הנהלה",k_cohort:"מחזור בוגרים",o_schoolinfo:"פרטי עמוד בית הספר",o_sseries:"נתוני בגרות של בית הספר",o_net:"נתוני הרשת",past:"עבר",now:"עכשיו",future:"חזון",menuTitle:"מה להוסיף או לנהל?",adminOn:"כלי הניהול זמינים. הם גלויים רק לך.",csvHint:"מספרים מופרדים בפסיקים",published:"פורסם. כל הצופים רואים את הגרסה החדשה."},
+ k_school:"בית ספר",k_program:"תכנית",k_news:"כתבה",k_event:"אירוע",k_story:"סיפור",k_job:"משרה",k_tl:"אבן דרך",k_partner:"שותף",k_ticker:"מבזק",k_goal:"יעד",k_five:"מקצוע (5 יח')",k_staff:"איש/אשת צוות",k_track:"מגמה",k_hl:"הישג",k_sev:"אירוע",k_snews:"מודעה",k_grade:"שכבה",k_sfive:"מקצוע (5 יח')",k_fac:"מתקן",k_hero:"נתון בראש העמוד",k_leader:"חבר/ת הנהלה",k_cohort:"מחזור בוגרים",o_schoolinfo:"פרטי עמוד בית הספר",o_sseries:"נתוני בגרות של בית הספר",o_net:"נתוני הרשת",o_settings:"הגדרות טפסים ופניות",past:"עבר",now:"עכשיו",future:"חזון",menuTitle:"מה להוסיף או לנהל?",adminOn:"כלי הניהול זמינים. הם גלויים רק לך.",csvHint:"מספרים מופרדים בפסיקים",published:"פורסם. כל הצופים רואים את הגרסה החדשה."},
 ar:{editMode:"وضع التحرير",hint:"اضغطوا على أي نص لتغييره، أو على ✎ بجانب أي عنصر. تُحفظ التغييرات كمسودة حتى تنشروها.",changes:"تغييرات غير منشورة",noChanges:"لا توجد تغييرات",publish:"نشر للجميع",publishing:"جارٍ النشر…",discard:"إلغاء التغييرات",sure:"متأكد؟ اضغط مرة أخرى",done:"إنهاء التحرير",add:"إضافة",more:"إدارة",edit:"تحرير",del:"حذف",up:"أعلى",down:"أسفل",save:"حفظ",cancel:"إلغاء",back:"عودة للقائمة",upload:"رفع صورة",remove:"إزالة",noImg:"لا توجد صورة",pick:"اختيار على الخريطة",pickHint:"اضغطوا على الخريطة لتحديد موقع المدرسة",picked:"تم تحديث الموقع",changeImg:"تغيير الصورة",imgTooBig:"الصورة كبيرة جدًا",imgErr:"تعذّرت قراءة الملف. جرّبوا صورة JPG أو PNG.",conflict:"نشر شخص آخر نسخة جديدة. سيُعاد تحميل الصفحة ومسودتكم محفوظة للاستعادة.",readonly:"ليست لديكم صلاحية تحرير هذا الموقع.",tooBig:"الموقع كبير جدًا للنشر. احذفوا أو صغّروا بعض الصور.",slow:"نشرتم كثيرًا في وقت قصير. انتظروا قليلًا وحاولوا مجددًا.",invalid:"رُفض النشر بسبب محتوى غير صالح.",failed:"فشل النشر. حاولوا مجددًا بعد لحظة.",draftFound:"وُجدت مسودة غير منشورة",restore:"استعادة",drop:"حذف",restored:"تمت استعادة المسودة",editGeneral:"تفاصيل عامة",editPage:"تفاصيل الصفحة",editData:"تحرير المعطيات",manage:"إدارة القائمة",items:"عناصر",empty:"القائمة فارغة",
- k_school:"مدرسة",k_program:"برنامج",k_news:"خبر",k_event:"فعالية",k_story:"قصة",k_job:"وظيفة",k_tl:"محطة",k_partner:"شريك",k_ticker:"خبر عاجل",k_goal:"هدف",k_five:"موضوع (5 وحدات)",k_staff:"فرد طاقم",k_track:"مسار",k_hl:"إنجاز",k_sev:"فعالية",k_snews:"إعلان",k_grade:"طبقة",k_sfive:"موضوع (5 وحدات)",k_fac:"مرفق",k_hero:"رقم في رأس الصفحة",k_leader:"عضو إدارة",k_cohort:"فوج خريجين",o_schoolinfo:"تفاصيل صفحة المدرسة",o_sseries:"معطيات البجروت للمدرسة",o_net:"معطيات الشبكة",past:"ماضٍ",now:"الآن",future:"رؤية",menuTitle:"ماذا تريدون أن تضيفوا أو تديروا؟",adminOn:"أدوات الإدارة متاحة. لا يراها أحد غيرك.",csvHint:"أرقام مفصولة بفواصل",published:"تم النشر. جميع الزوار يرون النسخة الجديدة."},
+ k_school:"مدرسة",k_program:"برنامج",k_news:"خبر",k_event:"فعالية",k_story:"قصة",k_job:"وظيفة",k_tl:"محطة",k_partner:"شريك",k_ticker:"خبر عاجل",k_goal:"هدف",k_five:"موضوع (5 وحدات)",k_staff:"فرد طاقم",k_track:"مسار",k_hl:"إنجاز",k_sev:"فعالية",k_snews:"إعلان",k_grade:"طبقة",k_sfive:"موضوع (5 وحدات)",k_fac:"مرفق",k_hero:"رقم في رأس الصفحة",k_leader:"عضو إدارة",k_cohort:"فوج خريجين",o_schoolinfo:"تفاصيل صفحة المدرسة",o_sseries:"معطيات البجروت للمدرسة",o_net:"معطيات الشبكة",o_settings:"إعدادات النماذج والاستفسارات",past:"ماضٍ",now:"الآن",future:"رؤية",menuTitle:"ماذا تريدون أن تضيفوا أو تديروا؟",adminOn:"أدوات الإدارة متاحة. لا يراها أحد غيرك.",csvHint:"أرقام مفصولة بفواصل",published:"تم النشر. جميع الزوار يرون النسخة الجديدة."},
 en:{editMode:"Edit mode",hint:"Click any text to change it, or ✎ next to an item. Changes stay a draft until you publish.",changes:"unpublished changes",noChanges:"No changes",publish:"Publish to everyone",publishing:"Publishing…",discard:"Discard changes",sure:"Sure? Click again",done:"Done editing",add:"Add",more:"Manage",edit:"Edit",del:"Delete",up:"Move up",down:"Move down",save:"Save",cancel:"Cancel",back:"Back to list",upload:"Upload image",remove:"Remove",noImg:"No image",pick:"Pick on map",pickHint:"Click the map to set the school's location",picked:"Location updated",changeImg:"Change image",imgTooBig:"Image is too large",imgErr:"Couldn't read the file. Try a JPG or PNG image.",conflict:"Someone else published a new version. The page will reload and your draft is kept for restoring.",readonly:"You don't have edit access to this site.",tooBig:"The site is too large to publish. Remove or shrink some images.",slow:"You published a lot in a short time. Wait a moment and try again.",invalid:"Publishing was refused because of invalid content.",failed:"Publishing failed. Try again in a moment.",draftFound:"Unpublished draft found",restore:"Restore",drop:"Delete",restored:"Draft restored",editGeneral:"General details",editPage:"Page details",editData:"Edit data",manage:"Manage list",items:"items",empty:"The list is empty",
- k_school:"School",k_program:"Program",k_news:"News story",k_event:"Event",k_story:"Story",k_job:"Job",k_tl:"Milestone",k_partner:"Partner",k_ticker:"Ticker item",k_goal:"Goal",k_five:"Subject (5 units)",k_staff:"Staff member",k_track:"Track",k_hl:"Highlight",k_sev:"Event",k_snews:"Notice",k_grade:"Grade",k_sfive:"Subject (5 units)",k_fac:"Facility",k_hero:"Header figure",k_leader:"Leader",k_cohort:"Graduating class",o_schoolinfo:"School page details",o_sseries:"School Bagrut data",o_net:"Network data",past:"Past",now:"Now",future:"Vision",menuTitle:"What do you want to add or manage?",adminOn:"Admin tools are on. Only you can see them.",csvHint:"Numbers separated by commas",published:"Published. Everyone sees the new version."}
+ k_school:"School",k_program:"Program",k_news:"News story",k_event:"Event",k_story:"Story",k_job:"Job",k_tl:"Milestone",k_partner:"Partner",k_ticker:"Ticker item",k_goal:"Goal",k_five:"Subject (5 units)",k_staff:"Staff member",k_track:"Track",k_hl:"Highlight",k_sev:"Event",k_snews:"Notice",k_grade:"Grade",k_sfive:"Subject (5 units)",k_fac:"Facility",k_hero:"Header figure",k_leader:"Leader",k_cohort:"Graduating class",o_schoolinfo:"School page details",o_sseries:"School Bagrut data",o_net:"Network data",o_settings:"Forms & inbox settings",past:"Past",now:"Now",future:"Vision",menuTitle:"What do you want to add or manage?",adminOn:"Admin tools are on. Only you can see them.",csvHint:"Numbers separated by commas",published:"Published. Everyone sees the new version."}
 };
 const LB=(he,ar,en)=>({he,ar,en});
 const SP=()=>SCHOOL_PAGES[CUR];
@@ -1505,6 +1517,7 @@ const SCH={
 const OBJ={
   schoolinfo:{get:()=>SP(),fields:[["principal","l10n",LB("שם המנהל/ת","اسم المدير/ة","Principal name")],["principalPhoto","image",LB("תמונת המנהל/ת","صورة المدير/ة","Principal photo")],["logo","image",LB("לוגו בית הספר","شعار المدرسة","School logo")],["affil","l10n",LB("שיוך (למשל תמר–ברנקו וייס)","الانتماء","Affiliation")],["cover","image",LB("תמונת רקע לראש העמוד","صورة خلفية لرأس الصفحة","Header background image")],["hue","color",LB("צבע בית הספר","لون المدرسة","School color")],["symbol","text",LB("סמל מוסד","رمز المؤسسة","School ID")],["phone","text",LB("טלפון","هاتف","Phone")],["email","text",LB("דוא\"ל","بريد إلكتروني","Email")],["addr","l10n",LB("כתובת","العنوان","Address")],["navQuery","text",LB("כתובת לניווט (Waze / Google)","عنوان الملاحة","Navigation address")],["directions","l10nl",LB("איך מגיעים","طريقة الوصول","How to get here")],["classes","num",LB("כיתות","صفوف","Classes")],["avgClass","num",LB("ממוצע תלמידים בכיתה","معدل الطلاب في الصف","Average class size")],["attendance","num",LB("% נוכחות","% حضور","Attendance %")],["girls","num",LB("% בנות במגמות מדע","% فتيات في العلوم","Girls in STEM %")],["vision","l10nl",LB("החזון","الرؤية","Vision")],["msg","l10nl",LB("דבר המנהל/ת","كلمة المدير/ة","Principal's message")],["klass","text",LB("כיתה במערכת לדוגמה (למשל י1)","الصف في البرنامج النموذجي","Sample timetable class")]]},
   sseries:{get:()=>SP(),fields:[["years","csvt",LB("שנים / מחזורים","السنوات / الأفواج","Years / classes")],["bagrut","csv",LB("% בגרות בבית הספר","% البجروت في المدرسة","School Bagrut %")],["national","csv",LB("% ממוצע ארצי","% المعدل القطري","National average %")]]},
+  settings:{get:()=>CONTENT.settings,fields:[["formEndpoint","text",LB("כתובת Apps Script (מסתיימת ב-/exec)","عنوان Apps Script (ينتهي بـ /exec)","Apps Script URL (ends with /exec)")],["sheetUrl","text",LB("קישור לגיליון הפניות (לשימושך בלבד)","رابط جدول الاستفسارات","Inbox sheet link")],["donateUrl","text",LB("קישור לעמוד תרומה מאובטח (לא חובה)","رابط صفحة تبرع آمنة","Secure donation page link")]]},
   net:{get:()=>DATA,fields:[["years","csvt",LB("שנים / מחזורים","السنوات / الأفواج","Years / classes")],["bagrut.tamar","csv",LB("% בגרות ברשת","% البجروت في الشبكة","Network Bagrut %")],["bagrut.national","csv",LB("% ממוצע ארצי","% المعدل القطري","National average %")],["kpi.five","num",LB("% 5 יח' מתמטיקה ברשת","% 5 وحدات رياضيات","Network 5-unit math %")],["kpi.girls","num",LB("% בנות במגמות מדע","% فتيات في العلوم","Girls in STEM %")]]}
 };
 function today(){const d=new Date();return String(d.getDate()).padStart(2,"0")+"."+String(d.getMonth()+1).padStart(2,"0")+"."+d.getFullYear()}
@@ -1524,6 +1537,7 @@ function normalize(){
   DATA.kpi=DATA.kpi||{five:31,girls:58};
   DATA.hero=DATA.hero||[];
   CONTENT.leaders=CONTENT.leaders||[];
+  CONTENT.settings=Object.assign({formEndpoint:"",sheetUrl:"",donateUrl:""},CONTENT.settings||{});
   DATA.schools.forEach(s=>{if(s.fivePct==null) s.fivePct=s.id==="alsana"?34:s.id==="hura"?24:0; s.short=s.short||s.town||LB("","",""); s.focus=s.focus||LB("","",""); s.level=s.level||LB("","",""); s.town=s.town||LB("","","");
     if(s.status==="active"&&!SCHOOL_PAGES[s.id]) SCHOOL_PAGES[s.id]=blankPage(s)});
   const nm=(f,l)=>({he:NAMES.f[f].he+" "+NAMES.l[l].he,ar:NAMES.f[f].ar+" "+NAMES.l[l].ar,en:NAMES.f[f].en+" "+NAMES.l[l].en});
@@ -1719,6 +1733,7 @@ function openMenu(){
   const lists=["hero","leader","school","news","event","program","job","story","tl","partner","ticker","goal","five"];
   openModal(`<h2 class="ed-title">${E("menuTitle")}</h2><div class="ed-menu">
     ${lists.map(k=>`<div class="ed-mi"><b>${E("k_"+k)}</b><span class="muted">${SCH[k].list().length} ${E("items")}</span><button type="button" class="chip" data-ed-add="${k}">+ ${E("add")}</button><button type="button" class="chip" data-ed-list="${k}">${E("manage")}</button></div>`).join("")}
+    <div class="ed-mi"><b>${FL("settings")}</b><span class="muted">${EP_RE.test((CONTENT.settings||{}).formEndpoint||"")?"✓":"—"}</span><button type="button" class="chip" data-ed-obj="settings">✎ ${E("edit")}</button>${SAFE_URL((CONTENT.settings||{}).sheetUrl)?`<a class="chip" href="${esc(SAFE_URL(CONTENT.settings.sheetUrl))}" target="_blank" rel="noopener">${FL("openSheet")}</a>`:"<span></span>"}</div>
     <div class="ed-mi"><b>${E("o_net")}</b><span></span><button type="button" class="chip" data-ed-obj="net">✎ ${E("edit")}</button><span></span></div>
     <div class="ed-mi"><b>${E("changeImg")} · ${T[LANG].brand}</b><span></span><button type="button" class="chip" id="edLogo">${E("upload")}</button><span></span></div>
     </div><div class="ed-actions"><span style="flex:1"></span><button type="button" class="btn btn-primary" id="menuDone">${E("done")}</button></div>`,true);
@@ -1941,6 +1956,100 @@ function drawCohortCharts(d){
   $$("#schoolView [data-coh]").forEach(b=>b.onclick=()=>{cohortSel=+b.dataset.coh;renderSchoolPage();requestAnimationFrame(()=>{const el=document.getElementById(CUR+"-data");if(el)el.scrollIntoView()})});
 }
 
+/* =========================================================
+   FORMS — כל הטפסים באתר נשלחים לגיליון Google אחד (Apps Script)
+   הרשמה · מועמדות למשרה · תרומה · פנייה כללית / תיאום סיור
+   ========================================================= */
+const FT={
+he:{consent:"אני מאשר/ת שמירת הפרטים לצורך טיפול בפנייה בלבד",name:"שם מלא",phone:"טלפון נייד",email:"דוא\"ל",message:"הודעה",send:"שליחה",sending:"שולח…",
+ ok:"תודה! הפרטים התקבלו ונחזור אליכם בהקדם.",err:"השליחה לא הצליחה. בדקו את החיבור ונסו שוב.",noEp:"הטפסים עדיין לא מחוברים. אפשר לנסות שוב מאוחר יותר.",
+ needConsent:"יש לאשר את שמירת הפרטים",badPhone:"מספר טלפון לא תקין (למשל 0501234567)",badEmail:"כתובת דוא\"ל לא תקינה",required:"נא למלא את שדות החובה",slow:"שלחתם פנייה ממש עכשיו. נסו שוב בעוד דקה.",
+ applyT:"הגשת מועמדות",job:"משרה",cv:"קורות חיים (PDF או Word, עד 4MB, לא חובה)",cvBad:"קובץ לא נתמך או גדול מדי",
+ donateT:"תרומה לרשת תמר",amount:"סכום (₪)",note:"הקדשה או הערה (לא חובה)",donateNote:"לא נגבה תשלום באתר. נציג יחזור אליכם לתיאום התרומה והקבלה.",payNow:"להמשך לתשלום מאובטח",
+ contactT:"שליחת פנייה",subject:"נושא",s_general:"שאלה כללית",s_enroll:"הרשמה",s_jobs:"משרות",s_donate:"תרומות",s_media:"תקשורת",s_tour:"תיאום סיור בבית הספר",school:"בית ספר",
+ settings:"הגדרות טפסים ופניות",endpoint:"כתובת Apps Script (מסתיימת ב-/exec)",sheetUrl:"קישור לגיליון הפניות (לשימושך)",donateUrl:"קישור לעמוד תרומה מאובטח (לא חובה)",openSheet:"פתיחת גיליון הפניות"},
+ar:{consent:"أوافق على حفظ التفاصيل لغرض معالجة الطلب فقط",name:"الاسم الكامل",phone:"هاتف نقال",email:"بريد إلكتروني",message:"رسالة",send:"إرسال",sending:"جارٍ الإرسال…",
+ ok:"شكرًا! استلمنا التفاصيل وسنعود إليكم قريبًا.",err:"لم ينجح الإرسال. تحققوا من الاتصال وحاولوا مجددًا.",noEp:"النماذج غير موصولة بعد. حاولوا مجددًا لاحقًا.",
+ needConsent:"يجب الموافقة على حفظ التفاصيل",badPhone:"رقم هاتف غير صالح (مثلًا 0501234567)",badEmail:"بريد إلكتروني غير صالح",required:"يرجى تعبئة الحقول الإلزامية",slow:"أرسلتم طلبًا للتو. حاولوا مجددًا بعد دقيقة.",
+ applyT:"تقديم طلب توظيف",job:"الوظيفة",cv:"سيرة ذاتية (PDF أو Word، حتى 4MB، غير إلزامي)",cvBad:"ملف غير مدعوم أو كبير جدًا",
+ donateT:"تبرع لشبكة تمار",amount:"المبلغ (₪)",note:"إهداء أو ملاحظة (غير إلزامي)",donateNote:"لا يتم الدفع في الموقع. سيتواصل معكم ممثل لتنسيق التبرع والإيصال.",payNow:"متابعة إلى الدفع الآمن",
+ contactT:"إرسال استفسار",subject:"الموضوع",s_general:"سؤال عام",s_enroll:"تسجيل",s_jobs:"وظائف",s_donate:"تبرعات",s_media:"إعلام",s_tour:"تنسيق جولة في المدرسة",school:"المدرسة",
+ settings:"إعدادات النماذج والاستفسارات",endpoint:"عنوان Apps Script (ينتهي بـ /exec)",sheetUrl:"رابط جدول الاستفسارات (لاستخدامك)",donateUrl:"رابط صفحة تبرع آمنة (غير إلزامي)",openSheet:"فتح جدول الاستفسارات"},
+en:{consent:"I agree to my details being stored only to handle this request",name:"Full name",phone:"Mobile phone",email:"Email",message:"Message",send:"Send",sending:"Sending…",
+ ok:"Thank you! We received your details and will be in touch soon.",err:"Sending failed. Check your connection and try again.",noEp:"Forms aren't connected yet. Please try again later.",
+ needConsent:"Please agree to storing your details",badPhone:"Invalid phone number (e.g. 0501234567)",badEmail:"Invalid email address",required:"Please fill in the required fields",slow:"You just sent a request. Try again in a minute.",
+ applyT:"Apply for a job",job:"Position",cv:"CV (PDF or Word, up to 4MB, optional)",cvBad:"Unsupported or too large file",
+ donateT:"Donate to Tamar",amount:"Amount (₪)",note:"Dedication or note (optional)",donateNote:"No payment is taken on this site. A representative will contact you to arrange the gift and receipt.",payNow:"Continue to secure payment",
+ contactT:"Send a message",subject:"Subject",s_general:"General question",s_enroll:"Enrollment",s_jobs:"Jobs",s_donate:"Donations",s_media:"Media",s_tour:"Book a school visit",school:"School",
+ settings:"Forms & inbox settings",endpoint:"Apps Script URL (ends with /exec)",sheetUrl:"Link to your inbox sheet (for you)",donateUrl:"Secure donation page link (optional)",openSheet:"Open inbox sheet"}
+};
+const FL=k=>FT[LANG][k]||FT.he[k];
+const EP_RE=/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/;
+const SAFE_URL=u=>/^https:\/\/[^\s"'<>]+$/.test(u||"")?u:"";
+const normPhone=v=>String(v||"").replace(/[\s\-()]/g,"").replace(/^\+972/,"0");
+const okPhone=v=>/^0\d{8,9}$/.test(normPhone(v));
+const okEmail=v=>!v||/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]{2,}$/.test(v);
+let FORM_OPENED=0;
+async function sendForm(type,data,hp){
+  const st=CONTENT.settings||{}; const ep=st.formEndpoint||"";
+  if(!EP_RE.test(ep)) throw Object.assign(new Error("no_endpoint"),{code:"no_endpoint"});
+  let last=0; try{last=+localStorage.getItem("tamar-last-"+type)||0}catch(e){}
+  if(Date.now()-last<45000) throw Object.assign(new Error("slow"),{code:"slow"});
+  const body=JSON.stringify({type,lang:LANG,hp:hp||"",elapsed:Date.now()-FORM_OPENED,data});
+  if(body.length>6e6) throw Object.assign(new Error("big"),{code:"cv"});
+  await fetch(ep,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body});
+  try{localStorage.setItem("tamar-last-"+type,String(Date.now()))}catch(e){}
+}
+function formErr(e){const c=e&&e.code;return c==="no_endpoint"?FL("noEp"):c==="slow"?FL("slow"):c==="cv"?FL("cvBad"):FL("err")}
+const HP=`<div class="hpf" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>`;
+const CONSENT=id=>`<label class="consent"><input type="checkbox" id="${id}"> <span>${FL("consent")}</span></label>`;
+/* generic public form in the site modal */
+function openPublicForm(type,title,fields,intro){
+  FORM_OPENED=Date.now();
+  const f=(x,i)=>{const [k,t,lab,req,opts,val]=x;const id="pf_"+k;const star=req?' <b class="req">*</b>':"";
+    if(t==="select") return `<div class="field"><label for="${id}">${esc(lab)}${star}</label><select id="${id}" data-k="${k}">${opts.map(([v,n])=>`<option value="${esc(v)}" ${v===val?"selected":""}>${esc(n)}</option>`).join("")}</select></div>`;
+    if(t==="textarea") return `<div class="field"><label for="${id}">${esc(lab)}${star}</label><textarea id="${id}" data-k="${k}" rows="4" maxlength="2000" ${req?"required":""}>${esc(val||"")}</textarea></div>`;
+    if(t==="file") return `<div class="field"><label for="${id}">${esc(lab)}</label><input id="${id}" data-k="${k}" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></div>`;
+    return `<div class="field"><label for="${id}">${esc(lab)}${star}</label><input id="${id}" data-k="${k}" ${t==="tel"?'type="tel" inputmode="tel" dir="ltr" autocomplete="tel"':t==="email"?'type="email" dir="ltr" autocomplete="email"':t==="num"?'type="number" min="1" dir="ltr"':'autocomplete="name"'} maxlength="200" value="${esc(val||"")}" ${req?"required":""}></div>`};
+  openModal(`<h2 class="ed-title">${esc(title)}</h2>${intro?`<p class="muted" style="margin:-8px 0 16px">${esc(intro)}</p>`:""}<form id="pubForm" novalidate>${fields.map(f).join("")}${HP}${CONSENT("pfConsent")}<p class="form-msg" id="pfMsg" role="status"></p><div class="ed-actions"><span style="flex:1"></span><button type="button" class="btn btn-ghost" id="pfCancel">${E("cancel")}</button><button type="submit" class="btn btn-primary" id="pfSend">${FL("send")}</button></div></form>`,true);
+  $("#pfCancel").onclick=closeModal;
+  return new Promise(resolve=>{
+    $("#pubForm").onsubmit=async e=>{e.preventDefault();const msg=$("#pfMsg");msg.className="form-msg";
+      const data={};let bad="";
+      for(const x of fields){const [k,t,,req]=x;const el=$(`#pubForm [data-k="${k}"]`);if(t==="file")continue;const v=el.value.trim();data[k]=v;
+        el.classList.toggle("bad",!!(req&&!v));if(req&&!v)bad=FL("required");}
+      if(!bad&&data.phone!=null&&data.phone!==""&&!okPhone(data.phone))bad=FL("badPhone");
+      if(!bad&&!okEmail(data.email))bad=FL("badEmail");
+      if(!bad&&!$("#pfConsent").checked)bad=FL("needConsent");
+      const fileEl=$('#pubForm input[type="file"]');
+      if(!bad&&fileEl&&fileEl.files[0]){const fl=fileEl.files[0];if(fl.size>4*1024*1024||!/\.(pdf|docx?)$/i.test(fl.name))bad=FL("cvBad");
+        else data.cv={name:fl.name,type:fl.type,data:await new Promise((r,j)=>{const fr=new FileReader();fr.onload=()=>r(String(fr.result).split(",")[1]||"");fr.onerror=j;fr.readAsDataURL(fl)})}}
+      if(bad){msg.textContent=bad;msg.classList.add("bad");return}
+      if(data.phone)data.phone=normPhone(data.phone);
+      const btn=$("#pfSend");btn.disabled=true;btn.textContent=FL("sending");
+      try{await sendForm(type,data,$('#pubForm [name="website"]').value);
+        $("#modalBody").innerHTML=`<div class="ok"><div class="big">✓</div><h3>${FL("ok")}</h3></div>`;resolve(data)}
+      catch(err){msg.textContent=formErr(err);msg.classList.add("bad");btn.disabled=false;btn.textContent=FL("send")}};
+  });
+}
+function openApply(i){const j=CONTENT.jobs[i];if(!j)return;
+  openPublicForm("job",FL("applyT")+" · "+Lr(j.t),[["job","text",FL("job"),true,null,Lr(j.t)],["name","text",FL("name"),true],["phone","tel",FL("phone"),true],["email","email",FL("email"),false],["message","textarea",FL("message"),false],["cv","file",FL("cv"),false]])}
+function openDonate(){const st=CONTENT.settings||{};
+  openPublicForm("donate",FL("donateT"),[["name","text",FL("name"),true],["phone","tel",FL("phone"),true],["email","email",FL("email"),false],["amount","num",FL("amount"),true,null,String(amount)],["note","textarea",FL("note"),false]],FL("donateNote"))
+   .then(()=>{const u=SAFE_URL(st.donateUrl);if(u)$("#modalBody .ok").insertAdjacentHTML("beforeend",`<a class="btn btn-primary" href="${esc(u)}" target="_blank" rel="noopener">${FL("payNow")}</a>`)})}
+function openContact(preset){preset=preset||{};
+  const subj=[["general",FL("s_general")],["tour",FL("s_tour")],["enroll",FL("s_enroll")],["jobs",FL("s_jobs")],["donate",FL("s_donate")],["media",FL("s_media")]];
+  const schools=[["",""],...DATA.schools.filter(s=>s.status==="active").map(s=>[Lr(s.name),Lr(s.name)])];
+  openPublicForm("contact",FL("contactT"),[["subject","select",FL("subject"),true,subj,preset.subject||"general"],["school","select",FL("school"),false,schools,preset.school||""],["name","text",FL("name"),true],["phone","tel",FL("phone"),true],["email","email",FL("email"),false],["message","textarea",FL("message"),true]])}
+async function submitEnroll(){
+  const btn=$("#nextBtn");
+  if(!$("#enConsent").checked){toast(FL("needConsent"));return false}
+  const data={parent:$("#pn").value.trim(),phone:normPhone($("#ph").value),email:$("#em").value.trim(),child:$("#cn").value.trim(),grade:$("#gr").value,school:$("#sc").value,interest:$("#in").value,notes:$("#nt").value.trim()};
+  btn.disabled=true;btn.textContent=FL("sending");
+  try{await sendForm("enroll",data,$('#enrollForm [name="website"]').value);btn.disabled=false;return true}
+  catch(err){toast(formErr(err));btn.disabled=false;btn.textContent=T[LANG]["e.send"];return false}
+}
+
 /* ============ interactions ============ */
 $$("[data-lang]").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
 $("#burger").onclick=()=>$("#links").classList.toggle("open");
@@ -1959,7 +2068,8 @@ $("#botForm").onsubmit=e=>{e.preventDefault();const v=$("#botInput").value.trim(
   const qs=Lr(CONTENT.bot);const low=v.toLowerCase();
   const hit=qs.find(q=>q[0].toLowerCase().split(/\s+/).some(w=>w.length>2&&low.includes(w.replace(/[?؟]/g,""))));
   botAsk(v,hit?hit[1]:(LANG==="en"?"Great question! A team member will get back to you soon (demo).":LANG==="ar"?"سؤال رائع! سيعود إليكم أحد أفراد الطاقم قريبًا (تجريبي).":"שאלה מצוינת! נציג/ה יחזרו אליכם בקרוב (הדגמה)."))};
-$("#donateBtn").onclick=()=>toast(S("donated"));
+$("#donateBtn").onclick=()=>openDonate();
+$("#contactBtn").onclick=()=>openContact();
 
 /* enrollment wizard */
 let step=1;
@@ -1968,7 +2078,11 @@ function showStep(){ $$("[data-step]").forEach(d=>d.classList.toggle("hidden",+d
   $("#prevBtn").style.visibility=step>1&&step<4?"visible":"hidden";
   $("#nextBtn").textContent=step===3?T[LANG]["e.send"]:T[LANG]["e.next"];
   $("#formNav").style.display=step===4?"none":"flex"; }
-$("#nextBtn").onclick=()=>{const req=$$(`[data-step="${step}"] [required]`);if(req.some(i=>!i.value.trim())){req.forEach(i=>i.style.borderColor=i.value.trim()?"":"var(--accent)");toast(T[LANG]["e.req"]);return}step++;showStep()};
+$("#nextBtn").onclick=async()=>{if(step===1&&!FORM_OPENED)FORM_OPENED=Date.now();const req=$$(`[data-step="${step}"] [required]`);if(req.some(i=>!i.value.trim())){req.forEach(i=>i.style.borderColor=i.value.trim()?"":"var(--accent)");toast(T[LANG]["e.req"]);return}
+  if(step===1&&!okPhone($("#ph").value)){$("#ph").style.borderColor="var(--accent)";toast(FL("badPhone"));return}
+  if(step===1&&!okEmail($("#em").value.trim())){$("#em").style.borderColor="var(--accent)";toast(FL("badEmail"));return}
+  if(step===3&&!(await submitEnroll()))return;
+  step++;showStep()};
 $("#prevBtn").onclick=()=>{step--;showStep()};
 
 /* counters + reveal */
