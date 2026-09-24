@@ -31,3 +31,12 @@
 `python3 build-public.py` יוצר את התיקייה `public/`: עותק לקריאה בלבד, בלי שום נקודת כניסה לעריכה,
 עם Content-Security-Policy מחמיר, קובץ `_headers` (HSTS, X-Frame-Options, nosniff ועוד) ו-`robots.txt`.
 את `public/` מעלים לאחסון סטטי עם דומיין משלכם (למשל Cloudflare Pages או Netlify) ומחברים ל-Google Search Console.
+
+## הפעלה לאתר רשמי – רשימת צעדים
+1. **דומיין ואחסון:** רוכשים דומיין (למשל ב-domain.co.il או Cloudflare), ומעלים את `public/` ל-Cloudflare Pages או Netlify.
+2. **בנייה:** `python3 build-public.py --site-url https://הדומיין-שלכם --endpoint <כתובת /exec>`
+   מוסיף canonical, sitemap.xml, נתונים מובנים לגוגל (Schema.org) וחיבור לטפסים.
+3. **גוגל:** מוסיפים את האתר ל-Google Search Console, מאמתים בעלות ושולחים את `sitemap.xml`.
+4. **מדידת תנועה (לא חובה):** יוצרים Web Analytics חינמי ב-Cloudflare ומוסיפים `--cf-analytics <token>`. המדידה אנונימית ובלי עוגיות.
+5. **תרומות מקוונות:** פותחים עמוד תרומה אצל ספק סליקה ישראלי שמנפיק קבלות לפי סעיף 46, ומדביקים את הקישור בהגדרות הטפסים.
+6. **במצב עריכה ← הגדרות טפסים ופניות:** ממלאים את פרטי רכז/ת הנגישות, מספר העמותה, קישור לדוח השנתי, וואטסאפ למזכירות ודוא"ל לפניות פרטיות.

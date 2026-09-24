@@ -15,7 +15,9 @@ const TABS = {
   enroll:  { name: 'הרשמה',     cols: [['parent','שם ההורה'],['phone','טלפון'],['email','דוא"ל'],['child','שם התלמיד/ה'],['grade','כיתה'],['school','בית ספר'],['interest','תחום עניין'],['notes','הערות']] },
   job:     { name: 'מועמדויות', cols: [['job','משרה'],['name','שם'],['phone','טלפון'],['email','דוא"ל'],['message','הודעה'],['cv','קורות חיים']] },
   donate:  { name: 'תרומות',    cols: [['name','שם'],['phone','טלפון'],['email','דוא"ל'],['amount','סכום (₪)'],['note','הקדשה / הערה']] },
-  contact: { name: 'פניות',     cols: [['subject','נושא'],['school','בית ספר'],['name','שם'],['phone','טלפון'],['email','דוא"ל'],['message','הודעה']] }
+  contact: { name: 'פניות',     cols: [['subject','נושא'],['school','בית ספר'],['name','שם'],['phone','טלפון'],['email','דוא"ל'],['message','הודעה']] },
+  join:    { name: 'הצטרפות לרשת', cols: [['org','בית ספר / רשות'],['town','יישוב'],['name','שם'],['role','תפקיד'],['phone','טלפון'],['email','דוא"ל'],['message','הודעה']] },
+  newsletter: { name: 'ניוזלטר', cols: [['name','שם'],['email','דוא"ל'],['phone','טלפון']] }
 };
 
 function doPost(e) {
