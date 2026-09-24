@@ -467,6 +467,9 @@ html[dir="rtl"] .sel{text-align:right}
 @media (max-width:980px){.sv-stats{grid-template-columns:repeat(3,1fr)}.sv-stat:nth-child(4){border-inline-start:0}.sv-stat:nth-child(n+4){border-top:1px solid var(--line)}.sv-over,.sv-data2,.sv-evgrid,.sv-sched{grid-template-columns:1fr}}
 @media (max-width:600px){.sv-head{grid-template-columns:1fr}.sv-mono{width:78px;height:78px;font-size:2.6rem;border-radius:20px}.sv-high{grid-template-columns:1fr 1fr}.sv-stat{padding:14px}.sv-stat b{font-size:1.5rem}.sv-rings{grid-template-columns:repeat(3,1fr)}.school .go{display:none}}
 
+.coh-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.coh-kpis{margin-bottom:0}
+.stats .ed-add{width:100%;height:100%}
 /* ===== admin / edit mode ===== */
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 .ed-pen{position:relative;color:var(--brand)}
@@ -1034,7 +1037,6 @@ function setLang(l){
 /* ============ renderers ============ */
 function renderTicker(){const items=CONTENT.ticker.map(L);$("#ticker").innerHTML=[...items,...items].map(x=>`<span>${x}</span>`).join("");dynBtn($(".ticker"),`<button type="button" class="ed-pill" data-ed-list="ticker">✎ ${E("manage")}</button>`)}
 function dynBtn(host,html){if(!host)return;let b=host.querySelector(":scope > .ed-dyn");if(!EDIT){if(b)b.remove();return}if(!b){b=document.createElement("span");b.className="ed-dyn";host.appendChild(b)}b.innerHTML=html}
-function renderHeroStats(){const act=DATA.schools.filter(s=>s.status==="active"),plan=DATA.schools.length-act.length;const v=[act.reduce((a,s)=>a+(+s.students||0),0),act.reduce((a,s)=>a+(+s.teachers||0),0),DATA.bagrut.tamar.at(-1)||0,act.length];$$(".stats .num").forEach((el,i)=>{el.dataset.count=v[i];el.textContent=num(v[i])+(el.dataset.suffix||"")});$("#planNote").textContent=plan?` · ${plan} ${Sr("plan")}`:""}
 function renderTimeline(){$("#timeline").innerHTML=CONTENT.timeline.map((x,i)=>`<div class="tl ${esc(x.c)} edi">${edb("tl",i)}<div class="yr">${esc(x.y)}</div><p>${L(x.t)}</p></div>`).join("")+eda("tl")}
 
 let schFilter="all", schQuery="", activeSchool=null;
@@ -1064,7 +1066,7 @@ function renderSchools(){
   const list=DATA.schools.filter(matchSchool);
   $("#schoolList").innerHTML=(list.length?list.map(s=>`<div class="card school edi ${s.status==="plan"?"plan":""}" data-id="${esc(s.id)}" tabindex="0" role="button">${edb("school",DATA.schools.indexOf(s))}
     <div class="badge">${L(s.town).charAt(0)}</div>
-    <div><h3>${L(s.name)}</h3><div class="meta"><span class="tag ${s.status==="plan"?"plan":""}">${S(s.status)}</span><span>${L(s.level)}</span>${s.status==="active"?`<span>${fmt(s.students)} ${S("students")}</span>`:`<span>${S("opening")}: ${esc(s.opening)}</span>`}</div></div>
+    <div><h3>${L(s.name)}</h3><div class="meta"><span class="tag ${s.status==="plan"?"plan":""}">${S(s.status)}</span><span>${L(s.level)}</span>${s.status==="active"?(s.students?`<span>${fmt(s.students)} ${S("students")}</span>`:(()=>{const c=sortedCohorts(SCHOOL_PAGES[s.id])[0];return c?`<span>${c.n} ${P("grads")} ${L(c.label)}</span>`:""})()):`<span>${S("opening")}: ${esc(s.opening)}</span>`}</div></div>
     <div class="go">${s.status==="active"?SPT[LANG].open+" "+(LANG==="en"?"→":"←"):(LANG==="en"?"→":"←")}</div></div>`).join(""):`<div class="empty">${S("noRes")}</div>`)+eda("school");
   $$(".school").forEach(c=>{c.onclick=()=>openSchool(c.dataset.id);c.onkeydown=e=>{if(e.key==="Enter")openSchool(c.dataset.id)};c.onmouseenter=()=>hl(c.dataset.id,true);c.onmouseleave=()=>hl(c.dataset.id,false)});
   renderMap();
@@ -1095,49 +1097,38 @@ function sparkline(vals){
   const pts=vals.map((v,i)=>[i*(w/(vals.length-1)),h-3-(v-mn)/(mx-mn||1)*(h-6)]);
   return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true" style="width:100%;direction:ltr"><polyline fill="none" stroke="var(--s1)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="${pts.map(p=>p.join(",")).join(" ")}"/><circle cx="${pts.at(-1)[0]}" cy="${pts.at(-1)[1]}" r="3" fill="var(--s1)"/></svg>`;
 }
-function renderKpis(){
-  const s=scopeFactor();
-  const students=s?s.students:DATA.schools.reduce((a,x)=>a+(x.students||0),0);
-  const teachers=s?s.teachers:DATA.schools.reduce((a,x)=>a+(x.teachers||0),0);
-  const bag=s?s.bagrut:DATA.bagrut.tamar.at(-1);
-  const k=[
-    {l:S("kStudents"),v:fmt(students),d:"+18%",sp:[610,680,760,820,900,1050,1240].map(v=>s?Math.round(v*s.students/1240):v)},
-    {l:S("kTeachers"),v:fmt(teachers),d:"+12",sp:[40,48,55,62,71,84,96]},
-    {l:S("kBagrut"),v:bag+"%",d:"+2pt",sp:DATA.bagrut.tamar},
-    {l:S("kFive"),v:esc(s?(s.fivePct??0):DATA.kpi.five)+"%",d:"+4pt",sp:[14,17,19,22,25,27,31]},
-    {l:S("kGirls"),v:esc(DATA.kpi.girls)+"%",d:"+6pt",sp:[38,41,45,48,52,55,58]}
-  ];
-  $("#kpis").innerHTML=k.map(x=>`<div class="card kpi"><div class="l">${x.l}</div><div class="v">${x.v}</div>${sparkline(x.sp)}<div class="d">▲ ${x.d} <span class="muted" style="font-weight:400">${S("vsLast")}</span></div></div>`).join("");
-}
 function drawLine(el,tableEl,Y,A,B,la,lb,title){
-  const n=Math.min(Y.length,A.length,B.length); Y=Y.slice(0,n);A=A.slice(0,n).map(Number);B=B.slice(0,n).map(Number);
+  const hasB=Array.isArray(B)&&B.length>0;
+  const n=Math.min(Y.length,A.length,hasB?B.length:Infinity); Y=Y.slice(0,n).map(esc);A=A.slice(0,n).map(Number);B=hasB?B.slice(0,n).map(Number):[];
   if(n<2){el.innerHTML=`<p class="muted">—</p>`;tableEl.innerHTML="";return}
   la=esc(la);lb=esc(lb);
   const W=640,H=300,m={t:20,r:64,b:30,l:36};
-  const lo=Math.max(0,Math.floor((Math.min(...A,...B)-5)/10)*10);
+  const lo=Math.max(0,Math.floor((Math.min(...A,...(hasB?B:A))-5)/10)*10);
   const x=i=>m.l+i*(W-m.l-m.r)/(Y.length-1), y=v=>m.t+(1-(v-lo)/(100-lo))*(H-m.t-m.b);
   let g="";
   for(let t=lo;t<=100;t+=10){g+=`<line class="gridline" x1="${m.l}" x2="${W-m.r}" y1="${y(t)}" y2="${y(t)}"/><text class="axis" x="${m.l-8}" y="${y(t)+4}" text-anchor="end">${t}%</text>`}
   Y.forEach((yr,i)=>{g+=`<text class="axis" x="${x(i)}" y="${H-8}" text-anchor="middle">${yr}</text>`});
   const path=arr=>arr.map((v,i)=>(i?"L":"M")+x(i).toFixed(1)+","+y(v).toFixed(1)).join("");
-  g+=`<path d="${path(B)}" fill="none" stroke="var(--s2)" stroke-width="2" stroke-dasharray="5 4" stroke-linecap="round"/>`;
+  if(hasB) g+=`<path d="${path(B)}" fill="none" stroke="var(--s2)" stroke-width="2" stroke-dasharray="5 4" stroke-linecap="round"/>`;
   g+=`<path d="${path(A)}" fill="none" stroke="var(--s1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
-  const li=Y.length-1;
-  g+=`<circle cx="${x(li)}" cy="${y(A[li])}" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/><circle cx="${x(li)}" cy="${y(B[li])}" r="5" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/>`;
-  g+=`<text class="dlabel" x="${x(li)+10}" y="${y(A[li])+4}">${A[li]}%</text><text class="dlabel" x="${x(li)+10}" y="${y(B[li])+4}">${B[li]}%</text>`;
+  A.forEach((v,i)=>{g+=`<circle cx="${x(i)}" cy="${y(v)}" r="${i===n-1?5:4}" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/>`});
+  const li=n-1;
+  if(hasB) g+=`<circle cx="${x(li)}" cy="${y(B[li])}" r="5" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/><text class="dlabel" x="${x(li)+10}" y="${y(B[li])+4}">${B[li]}%</text>`;
+  g+=`<text class="dlabel" x="${x(li)+10}" y="${y(A[li])+4}">${A[li]}%</text>`;
+  if(!hasB&&n<=4) A.slice(0,-1).forEach((v,i)=>{g+=`<text class="dlabel" x="${x(i)}" y="${y(v)-12}" text-anchor="middle">${v}%</text>`});
   g+=`<line class="gridline xh" y1="${m.t}" y2="${H-m.b}" stroke="var(--muted)" stroke-dasharray="3 3" opacity="0"/>`;
-  g+=`<g class="hdots" opacity="0"><circle class="hA" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/><circle class="hB" r="5" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/></g>`;
+  g+=`<g class="hdots" opacity="0"><circle class="hA" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/>${hasB?`<circle class="hB" r="5" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/>`:""}</g>`;
   g+=`<rect class="hit" x="${m.l}" y="${m.t}" width="${W-m.l-m.r}" height="${H-m.t-m.b}" fill="transparent"/>`;
-  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${title}">${g}</svg><div class="tip"></div>`;
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(title)}">${g}</svg><div class="tip"></div>`;
   const svg=el.querySelector("svg"), tip=el.querySelector(".tip"), q=c=>svg.querySelector(c);
   q(".hit").addEventListener("pointermove",ev=>{const r=svg.getBoundingClientRect();const px=(ev.clientX-r.left)*W/r.width;
     const i=Math.max(0,Math.min(li,Math.round((px-m.l)/((W-m.l-m.r)/li))));
     q(".xh").setAttribute("x1",x(i));q(".xh").setAttribute("x2",x(i));q(".xh").setAttribute("opacity",1);
-    q(".hA").setAttribute("cx",x(i));q(".hA").setAttribute("cy",y(A[i]));q(".hB").setAttribute("cx",x(i));q(".hB").setAttribute("cy",y(B[i]));q(".hdots").setAttribute("opacity",1);
-    tip.innerHTML=`<b>${Y[i]}</b><br><i style="background:var(--s1)"></i>${la}: ${A[i]}%<br><i style="background:var(--s2)"></i>${lb}: ${B[i]}%<br><span style="opacity:.75">${S("gap")}: ${A[i]-B[i]>0?"+":""}${A[i]-B[i]}pt</span>`;
-    tip.style.opacity=1;const tx=x(i)*r.width/W;tip.style.left=(tx>r.width*0.6?tx-tip.offsetWidth-14:tx+14)+"px";tip.style.top=(y(Math.max(A[i],B[i]))*r.height/H-10)+"px"});
+    q(".hA").setAttribute("cx",x(i));q(".hA").setAttribute("cy",y(A[i]));if(hasB){q(".hB").setAttribute("cx",x(i));q(".hB").setAttribute("cy",y(B[i]))}q(".hdots").setAttribute("opacity",1);
+    tip.innerHTML=`<b>${Y[i]}</b><br><i style="background:var(--s1)"></i>${la}: ${A[i]}%`+(hasB?`<br><i style="background:var(--s2)"></i>${lb}: ${B[i]}%<br><span style="opacity:.75">${S("gap")}: ${A[i]-B[i]>0?"+":""}${Math.round((A[i]-B[i])*10)/10}pt</span>`:"");
+    tip.style.opacity=1;const tx=x(i)*r.width/W;tip.style.left=(tx>r.width*0.6?tx-tip.offsetWidth-14:tx+14)+"px";tip.style.top=(y(hasB?Math.max(A[i],B[i]):A[i])*r.height/H-10)+"px"});
   q(".hit").addEventListener("pointerleave",()=>{tip.style.opacity=0;q(".xh").setAttribute("opacity",0);q(".hdots").setAttribute("opacity",0)});
-  tableEl.innerHTML=`<table class="data"><thead><tr><th>${S("year")}</th><th>${la}</th><th>${lb}</th></tr></thead><tbody>${Y.map((yr,i)=>`<tr><td>${yr}</td><td>${A[i]}%</td><td>${B[i]}%</td></tr>`).join("")}</tbody></table>`;
+  tableEl.innerHTML=`<table class="data"><thead><tr><th>${S("year")}</th><th>${la}</th>${hasB?`<th>${lb}</th>`:""}</tr></thead><tbody>${Y.map((yr,i)=>`<tr><td>${yr}</td><td>${A[i]}%</td>${hasB?`<td>${B[i]}%</td>`:""}</tr>`).join("")}</tbody></table>`;
 }
 function drawBars(el,tableEl,d,keyLabel,unit,title){
   if(!d.length){el.innerHTML=`<p class="muted">—</p>`;tableEl.innerHTML="";return}
@@ -1165,7 +1156,7 @@ function lineChart(){
 }
 function barChart(){
   const s=scopeFactor(); const f=s?s.students/1240:1;
-  const d=DATA.fiveUnits.map(x=>({k:L(x.k),v:Math.round(x.v*f)})).sort((a,b)=>b.v-a.v);
+  const d=DATA.fiveUnits.map(x=>({k:Lr(x.k),v:Math.round(x.v*f)})).sort((a,b)=>b.v-a.v);
   drawBars($("#c2"),$("#c2-table"),d,S("subject"),S("students"),T[LANG]["c2.t"]);
 }
 function renderGoals(){
@@ -1278,7 +1269,7 @@ const ini=o=>esc(Lr(o).trim().split(/\s+/).filter(Boolean).map(w=>w[0]).slice(0,
 
 function renderSchoolPage(){
   const si=DATA.schools.findIndex(x=>x.id===CUR), s=DATA.schools[si], d=SCHOOL_PAGES[CUR]; if(!s||!d) return;
-  const id=CUR, arrow=LANG==="en"?"←":"→";
+  const id=CUR, arrow=LANG==="en"?"←":"→", hasCoh=!!(d.cohorts&&d.cohorts.length);
   document.title=Lr(s.name)+" | "+T[LANG].brand;
   const secs=[["overview",P("overview")],["data",P("data")],["staff",P("staff")],["tracks",P("tracks")],["schedule",P("schedule")],["events",P("events")],["contact",P("contact")]];
   const stat=(v,l)=>`<div class="sv-stat"><b>${v}</b><span>${l}</span></div>`;
@@ -1300,7 +1291,7 @@ function renderSchoolPage(){
           <div class="cta"><a class="btn sv-btn" href="#enroll">${P("enroll")}</a><button class="btn sv-btn-ghost" id="tourBtn" type="button">${P("tour")}</button></div>
         </div>
       </div>
-      <div class="sv-stats">${stat(fmt(+s.students||0),P("students"))}${stat(esc(s.teachers??0),P("teachers"))}${stat(esc(d.classes??0),P("classes"))}${stat(esc(d.avgClass??0),P("avgClass"))}${stat(esc(d.attendance??0)+"%",P("attendance"))}${stat(esc(s.bagrut??0)+"%",P("bagrut"))}</div>
+      <div class="sv-stats">${cohortStats(d)?cohortStats(d).map(([v,l])=>stat(esc(v),esc(l))).join(""):stat(fmt(+s.students||0),P("students"))+stat(esc(s.teachers??0),P("teachers"))+stat(esc(d.classes??0),P("classes"))+stat(esc(d.avgClass??0),P("avgClass"))+stat(esc(d.attendance??0)+"%",P("attendance"))+stat(esc(s.bagrut??0)+"%",P("bagrut"))}</div>
     </div>
   </div>
   <nav class="sv-nav" aria-label="${L(s.name)}"><div class="wrap">${secs.map(([k,v])=>`<a href="#${id}-${k}">${v}</a>`).join("")}</div></nav>
@@ -1312,23 +1303,7 @@ function renderSchoolPage(){
     <div><span class="eyebrow">${P("pride")}</span><div class="sv-high">${d.highlights.map((h,i)=>`<div class="card edi">${edb("hl",i)}<b><bdi dir="ltr">${esc(h.v)}</bdi></b><span>${L(h.l)}</span></div>`).join("")}${eda("hl")}</div></div>
   </div></section>
 
-  <section id="${id}-data" class="sv-sec alt"><div class="wrap">
-    <span class="eyebrow">${P("data")}</span><h2>${P("dataLead")}</h2>
-    <div class="grid charts">
-      <div class="card chart-card">${edo("sseries")}<div class="chart-top"><div><h3>${P("bagrutT")}</h3><div class="sub">${P("bagrutS")}</div></div>${seg("sc1")}</div>
-        <div class="legend"><span><i style="background:var(--s1)"></i>${L(s.short)}</span><span><i style="background:var(--s2)"></i>${P("nat")}</span></div>
-        <div class="chart" id="sc1"></div><div id="sc1-table" class="hidden"></div></div>
-      <div class="card chart-card">${edl("grade")}<div class="chart-top"><div><h3>${P("gradesT")}</h3><div class="sub">${P("gradesS")}</div></div>${seg("sc2")}</div>
-        <div class="chart" id="sc2"></div><div id="sc2-table" class="hidden"></div></div>
-    </div>
-    <div class="grid sv-data2">
-      <div class="card chart-card">${edl("sfive")}<div class="chart-top"><div><h3>${P("fiveT")}</h3><div class="sub">${P("fiveS")}</div></div>${seg("sc3")}</div>
-        <div class="chart" id="sc3"></div><div id="sc3-table" class="hidden"></div></div>
-      <div class="card sv-rings">
-        ${[[d.attendance,P("attendance")],[s.bagrut,P("bagrut")],[d.girls,S("kGirls")]].map(([v,l])=>{v=Math.max(0,Math.min(100,+v||0));return `<div class="ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="50" fill="none" stroke="var(--bg-2)" stroke-width="12"/><circle cx="60" cy="60" r="50" fill="none" stroke="var(--s1)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(v/100*314.16).toFixed(1)} 314.16" transform="rotate(-90 60 60)"/></svg><b>${v}%</b><span>${l}</span></div>`}).join("")}
-      </div>
-    </div>
-  </div></section>
+  <section id="${id}-data" class="sv-sec alt"><div class="wrap">${hasCoh?cohortSection(s,d,id):legacyData(s,d,id)}</div></section>
 
   <section id="${id}-staff" class="sv-sec"><div class="wrap">
     <div class="sec-head" style="margin-bottom:22px"><div><span class="eyebrow">${P("staff")}</span><h2>${P("staffLead")}</h2></div></div>
@@ -1365,15 +1340,37 @@ function renderSchoolPage(){
     </div>
   </div></section>`;
 
+  if(hasCoh) drawCohortCharts(d); else {
   drawLine($("#sc1"),$("#sc1-table"),d.years,d.bagrut,d.national,Lr(s.short),P("nat"),P("bagrutT"));
   drawBars($("#sc2"),$("#sc2-table"),d.grades.map(g=>({k:gradeName(g.g),v:+g.v||0})),P("grade"),P("students"),P("gradesT"));
   drawBars($("#sc3"),$("#sc3-table"),d.five.map(f=>({k:Lr(SUBJ[f.k]||{he:f.k}),v:+f.v||0})),P("subject"),P("students"),P("fiveT"));
+  }
   renderStaff(); markNow();
   $("#tourBtn").onclick=()=>toast(P("tourOk"));
   $$("#schoolView [data-sview]").forEach(b=>b.onclick=()=>{const t=b.dataset.target;b.parentNode.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));$("#"+t).classList.toggle("hidden",b.dataset.sview==="table");$("#"+t+"-table").classList.toggle("hidden",b.dataset.sview!=="table")});
   $$("#schoolView .copy").forEach(b=>b.onclick=()=>{const v=b.dataset.copy;const done=()=>{b.textContent=P("copied");setTimeout(()=>b.textContent=P("copy"),1500)};
     try{navigator.clipboard.writeText(v).then(done,()=>{selectText(b.previousElementSibling);done()})}catch(e){selectText(b.previousElementSibling);done()}});
   $$("#schoolView .tt-sel").forEach(sel=>sel.onchange=()=>{const [i,j]=sel.dataset.tt.split(",").map(Number);d.week[i][j]=sel.value;commit(false)});
+}
+function legacyData(s,d,id){
+  const seg=t=>`<div class="seg"><button aria-pressed="true" data-sview="chart" data-target="${t}">${T[LANG]["v.chart"]}</button><button aria-pressed="false" data-sview="table" data-target="${t}">${T[LANG]["v.table"]}</button></div>`;
+  return `
+    <span class="eyebrow">${P("data")}</span><h2>${P("dataLead")}</h2>
+    <div class="grid charts">
+      <div class="card chart-card">${edo("sseries")}<div class="chart-top"><div><h3>${P("bagrutT")}</h3><div class="sub">${P("bagrutS")}</div></div>${seg("sc1")}</div>
+        <div class="legend"><span><i style="background:var(--s1)"></i>${L(s.short)}</span><span><i style="background:var(--s2)"></i>${P("nat")}</span></div>
+        <div class="chart" id="sc1"></div><div id="sc1-table" class="hidden"></div></div>
+      <div class="card chart-card">${edl("grade")}<div class="chart-top"><div><h3>${P("gradesT")}</h3><div class="sub">${P("gradesS")}</div></div>${seg("sc2")}</div>
+        <div class="chart" id="sc2"></div><div id="sc2-table" class="hidden"></div></div>
+    </div>
+    <div class="grid sv-data2">
+      <div class="card chart-card">${edl("sfive")}<div class="chart-top"><div><h3>${P("fiveT")}</h3><div class="sub">${P("fiveS")}</div></div>${seg("sc3")}</div>
+        <div class="chart" id="sc3"></div><div id="sc3-table" class="hidden"></div></div>
+      <div class="card sv-rings">
+        ${[[d.attendance,P("attendance")],[s.bagrut,P("bagrut")],[d.girls,S("kGirls")]].map(([v,l])=>{v=Math.max(0,Math.min(100,+v||0));return `<div class="ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="50" fill="none" stroke="var(--bg-2)" stroke-width="12"/><circle cx="60" cy="60" r="50" fill="none" stroke="var(--s1)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(v/100*314.16).toFixed(1)} 314.16" transform="rotate(-90 60 60)"/></svg><b>${v}%</b><span>${l}</span></div>`}).join("")}
+      </div>
+    </div>
+  `;
 }
 function selectText(el){const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r)}
 function renderStaff(){
@@ -1418,6 +1415,10 @@ function route(){
 }
 window.addEventListener("hashchange",route);
 
+SUBJ.rel={he:"מורשת ודת",ar:"تراث ودين",en:"Heritage & religion"};
+SUBJ.data={he:"מידע ונתונים",ar:"معلومات ومعطيات",en:"Information & data"};
+const COHORT_AVG=["hist","civ","rel","heb","ar","eng","math","phys","chem","bio","cs","data"];
+const COHORT_TRACKS=["phys","chem","bio","cs","data"];
 /* =========================================================
    ADMIN — מצב עריכה: עריכת כל תוכן האתר ופרסום לכל הצופים
    ========================================================= */
@@ -1426,11 +1427,11 @@ const DRAFT_KEY="tamar-admin-draft";
 const E=k=>(ED[LANG]&&ED[LANG][k])||ED.he[k]||k;
 const ED={
 he:{editMode:"מצב עריכה",hint:"לחצו על כל טקסט כדי לשנות אותו, או על ✎ ליד פריט. השינויים נשמרים כטיוטה עד שתפרסמו.",changes:"שינויים שלא פורסמו",noChanges:"אין שינויים",publish:"פרסום לכולם",publishing:"מפרסם…",discard:"ביטול שינויים",sure:"בטוח? לחצו שוב",done:"סיום עריכה",add:"הוספה",more:"ניהול",edit:"עריכה",del:"מחיקה",up:"למעלה",down:"למטה",save:"שמירה",cancel:"ביטול",back:"חזרה לרשימה",upload:"העלאת תמונה",remove:"הסרה",noImg:"אין תמונה",pick:"בחירה על המפה",pickHint:"לחצו על המפה כדי לקבוע את מיקום בית הספר",picked:"המיקום עודכן",changeImg:"החלפת תמונה",imgTooBig:"התמונה גדולה מדי",imgErr:"לא ניתן לקרוא את הקובץ. נסו תמונת JPG או PNG.",conflict:"מישהו אחר פרסם גרסה חדשה. הדף נטען מחדש והטיוטה שלכם נשמרה לשחזור.",readonly:"אין לכם הרשאת עריכה לאתר הזה.",tooBig:"האתר גדול מדי לפרסום. הסירו או הקטינו חלק מהתמונות.",slow:"פרסמתם הרבה בזמן קצר. המתינו רגע ונסו שוב.",invalid:"הפרסום נדחה בגלל תוכן לא תקין.",failed:"הפרסום נכשל. נסו שוב בעוד רגע.",draftFound:"נמצאה טיוטה שלא פורסמה",restore:"שחזור",drop:"מחיקה",restored:"הטיוטה שוחזרה",editGeneral:"פרטים כלליים",editPage:"פרטי העמוד",editData:"עריכת נתונים",manage:"ניהול רשימה",items:"פריטים",empty:"הרשימה ריקה",
- k_school:"בית ספר",k_program:"תכנית",k_news:"כתבה",k_event:"אירוע",k_story:"סיפור",k_job:"משרה",k_tl:"אבן דרך",k_partner:"שותף",k_ticker:"מבזק",k_goal:"יעד",k_five:"מקצוע (5 יח')",k_staff:"איש/אשת צוות",k_track:"מגמה",k_hl:"הישג",k_sev:"אירוע",k_snews:"מודעה",k_grade:"שכבה",k_sfive:"מקצוע (5 יח')",k_fac:"מתקן",o_schoolinfo:"פרטי עמוד בית הספר",o_sseries:"נתוני בגרות של בית הספר",o_net:"נתוני הרשת",past:"עבר",now:"עכשיו",future:"חזון",menuTitle:"מה להוסיף או לנהל?",csvHint:"מספרים מופרדים בפסיקים",published:"פורסם. כל הצופים רואים את הגרסה החדשה."},
+ k_school:"בית ספר",k_program:"תכנית",k_news:"כתבה",k_event:"אירוע",k_story:"סיפור",k_job:"משרה",k_tl:"אבן דרך",k_partner:"שותף",k_ticker:"מבזק",k_goal:"יעד",k_five:"מקצוע (5 יח')",k_staff:"איש/אשת צוות",k_track:"מגמה",k_hl:"הישג",k_sev:"אירוע",k_snews:"מודעה",k_grade:"שכבה",k_sfive:"מקצוע (5 יח')",k_fac:"מתקן",k_hero:"נתון בראש העמוד",k_cohort:"מחזור בוגרים",o_schoolinfo:"פרטי עמוד בית הספר",o_sseries:"נתוני בגרות של בית הספר",o_net:"נתוני הרשת",past:"עבר",now:"עכשיו",future:"חזון",menuTitle:"מה להוסיף או לנהל?",csvHint:"מספרים מופרדים בפסיקים",published:"פורסם. כל הצופים רואים את הגרסה החדשה."},
 ar:{editMode:"وضع التحرير",hint:"اضغطوا على أي نص لتغييره، أو على ✎ بجانب أي عنصر. تُحفظ التغييرات كمسودة حتى تنشروها.",changes:"تغييرات غير منشورة",noChanges:"لا توجد تغييرات",publish:"نشر للجميع",publishing:"جارٍ النشر…",discard:"إلغاء التغييرات",sure:"متأكد؟ اضغط مرة أخرى",done:"إنهاء التحرير",add:"إضافة",more:"إدارة",edit:"تحرير",del:"حذف",up:"أعلى",down:"أسفل",save:"حفظ",cancel:"إلغاء",back:"عودة للقائمة",upload:"رفع صورة",remove:"إزالة",noImg:"لا توجد صورة",pick:"اختيار على الخريطة",pickHint:"اضغطوا على الخريطة لتحديد موقع المدرسة",picked:"تم تحديث الموقع",changeImg:"تغيير الصورة",imgTooBig:"الصورة كبيرة جدًا",imgErr:"تعذّرت قراءة الملف. جرّبوا صورة JPG أو PNG.",conflict:"نشر شخص آخر نسخة جديدة. سيُعاد تحميل الصفحة ومسودتكم محفوظة للاستعادة.",readonly:"ليست لديكم صلاحية تحرير هذا الموقع.",tooBig:"الموقع كبير جدًا للنشر. احذفوا أو صغّروا بعض الصور.",slow:"نشرتم كثيرًا في وقت قصير. انتظروا قليلًا وحاولوا مجددًا.",invalid:"رُفض النشر بسبب محتوى غير صالح.",failed:"فشل النشر. حاولوا مجددًا بعد لحظة.",draftFound:"وُجدت مسودة غير منشورة",restore:"استعادة",drop:"حذف",restored:"تمت استعادة المسودة",editGeneral:"تفاصيل عامة",editPage:"تفاصيل الصفحة",editData:"تحرير المعطيات",manage:"إدارة القائمة",items:"عناصر",empty:"القائمة فارغة",
- k_school:"مدرسة",k_program:"برنامج",k_news:"خبر",k_event:"فعالية",k_story:"قصة",k_job:"وظيفة",k_tl:"محطة",k_partner:"شريك",k_ticker:"خبر عاجل",k_goal:"هدف",k_five:"موضوع (5 وحدات)",k_staff:"فرد طاقم",k_track:"مسار",k_hl:"إنجاز",k_sev:"فعالية",k_snews:"إعلان",k_grade:"طبقة",k_sfive:"موضوع (5 وحدات)",k_fac:"مرفق",o_schoolinfo:"تفاصيل صفحة المدرسة",o_sseries:"معطيات البجروت للمدرسة",o_net:"معطيات الشبكة",past:"ماضٍ",now:"الآن",future:"رؤية",menuTitle:"ماذا تريدون أن تضيفوا أو تديروا؟",csvHint:"أرقام مفصولة بفواصل",published:"تم النشر. جميع الزوار يرون النسخة الجديدة."},
+ k_school:"مدرسة",k_program:"برنامج",k_news:"خبر",k_event:"فعالية",k_story:"قصة",k_job:"وظيفة",k_tl:"محطة",k_partner:"شريك",k_ticker:"خبر عاجل",k_goal:"هدف",k_five:"موضوع (5 وحدات)",k_staff:"فرد طاقم",k_track:"مسار",k_hl:"إنجاز",k_sev:"فعالية",k_snews:"إعلان",k_grade:"طبقة",k_sfive:"موضوع (5 وحدات)",k_fac:"مرفق",k_hero:"رقم في رأس الصفحة",k_cohort:"فوج خريجين",o_schoolinfo:"تفاصيل صفحة المدرسة",o_sseries:"معطيات البجروت للمدرسة",o_net:"معطيات الشبكة",past:"ماضٍ",now:"الآن",future:"رؤية",menuTitle:"ماذا تريدون أن تضيفوا أو تديروا؟",csvHint:"أرقام مفصولة بفواصل",published:"تم النشر. جميع الزوار يرون النسخة الجديدة."},
 en:{editMode:"Edit mode",hint:"Click any text to change it, or ✎ next to an item. Changes stay a draft until you publish.",changes:"unpublished changes",noChanges:"No changes",publish:"Publish to everyone",publishing:"Publishing…",discard:"Discard changes",sure:"Sure? Click again",done:"Done editing",add:"Add",more:"Manage",edit:"Edit",del:"Delete",up:"Move up",down:"Move down",save:"Save",cancel:"Cancel",back:"Back to list",upload:"Upload image",remove:"Remove",noImg:"No image",pick:"Pick on map",pickHint:"Click the map to set the school's location",picked:"Location updated",changeImg:"Change image",imgTooBig:"Image is too large",imgErr:"Couldn't read the file. Try a JPG or PNG image.",conflict:"Someone else published a new version. The page will reload and your draft is kept for restoring.",readonly:"You don't have edit access to this site.",tooBig:"The site is too large to publish. Remove or shrink some images.",slow:"You published a lot in a short time. Wait a moment and try again.",invalid:"Publishing was refused because of invalid content.",failed:"Publishing failed. Try again in a moment.",draftFound:"Unpublished draft found",restore:"Restore",drop:"Delete",restored:"Draft restored",editGeneral:"General details",editPage:"Page details",editData:"Edit data",manage:"Manage list",items:"items",empty:"The list is empty",
- k_school:"School",k_program:"Program",k_news:"News story",k_event:"Event",k_story:"Story",k_job:"Job",k_tl:"Milestone",k_partner:"Partner",k_ticker:"Ticker item",k_goal:"Goal",k_five:"Subject (5 units)",k_staff:"Staff member",k_track:"Track",k_hl:"Highlight",k_sev:"Event",k_snews:"Notice",k_grade:"Grade",k_sfive:"Subject (5 units)",k_fac:"Facility",o_schoolinfo:"School page details",o_sseries:"School Bagrut data",o_net:"Network data",past:"Past",now:"Now",future:"Vision",menuTitle:"What do you want to add or manage?",csvHint:"Numbers separated by commas",published:"Published. Everyone sees the new version."}
+ k_school:"School",k_program:"Program",k_news:"News story",k_event:"Event",k_story:"Story",k_job:"Job",k_tl:"Milestone",k_partner:"Partner",k_ticker:"Ticker item",k_goal:"Goal",k_five:"Subject (5 units)",k_staff:"Staff member",k_track:"Track",k_hl:"Highlight",k_sev:"Event",k_snews:"Notice",k_grade:"Grade",k_sfive:"Subject (5 units)",k_fac:"Facility",k_hero:"Header figure",k_cohort:"Graduating class",o_schoolinfo:"School page details",o_sseries:"School Bagrut data",o_net:"Network data",past:"Past",now:"Now",future:"Vision",menuTitle:"What do you want to add or manage?",csvHint:"Numbers separated by commas",published:"Published. Everyone sees the new version."}
 };
 const LB=(he,ar,en)=>({he,ar,en});
 const SP=()=>SCHOOL_PAGES[CUR];
@@ -1470,12 +1471,17 @@ const SCH={
   snews:{list:()=>SP().news,fields:[["date","text",F.date],["t","l10nl",F.text]],blank:()=>({date:today().slice(0,5),t:LB("","","")})},
   grade:{list:()=>SP().grades,fields:[["g","select",LB("שכבה","الطبقة","Grade"),"grade"],["v","num",F.students]],blank:()=>({g:"ז",v:0})},
   sfive:{list:()=>SP().five,fields:[["k","select",LB("מקצוע","الموضوع","Subject"),"subj"],["v","num",F.students]],blank:()=>({k:"math",v:0})},
+  hero:{list:()=>DATA.hero,fields:[["v","num",LB("מספר","الرقم","Number")],["suf","text",LB("סיומת (למשל %)","لاحقة (مثلًا %)","Suffix (e.g. %)")],["l","l10n",LB("תיאור","الوصف","Label")]],blank:()=>({v:0,suf:"",l:LB("","","")})},
+  cohort:{list:()=>SP().cohorts,fields:[["label","l10n",LB("שם המחזור (למשל תשפ\"ז)","اسم الفوج","Class name")],["year","num",LB("שנה לועזית","السنة الميلادية","Year")],["n","num",LB("מספר בוגרים","عدد الخريجين","Graduates")],["classes","num",LB("כיתות","صفوف","Classes")],["elig","num",LB("זכאים לבגרות","مستحقون للبجروت","Bagrut-eligible")],["maybe","num",LB("בתהליך השלמה","قيد الاستكمال","Completing")],["noNeg","num",LB("ללא שליליים","دون راسبة","No failing grade")],["academic","num",LB("עמדו בסף האקדמי","العتبة الأكاديمية","Academic threshold")],["exc","num",LB("מצטיינים","متميزون","Honors")],["excPotential","bool",LB("המספר הוא פוטנציאל הצטיינות (ולא הצטיינות בפועל)","الرقم إمكانية تميّز","The honors number is potential, not final")],["units","num",LB("ממוצע יחידות לימוד","معدل الوحدات","Avg. study units")],["eng5","num",LB('אנגלית 5 יח"ל',"إنجليزية 5","English 5 units")],["eng4","num",LB('אנגלית 4 יח"ל',"إنجليزية 4","English 4 units")],["eng3","num",LB('אנגלית 3 יח"ל',"إنجليزية 3","English 3 units")],["math5","num",LB('מתמטיקה 5 יח"ל',"رياضيات 5","Math 5 units")],["math4","num",LB('מתמטיקה 4 יח"ל',"رياضيات 4","Math 4 units")],["math3","num",LB('מתמטיקה 3 יח"ל',"رياضيات 3","Math 3 units")],
+      ...COHORT_AVG.map(k=>["avg."+k,"num",{he:"ממוצע · "+SUBJ[k].he,ar:"معدل · "+SUBJ[k].ar,en:"Average · "+SUBJ[k].en}]),
+      ...COHORT_TRACKS.map(k=>["tracks."+k,"num",{he:"בוגרים במגמה · "+SUBJ[k].he,ar:"خريجون في مسار · "+SUBJ[k].ar,en:"Graduates in track · "+SUBJ[k].en}])],
+    blank:()=>({label:LB("","",""),year:new Date().getFullYear(),n:0,classes:1,elig:0,maybe:0,noNeg:0,academic:0,exc:0,excPotential:false,units:null,eng5:0,eng4:0,eng3:0,math5:0,math4:0,math3:0,avg:{},tracks:{}})},
   fac:{list:()=>SP().facilities,self:true,fields:[["_","l10n",F.name]],blank:()=>LB("","","")}
 };
 const OBJ={
   schoolinfo:{get:()=>SP(),fields:[["principal","l10n",LB("שם המנהל/ת","اسم المدير/ة","Principal name")],["principalPhoto","image",LB("תמונת המנהל/ת","صورة المدير/ة","Principal photo")],["cover","image",LB("תמונת רקע לראש העמוד","صورة خلفية لرأس الصفحة","Header background image")],["hue","color",LB("צבע בית הספר","لون المدرسة","School color")],["symbol","text",LB("סמל מוסד","رمز المؤسسة","School ID")],["phone","text",LB("טלפון","هاتف","Phone")],["email","text",LB("דוא\"ל","بريد إلكتروني","Email")],["addr","l10n",LB("כתובת","العنوان","Address")],["classes","num",LB("כיתות","صفوف","Classes")],["avgClass","num",LB("ממוצע תלמידים בכיתה","معدل الطلاب في الصف","Average class size")],["attendance","num",LB("% נוכחות","% حضور","Attendance %")],["girls","num",LB("% בנות במגמות מדע","% فتيات في العلوم","Girls in STEM %")],["vision","l10nl",LB("החזון","الرؤية","Vision")],["msg","l10nl",LB("דבר המנהל/ת","كلمة المدير/ة","Principal's message")],["klass","text",LB("כיתה במערכת לדוגמה (למשל י1)","الصف في البرنامج النموذجي","Sample timetable class")]]},
-  sseries:{get:()=>SP(),fields:[["years","csv",LB("שנים","السنوات","Years")],["bagrut","csv",LB("% בגרות בבית הספר","% البجروت في المدرسة","School Bagrut %")],["national","csv",LB("% ממוצע ארצי","% المعدل القطري","National average %")]]},
-  net:{get:()=>DATA,fields:[["years","csv",LB("שנים","السنوات","Years")],["bagrut.tamar","csv",LB("% בגרות ברשת","% البجروت في الشبكة","Network Bagrut %")],["bagrut.national","csv",LB("% ממוצע ארצי","% المعدل القطري","National average %")],["kpi.five","num",LB("% 5 יח' מתמטיקה ברשת","% 5 وحدات رياضيات","Network 5-unit math %")],["kpi.girls","num",LB("% בנות במגמות מדע","% فتيات في العلوم","Girls in STEM %")]]}
+  sseries:{get:()=>SP(),fields:[["years","csvt",LB("שנים / מחזורים","السنوات / الأفواج","Years / classes")],["bagrut","csv",LB("% בגרות בבית הספר","% البجروت في المدرسة","School Bagrut %")],["national","csv",LB("% ממוצע ארצי","% المعدل القطري","National average %")]]},
+  net:{get:()=>DATA,fields:[["years","csvt",LB("שנים / מחזורים","السنوات / الأفواج","Years / classes")],["bagrut.tamar","csv",LB("% בגרות ברשת","% البجروت في الشبكة","Network Bagrut %")],["bagrut.national","csv",LB("% ממוצע ארצי","% المعدل القطري","National average %")],["kpi.five","num",LB("% 5 יח' מתמטיקה ברשת","% 5 وحدات رياضيات","Network 5-unit math %")],["kpi.girls","num",LB("% בנות במגמות מדע","% فتيات في العلوم","Girls in STEM %")]]}
 };
 function today(){const d=new Date();return String(d.getDate()).padStart(2,"0")+"."+String(d.getMonth()+1).padStart(2,"0")+"."+d.getFullYear()}
 const getPath=(o,p)=>p.split(".").reduce((a,k)=>a==null?a:a[k],o);
@@ -1492,6 +1498,7 @@ function normalize(){
   const arr=o=>Array.isArray(o)?o:((o&&o.he)||[]).map((_,i)=>({he:o.he[i]||"",ar:(o.ar||[])[i]||"",en:(o.en||[])[i]||""}));
   CONTENT.ticker=arr(CONTENT.ticker); CONTENT.partners=arr(CONTENT.partners);
   DATA.kpi=DATA.kpi||{five:31,girls:58};
+  DATA.hero=DATA.hero||[];
   DATA.schools.forEach(s=>{if(s.fivePct==null) s.fivePct=s.id==="alsana"?34:s.id==="hura"?24:0; s.short=s.short||s.town||LB("","",""); s.focus=s.focus||LB("","",""); s.level=s.level||LB("","",""); s.town=s.town||LB("","","");
     if(s.status==="active"&&!SCHOOL_PAGES[s.id]) SCHOOL_PAGES[s.id]=blankPage(s)});
   const nm=(f,l)=>({he:NAMES.f[f].he+" "+NAMES.l[l].he,ar:NAMES.f[f].ar+" "+NAMES.l[l].ar,en:NAMES.f[f].en+" "+NAMES.l[l].en});
@@ -1508,6 +1515,7 @@ function normalize(){
     d.facilities=arr(d.facilities||[]);
     d.week=d.week||Array.from({length:8},()=>["","","","",""]);
     ["years","bagrut","national"].forEach(k=>d[k]=d[k]||[]);
+    d.cohorts=(d.cohorts||[]).map(c=>Object.assign({avg:{},tracks:{}},c));
   });
 }
 function blankPage(s){return {symbol:"",principal:LB("","",""),principalPhoto:"",hue:"#4a6b12",phone:"",email:"",addr:LB("","",""),classes:0,avgClass:0,attendance:0,girls:0,years:[2025,2026],bagrut:[s.bagrut||0,s.bagrut||0],national:[73,73],grades:[],five:[],vision:LB("","",""),msg:LB("","",""),highlights:[],tracks:[],facilities:[],staff:[],week:Array.from({length:8},()=>["","","","",""]),klass:"י1",events:[],news:[],cover:""}}
@@ -1571,7 +1579,7 @@ function fieldHTML(f,val,idx){
   if(t==="bool") return `<div class="field"><label class="mchip"><input type="checkbox" id="${id}" data-f="${idx}" ${val?"checked":""}><span>${label}</span></label></div>`;
   if(t==="image"){FORM_IMG[idx]=val||"";return `<div class="field"><label>${label}</label><div class="imgf"><div class="imgprev" data-prev="${idx}">${val?`<img src="${val}" alt="">`:`<span>${E("noImg")}</span>`}</div><button type="button" class="chip" data-img-up="${idx}">${E("upload")}</button><button type="button" class="chip" data-img-clear="${idx}">${E("remove")}</button></div></div>`}
   if(t==="pick") return `<div class="field"><label>${label}</label><button type="button" class="chip" data-pick="1">📍 ${E("pick")}</button></div>`;
-  if(t==="csv") return `<div class="field"><label for="${id}">${label} <small class="muted">(${E("csvHint")})</small></label><input id="${id}" data-f="${idx}" dir="ltr" value="${esc((val||[]).join(", "))}"></div>`;
+  if(t==="csv"||t==="csvt") return `<div class="field"><label for="${id}">${label} <small class="muted">(${E("csvHint")})</small></label><input id="${id}" data-f="${idx}" dir="ltr" value="${esc((val||[]).join(", "))}"></div>`;
   if(t==="color") return `<div class="field"><label for="${id}">${label}</label><input id="${id}" data-f="${idx}" type="color" value="${esc(/^#[0-9a-f]{6}$/i.test(val||"")?val:"#4a6b12")}"></div>`;
   return `<div class="field"><label for="${id}">${label}</label><input id="${id}" data-f="${idx}" ${t==="num"?'type="number" step="any" dir="ltr"':""} value="${esc(val??"")}"></div>`;
 }
@@ -1580,6 +1588,7 @@ function readForm(fields,target){
     if(t==="pick") return;
     if(t==="l10n"||t==="l10nl"){v={};$$(`#edForm [data-f="${idx}"][data-l]`).forEach(i=>v[i.dataset.l]=i.value.trim())}
     else if(t==="num"){v=q.value===""?null:Number(q.value)}
+    else if(t==="csvt"){v=q.value.split(/[,،]/).map(x=>x.trim()).filter(Boolean)}
     else if(t==="csv"){v=q.value.split(/[,،]/).map(s=>s.trim()).filter(s=>s!=="").map(Number).filter(n=>!isNaN(n))}
     else if(t==="multi"){v=$$(`#edForm input[data-f="${idx}"]:checked`).map(i=>i.value)}
     else if(t==="bool"){v=q.checked}
@@ -1682,7 +1691,7 @@ function updateBar(){
   const dis=$("#edDiscard"); armDelete(dis,discardAll);
 }
 function openMenu(){
-  const lists=["school","news","event","program","job","story","tl","partner","ticker","goal","five"];
+  const lists=["hero","school","news","event","program","job","story","tl","partner","ticker","goal","five"];
   openModal(`<h2 class="ed-title">${E("menuTitle")}</h2><div class="ed-menu">
     ${lists.map(k=>`<div class="ed-mi"><b>${E("k_"+k)}</b><span class="muted">${SCH[k].list().length} ${E("items")}</span><button type="button" class="chip" data-ed-add="${k}">+ ${E("add")}</button><button type="button" class="chip" data-ed-list="${k}">${E("manage")}</button></div>`).join("")}
     <div class="ed-mi"><b>${E("o_net")}</b><span></span><button type="button" class="chip" data-ed-obj="net">✎ ${E("edit")}</button><span></span></div>
@@ -1729,6 +1738,146 @@ async function initAdmin(){
   CAN_EDIT=user?await user.canEdit().catch(()=>false):true;
   if(!CAN_EDIT) return;
   buildAdminUI(); offerDraft();
+}
+
+/* =========================================================
+   REAL DATA — נתוני אמת: בוגרי בית ספר אלסנא (מתוך קובצי מיפוי הזכאות)
+   נתונים מצרפיים בלבד. אין באתר שמות או מספרי זהות של תלמידים.
+   ========================================================= */
+(function applyRealDefaults(){
+  const LB3=(he,ar,en)=>({he,ar,en});
+  // only Al-Sana is in the network today
+  DATA.schools=DATA.schools.filter(s=>s.id!=="hura");
+  delete SCHOOL_PAGES.hura;
+  const al=DATA.schools.find(s=>s.id==="alsana");
+  Object.assign(al,{students:null,teachers:null,bagrut:92.9,fivePct:19.6,
+    focus:LB3("פיזיקה, מידע ונתונים, כימיה ומדעי המחשב · אנגלית ומתמטיקה ברמה מוגברת","فيزياء، معلومات ومعطيات، كيمياء وعلوم الحاسوب · إنجليزية ورياضيات بمستوى مكثف","Physics, information & data, chemistry and computer science · advanced English and math")});
+  const d=SCHOOL_PAGES.alsana;
+  d.cohorts=[
+    {label:LB3('תשפ"ו',"2025–2026","2025–26"),year:2026,n:56,classes:1,elig:52,maybe:4,noNeg:52,exc:26,excPotential:true,academic:56,units:null,eng5:25,eng4:31,eng3:0,math5:11,math4:41,math3:4,
+     avg:{hist:95.1,civ:95.1,rel:95.6,heb:80.4,ar:86.5,eng:77.6,math:79.9,phys:81.3,chem:75.0,bio:null,cs:86.9,data:88.0},tracks:{phys:25,chem:15,bio:0,cs:8,data:33}},
+    {label:LB3('תשפ"ה',"2024–2025","2024–25"),year:2025,n:40,classes:2,elig:39,maybe:1,noNeg:39,exc:5,excPotential:false,academic:40,units:27.4,eng5:17,eng4:23,eng3:0,math5:8,math4:26,math3:6,
+     avg:{hist:95.4,civ:92.6,rel:93.0,heb:85.5,ar:87.5,eng:77.4,math:80.0,phys:84.4,chem:75.5,bio:74.9,cs:87.1,data:null},tracks:{phys:14,chem:20,bio:19,cs:12,data:0}}
+  ];
+  Object.assign(d,{classes:null,avgClass:null,attendance:null,girls:null,years:['תשפ"ה','תשפ"ו'],bagrut:[97.5,92.9],national:[]});
+  d.highlights=[
+    {v:"97.5%",l:LB3('זכאות לבגרות במחזור תשפ"ה (39 מתוך 40)','أهلية البجروت في فوج 2025 (39 من 40)',"Bagrut eligibility, class of 2025 (39 of 40)")},
+    {v:"100%",l:LB3("מהבוגרים בשני המחזורים עמדו בסף האקדמי","من الخريجين في الفوجين اجتازوا العتبة الأكاديمية","of graduates in both classes met the academic threshold")},
+    {v:"26",l:LB3('בוגרי תשפ"ו עם פוטנציאל הצטיינות','خريجًا من فوج 2026 لديهم إمكانية تميّز',"2026 graduates with honors potential")},
+    {v:"45%",l:LB3('מבוגרי תשפ"ו למדו אנגלית ברמת 5 יח"ל','من خريجي 2026 درسوا الإنجليزية 5 وحدات',"of 2026 graduates took 5-unit English")}
+  ];
+  d.tracks=[
+    {k:"data",d:LB3('מגמת מידע ונתונים עם פרויקט גמר. 33 בוגרים בתשפ"ו, ממוצע 88.','مسار المعلومات والمعطيات مع مشروع تخرج. 33 خريجًا في 2026، معدل 88.',"Information & data track with a capstone project. 33 graduates in 2026, average 88."),n:33},
+    {k:"phys",d:LB3('פיזיקה ברמה מוגברת: מכניקה, חשמל ומעבדת חקר. 25 בוגרים בתשפ"ו.','فيزياء بمستوى مكثف: ميكانيكا، كهرباء ومختبر بحث. 25 خريجًا في 2026.',"Advanced physics: mechanics, electricity and a research lab. 25 graduates in 2026."),n:25},
+    {k:"eng",d:LB3('אנגלית ברמת 5 יח"ל. 25 מתוך 56 בוגרי תשפ"ו.','إنجليزية 5 وحدات. 25 من 56 خريجًا في 2026.',"5-unit English. 25 of 56 graduates in 2026."),n:25},
+    {k:"chem",d:LB3('כימיה ברמה מוגברת כולל מעבדה. 15 בוגרים בתשפ"ו.','كيمياء بمستوى مكثف مع مختبر. 15 خريجًا في 2026.',"Advanced chemistry with lab. 15 graduates in 2026."),n:15},
+    {k:"math",d:LB3('מתמטיקה ברמת 5 יח"ל. 11 בוגרים בתשפ"ו, 41 ברמת 4 יח"ל.','رياضيات 5 وحدات. 11 خريجًا في 2026، و41 بمستوى 4 وحدات.',"5-unit math. 11 graduates in 2026, 41 at 4 units."),n:11},
+    {k:"cs",d:LB3('מדעי המחשב כולל פרויקט. 8 בוגרים בתשפ"ו, ממוצע 86.9.','علوم الحاسوب مع مشروع. 8 خريجين في 2026، معدل 86.9.',"Computer science with a project. 8 graduates in 2026, average 86.9."),n:8}
+  ];
+  d.five=[{k:"data",v:33},{k:"eng",v:25},{k:"phys",v:25},{k:"chem",v:15},{k:"math",v:11},{k:"cs",v:8}];
+  // network-level figures (the network is Al-Sana today)
+  DATA.hero=[
+    {v:96,suf:"",l:LB3("בוגרים בשני המחזורים האחרונים","خريجًا في آخر فوجين","graduates in the last two classes")},
+    {v:95,suf:"%",l:LB3("זכאות לבגרות (91 מתוך 96)","أهلية البجروت (91 من 96)","Bagrut eligibility (91 of 96)")},
+    {v:100,suf:"%",l:LB3("עמדו בסף האקדמי","اجتازوا العتبة الأكاديمية","met the academic threshold")},
+    {v:1,suf:"",auto:"schools",l:LB3("בית ספר ברשת","مدرسة في الشبكة","school in the network")}
+  ];
+  DATA.years=['תשפ"ה','תשפ"ו']; DATA.bagrut={tamar:[97.5,92.9],national:[]};
+  DATA.fiveUnits=[{k:SUBJ.data,v:33},{k:LB3('אנגלית 5 יח"ל',"إنجليزية 5 وحدات","English, 5 units"),v:25},{k:SUBJ.phys,v:25},{k:SUBJ.chem,v:15},{k:LB3('מתמטיקה 5 יח"ל',"رياضيات 5 وحدات","Math, 5 units"),v:11},{k:SUBJ.cs,v:8}];
+  DATA.goals=[{k:LB3("בתי ספר","مدارس","Schools"),v:1,t:8},{k:LB3("זכאות לבגרות","أهلية البجروت","Bagrut eligibility"),v:92.9,t:97,pct:true},{k:LB3('אנגלית 5 יח"ל',"إنجليزية 5 وحدات","5-unit English"),v:44.6,t:60,pct:true},{k:LB3('מתמטיקה 5 יח"ל',"رياضيات 5 وحدات","5-unit math"),v:19.6,t:35,pct:true}];
+  CONTENT.ticker={he:['ההרשמה לתשפ"ז נפתחה','מחזור תשפ"ה של אלסנא: 97.5% זכאות לבגרות','מחזור תשפ"ו: 52 מתוך 56 בוגרים זכאים','100% מהבוגרים עמדו בסף האקדמי','45% מבוגרי תשפ"ו למדו אנגלית ברמת 5 יח"ל'],
+    ar:["فُتح التسجيل للعام 2026–2027","فوج 2025 في مدرسة الصانع: 97.5% أهلية بجروت","فوج 2026: 52 من 56 خريجًا مستحقون","100% من الخريجين اجتازوا العتبة الأكاديمية","45% من خريجي 2026 درسوا الإنجليزية 5 وحدات"],
+    en:["2026–27 enrollment is open","Al-Sana class of 2025: 97.5% Bagrut eligibility","Class of 2026: 52 of 56 graduates eligible","100% of graduates met the academic threshold","45% of 2026 graduates took 5-unit English"]};
+  CONTENT.timeline=[
+    {y:"2015",c:"",t:LB3("ייסוד מרכז תמר ע\"י מחנכים ומנהיגים בנגב","تأسيس مركز تمار على يد مربين وقادة في النقب","Tamar Center founded by Negev educators & leaders")},
+    {y:"2025",c:"",t:LB3('מחזור תשפ"ה באלסנא: 39 מתוך 40 זכאים לבגרות','فوج 2025 في الصانع: 39 من 40 مستحقون للبجروت',"Al-Sana class of 2025: 39 of 40 Bagrut-eligible")},
+    {y:"2026",c:"now",t:LB3('מחזור תשפ"ו: 56 בוגרים, 100% בסף האקדמי · בדרך לרשת רשמית','فوج 2026: 56 خريجًا، 100% في العتبة الأكاديمية · في الطريق لشبكة رسمية',"Class of 2026: 56 graduates, 100% academic threshold · becoming an official network")},
+    {y:"2030",c:"future",t:LB3("חזון: רשת של 8 בתי ספר בנגב","رؤية: شبكة من 8 مدارس في النقب","Vision: a network of 8 Negev schools")}
+  ];
+  CONTENT.news=[
+    {tag:LB3("תוצאות","نتائج","Results"),d:'תשפ"ו',t:LB3('מחזור תשפ"ו: 52 מתוך 56 זכאים לבגרות','فوج 2026: 52 من 56 مستحقون للبجروت',"Class of 2026: 52 of 56 Bagrut-eligible"),p:LB3('כל 56 הבוגרים עמדו בסף האקדמי, ל-26 מהם פוטנציאל הצטיינות, ו-25 למדו אנגלית ברמת 5 יח"ל.','جميع الخريجين الـ56 اجتازوا العتبة الأكاديمية، و26 منهم لديهم إمكانية تميّز، و25 درسوا الإنجليزية 5 وحدات.',"All 56 graduates met the academic threshold; 26 have honors potential and 25 took 5-unit English."),g:"linear-gradient(135deg,#4a6b12,#9dbb4a)",img:""},
+    {tag:LB3("תוצאות","نتائج","Results"),d:'תשפ"ה',t:LB3('מחזור תשפ"ה: 97.5% זכאות לבגרות','فوج 2025: 97.5% أهلية البجروت',"Class of 2025: 97.5% Bagrut eligibility"),p:LB3('39 מתוך 40 בוגרים זכאים, 5 מצטיינים, וממוצע של 27.4 יחידות לימוד לבוגר.','39 من 40 خريجًا مستحقون، 5 متميزين، ومعدل 27.4 وحدة تعليمية للخريج.',"39 of 40 graduates eligible, 5 with honors, and an average of 27.4 study units per graduate."),g:"linear-gradient(135deg,#e0512a,#f0a030)",img:""}
+  ];
+  CONTENT.jobs.forEach(j=>{if(j.s==="hura")j.s="alsana"});
+  CONTENT.events.forEach(e=>{if(/חורה|Hura|حورة/.test(e.w.he+e.w.en+e.w.ar))e.w=LB3("אלסנא · 08:30","الصانع · 08:30","Al-Sana · 08:30")});
+  CONTENT.stories.forEach(st=>{if(/חורה/.test(st.r.he))st.r=LB3("לקיה","اللقية","Lakiya")});
+  CONTENT.partners={he:["משרד החינוך","מרכז תמר","אוניברסיטה שותפה","קרן שותפה"],ar:["وزارة التربية","مركز تمار","جامعة شريكة","صندوق شريك"],en:["Ministry of Education","Tamar Center","Partner university","Partner foundation"]};
+  CONTENT.bot.he[1][1]="כרגע ברשת בית ספר אחד: אלסנא (לקיה). בתכנון: רהט, תל שבע, שגב שלום, כסייפה וערערה בנגב.";
+  CONTENT.bot.ar[1][1]="حاليًا مدرسة واحدة في الشبكة: الصانع (اللقية). قيد التخطيط: رهط، تل السبع، شقيب السلام، كسيفة وعرعرة النقب.";
+  CONTENT.bot.en[1][1]="Right now the network has one school: Al-Sana (Lakiya). Planned: Rahat, Tel Sheva, Segev Shalom, Kuseife and Ar'ara BaNegev.";
+  Object.assign(T.he,{demo:"נתוני הבוגרים של בית ספר אלסנא הם נתוני אמת · שאר התוכן עדיין לדוגמה","c1.t":"זכאות לבגרות לפי מחזור","c1.s":"אחוז הזכאים מבוגרי אלסנא, לפי מיפוי הזכאות של בית הספר","c2.t":"מגמות ורמות מוגברות","c2.s":'מספר בוגרי תשפ"ו בכל מגמה',"d.lead":"נתוני אמת מבוגרי בית ספר אלסנא, מתוך קובצי מיפוי הזכאות של בית הספר. מוצגים נתונים מצרפיים בלבד."});
+  Object.assign(T.ar,{demo:"معطيات خريجي مدرسة الصانع حقيقية · باقي المحتوى ما زال للتوضيح","c1.t":"أهلية البجروت حسب الفوج","c1.s":"نسبة المستحقين من خريجي الصانع، حسب رصد الأهلية في المدرسة","c2.t":"المسارات والمستويات المكثفة","c2.s":"عدد خريجي 2026 في كل مسار","d.lead":"معطيات حقيقية لخريجي مدرسة الصانع، من ملفات رصد الأهلية في المدرسة. تُعرض معطيات إجمالية فقط."});
+  Object.assign(T.en,{demo:"Al-Sana graduate figures are real · other content is still sample","c1.t":"Bagrut eligibility by class","c1.s":"Share of Al-Sana graduates eligible, per the school's eligibility mapping","c2.t":"Tracks and advanced levels","c2.s":"Class of 2026 graduates per track","d.lead":"Real figures for Al-Sana graduates, from the school's eligibility mapping files. Aggregates only."});
+  Object.assign(T.he.s,{kGrads:'בוגרי תשפ"ו',kElig:"זכאות לבגרות",kEng5:'אנגלית 5 יח"ל',kMath5:'מתמטיקה 5 יח"ל',kAcad:"סף אקדמי",vsPrev:"מול"});
+  Object.assign(T.ar.s,{kGrads:"خريجو 2026",kElig:"أهلية البجروت",kEng5:"إنجليزية 5 وحدات",kMath5:"رياضيات 5 وحدات",kAcad:"العتبة الأكاديمية",vsPrev:"مقارنة بـ"});
+  Object.assign(T.en.s,{kGrads:"Class of 2026",kElig:"Bagrut eligibility",kEng5:"5-unit English",kMath5:"5-unit math",kAcad:"Academic threshold",vsPrev:"vs"});
+})();
+Object.assign(SPT.he,{gradsEye:"תוצאות הבוגרים",gradsH:"נתוני בגרות אמיתיים לפי מחזור",source:"מקור: קובצי מיפוי הזכאות של בית הספר · נתונים מצרפיים בלבד",grads:"בוגרים",eligible:"זכאים לבגרות",noNeg:"ללא ציון שלילי",academic:"עמדו בסף האקדמי",eng5:'אנגלית 5 יח"ל',math5:'מתמטיקה 5 יח"ל',exc:"מצטיינים",excPot:"פוטנציאל הצטיינות",units:"ממוצע יחידות לימוד",avgT:"ממוצע ציון סופי לפי מקצוע",levelsT:"רמות לימוד באנגלית ובמתמטיקה",tracksT:"בוגרים במגמות מדעיות",compareT:"השוואה בין המחזורים",cohort:"מחזור",levelEng:"אנגלית",levelMath:"מתמטיקה",units_:'יח"ל',avgScore:"ממוצע",of:"מתוך",maybe:"בתהליך השלמה"});
+Object.assign(SPT.ar,{gradsEye:"نتائج الخريجين",gradsH:"معطيات بجروت حقيقية حسب الفوج",source:"المصدر: ملفات رصد الأهلية في المدرسة · معطيات إجمالية فقط",grads:"خريجون",eligible:"مستحقون للبجروت",noNeg:"دون علامة راسبة",academic:"اجتازوا العتبة الأكاديمية",eng5:"إنجليزية 5 وحدات",math5:"رياضيات 5 وحدات",exc:"متميزون",excPot:"إمكانية تميّز",units:"معدل الوحدات التعليمية",avgT:"معدل العلامة النهائية حسب الموضوع",levelsT:"مستويات الإنجليزية والرياضيات",tracksT:"الخريجون في المسارات العلمية",compareT:"مقارنة بين الفوجين",cohort:"فوج",levelEng:"إنجليزية",levelMath:"رياضيات",units_:"وحدات",avgScore:"معدل",of:"من",maybe:"قيد الاستكمال"});
+Object.assign(SPT.en,{gradsEye:"Graduate results",gradsH:"Real Bagrut figures by class",source:"Source: the school's eligibility mapping files · aggregates only",grads:"Graduates",eligible:"Bagrut-eligible",noNeg:"No failing grade",academic:"Met academic threshold",eng5:"5-unit English",math5:"5-unit math",exc:"Honors",excPot:"Honors potential",units:"Avg. study units",avgT:"Average final grade by subject",levelsT:"English and math levels",tracksT:"Graduates in science tracks",compareT:"Class comparison",cohort:"Class",levelEng:"English",levelMath:"Math",units_:"units",avgScore:"Average",of:"of",maybe:"completing"});
+
+let cohortSel=0;
+const pct=(a,n)=>n?Math.round(a/n*1000)/10:0;
+const sortedCohorts=d=>(d&&d.cohorts||[]).slice().sort((a,b)=>(+b.year||0)-(+a.year||0));
+function renderHeroStats(){
+  const act=DATA.schools.filter(s=>s.status==="active"),plan=DATA.schools.length-act.length;
+  $(".stats").innerHTML=(DATA.hero||[]).map((h,i)=>{const v=h.auto==="schools"?act.length:(+h.v||0);
+    return `<div class="stat edi">${edb("hero",i)}<div class="num" data-count="${v}" data-suffix="${esc(h.suf||"")}">${num(v)}${esc(h.suf||"")}</div><div class="lbl">${L(h.l)}${h.auto==="schools"&&plan?` · ${plan} ${Sr("plan")}`:""}</div></div>`}).join("")+(EDIT?`<div class="stat">${eda("hero")}</div>`:"");
+}
+function netCohorts(){const s=DATA.schools.find(x=>x.status==="active"&&SCHOOL_PAGES[x.id]&&SCHOOL_PAGES[x.id].cohorts&&SCHOOL_PAGES[x.id].cohorts.length);return s?sortedCohorts(SCHOOL_PAGES[s.id]):null}
+function renderKpis(){
+  const c=netCohorts();
+  if(!c){$("#kpis").innerHTML="";return}
+  const [l,p]=c;
+  const mk=(lab,cur,prev,unit)=>{const dl=prev==null?null:Math.round((cur-prev)*10)/10;
+    return {l:lab,v:num(cur)+unit,sp:prev==null?null:[prev,cur],d:dl==null?"":`${dl>0?"▲":dl<0?"▼":"■"} ${dl>0?"+":""}${dl}${unit==="%"?"pt":""} <span class="muted" style="font-weight:400">${S("vsPrev")} ${L(p.label)}</span>`}};
+  const k=[
+    mk(`${P("grads")} ${L(l.label)}`,l.n,p?p.n:null,""),
+    mk(S("kElig"),pct(l.elig,l.n),p?pct(p.elig,p.n):null,"%"),
+    mk(S("kAcad"),pct(l.academic,l.n),p?pct(p.academic,p.n):null,"%"),
+    mk(S("kEng5"),pct(l.eng5,l.n),p?pct(p.eng5,p.n):null,"%"),
+    mk(S("kMath5"),pct(l.math5,l.n),p?pct(p.math5,p.n):null,"%")
+  ];
+  $("#kpis").innerHTML=k.map(x=>`<div class="card kpi"><div class="l">${x.l}</div><div class="v">${x.v}</div>${x.sp?sparkline(x.sp):""}<div class="d">${x.d}</div></div>`).join("");
+  const nat=$('[data-i18n="leg.nat"]'); if(nat) nat.parentNode.hidden=!(DATA.bagrut.national||[]).length;
+}
+function cohortStats(d){
+  const l=sortedCohorts(d)[0]; if(!l) return null;
+  return [[l.n,P("grads")+" "+Lr(l.label)],[pct(l.elig,l.n)+"%",P("eligible")],[pct(l.noNeg,l.n)+"%",P("noNeg")],[pct(l.academic,l.n)+"%",P("academic")],[pct(l.eng5,l.n)+"%",P("eng5")],[pct(l.math5,l.n)+"%",P("math5")]];
+}
+function cohortSection(s,d,id){
+  const cs=sortedCohorts(d); if(cohortSel>=cs.length) cohortSel=0; const c=cs[cohortSel];
+  const tile=(v,l,sub)=>`<div class="card kpi"><div class="l">${l}</div><div class="v">${v}</div>${sub?`<div class="d" style="color:var(--muted);font-weight:500">${sub}</div>`:""}</div>`;
+  const seg=t=>`<div class="seg"><button aria-pressed="true" data-sview="chart" data-target="${t}">${T[LANG]["v.chart"]}</button><button aria-pressed="false" data-sview="table" data-target="${t}">${T[LANG]["v.table"]}</button></div>`;
+  const rows=[[P("grads"),x=>num(+x.n||0)],[P("eligible"),x=>`${x.elig} (${pct(x.elig,x.n)}%)`],[P("noNeg"),x=>`${x.noNeg} (${pct(x.noNeg,x.n)}%)`],[P("academic"),x=>`${x.academic} (${pct(x.academic,x.n)}%)`],
+    [P("exc")+" / "+P("excPot"),x=>`${x.exc} ${x.excPotential?"("+P("excPot")+")":"("+P("exc")+")"}`],[P("eng5"),x=>`${x.eng5} (${pct(x.eng5,x.n)}%)`],[P("math5"),x=>`${x.math5} (${pct(x.math5,x.n)}%)`],[P("units"),x=>x.units?esc(x.units):"—"]];
+  return `<span class="eyebrow">${P("gradsEye")}</span><h2>${P("gradsH")}</h2><p class="muted" style="margin:-10px 0 20px">${P("source")}</p>
+    <div class="coh-bar"><div class="seg" role="group" aria-label="${P("cohort")}">${cs.map((x,i)=>`<button type="button" data-coh="${i}" aria-pressed="${i===cohortSel}">${P("cohort")} ${L(x.label)}</button>`).join("")}</div>${EDIT?`<button type="button" class="ed-pill" data-ed-list="cohort">✎ ${E("manage")}</button>`:""}</div>
+    <div class="grid kpis coh-kpis">
+      ${tile(num(+c.n||0),P("grads"),c.classes?`${c.classes} ${Pr("classes")}`:"")}
+      ${tile(pct(c.elig,c.n)+"%",P("eligible"),`${c.elig} ${P("of")} ${c.n}${c.maybe?` · ${c.maybe} ${P("maybe")}`:""}`)}
+      ${tile(pct(c.academic,c.n)+"%",P("academic"),`${c.academic} ${P("of")} ${c.n}`)}
+      ${tile(esc(c.exc),c.excPotential?P("excPot"):P("exc"),`${pct(c.exc,c.n)}%`)}
+      ${tile(c.units?esc(c.units):pct(c.eng5,c.n)+"%",c.units?P("units"):P("eng5"),c.units?"":`${c.eng5} ${P("of")} ${c.n}`)}
+    </div>
+    <div class="grid charts">
+      <div class="card chart-card"><div class="chart-top"><div><h3>${P("avgT")}</h3><div class="sub">${P("cohort")} ${L(c.label)}</div></div>${seg("sc1")}</div><div class="chart" id="sc1"></div><div id="sc1-table" class="hidden"></div></div>
+      <div class="card chart-card"><div class="chart-top"><div><h3>${P("levelsT")}</h3><div class="sub">${P("cohort")} ${L(c.label)}</div></div>${seg("sc2")}</div><div class="chart" id="sc2"></div><div id="sc2-table" class="hidden"></div></div>
+    </div>
+    <div class="grid sv-data2">
+      <div class="card chart-card"><div class="chart-top"><div><h3>${P("tracksT")}</h3><div class="sub">${P("cohort")} ${L(c.label)}</div></div>${seg("sc3")}</div><div class="chart" id="sc3"></div><div id="sc3-table" class="hidden"></div></div>
+      <div class="card chart-card"><h3 style="margin-bottom:12px">${P("compareT")}</h3><div class="tt-wrap"><table class="data"><thead><tr><th></th>${cs.map(x=>`<th>${L(x.label)}</th>`).join("")}</tr></thead><tbody>${rows.map(([lab,f])=>`<tr><th>${lab}</th>${cs.map(x=>`<td>${f(x)}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>
+    </div>`;
+}
+function drawCohortCharts(d){
+  const c=sortedCohorts(d)[cohortSel]; if(!c) return;
+  const avg=COHORT_AVG.filter(k=>c.avg&&c.avg[k]!=null&&c.avg[k]!=="").map(k=>({k:Lr(SUBJ[k]),v:+c.avg[k]}));
+  drawBars($("#sc1"),$("#sc1-table"),avg,P("subject"),P("avgScore"),P("avgT"));
+  const lv=[[P("levelEng")+" 5",c.eng5],[P("levelEng")+" 4",c.eng4],[P("levelEng")+" 3",c.eng3],[P("levelMath")+" 5",c.math5],[P("levelMath")+" 4",c.math4],[P("levelMath")+" 3",c.math3]].filter(x=>+x[1]>0).map(([k,v])=>({k:k+" "+P("units_"),v:+v}));
+  drawBars($("#sc2"),$("#sc2-table"),lv,P("grade"),P("students"),P("levelsT"));
+  const tr=COHORT_TRACKS.filter(k=>c.tracks&&+c.tracks[k]>0).map(k=>({k:Lr(SUBJ[k]),v:+c.tracks[k]}));
+  drawBars($("#sc3"),$("#sc3-table"),tr,P("subject"),P("students"),P("tracksT"));
+  $$("#schoolView [data-coh]").forEach(b=>b.onclick=()=>{cohortSel=+b.dataset.coh;renderSchoolPage();requestAnimationFrame(()=>{const el=document.getElementById(CUR+"-data");if(el)el.scrollIntoView()})});
 }
 
 /* ============ interactions ============ */
