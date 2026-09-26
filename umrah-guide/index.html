@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>دليل إداري الحج والعمرة</title>
-<meta name="description" content="مرجع متكامل لإداري باص الحج والعمرة: الإدارة، أدوات الرحلة، المناسك، الفتاوى، الأسئلة، المعالم والأدعية.">
+<meta name="description" content="مرجع متكامل لإداري باص الحج والعمرة: خطوات الإداري، المناسك، الفتاوى، الأسئلة، المعالم والأدعية.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
@@ -271,7 +271,12 @@ select{border:1px solid var(--line);background:var(--surface);border-radius:10px
 .choose button[aria-pressed="true"]{border-color:#E9CF8A;background:#E9CF8A22}
 .journey{grid-template-columns:repeat(var(--n,8),minmax(0,1fr))}
 .link{border:0;background:none;color:var(--green);cursor:pointer;padding:0;font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
-.checks .tag{display:inline-block;margin-inline-start:6px}
+.substeps{margin:8px 0 0;padding-inline-start:22px;display:grid;gap:8px}
+.substeps li{padding-inline-start:4px}
+.substeps li::marker{color:var(--gold);font-weight:700}
+.substeps b{color:var(--green);display:block}
+.substeps span{color:var(--ink)}
+.phase{scroll-margin-top:180px}
 /* tools */
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
 .tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
@@ -675,46 +680,46 @@ const ADMIN_TRAITS = [
 ];
 
 const ADMIN_PHASES = [
- {id:"reg", t:"مرحلة التسجيل", icon:"list", items:[
-  ["فهم نظام التعامل مع المكتب وطريقة التسجيل","معرفة الأنظمة"],
-  ["توصيل المعلومات الصحيحة للناس عند التسجيل","دقة المعلومات"],
-  ["إعداد كشف بالأسماء: قائمة شاملة بأسماء {P}","كشف بالأسماء", "tool:list"],
-  ["إنشاء مجموعة واتس آب: قناة تواصل فعالة مع الجميع","مجموعة واتس آب"],
-  ["تقسيم التسكين: توزيع {P} على الغرف بشكل مناسب","تقسيم التسكين", "tool:rooms"],
-  ["تنظيم لقاء تعارفي قبل السفر للتعارف والتوجيه","لقاء تعارفي"]]},
- {id:"prep", t:"الاستعداد للسفر", icon:"doc", items:[
-  ["الأوراق الثبوتية: التأكد من اكتمال جميع الوثائق المطلوبة للسفر والدخول","الأوراق الثبوتية", "tool:list"],
-  ["التقسيم في الباص: ترتيب الجلوس بشكل مناسب ومريح للجميع","التقسيم في الباص", "tool:bus"],
-  ["التعليمات الحدودية: الاستماع جيدًا للتعليمات والتقيد بها بدقة","التعليمات الحدودية"],
-  ["المعالم والآثار: التعرف على المعالم التاريخية في الطريق","المعالم والآثار", "go:places"]]},
- {id:"heart", t:"تهيئة {P} قبل الانطلاق", icon:"heart", items:[
-  ["التذكير بإخلاص النية لله عز وجل","آداب السفر"],
-  ["التذكير بالتوبة: الندم، والإقلاع، والعزم، ورد الحقوق إلى أصحابها","آداب السفر"],
-  ["التذكير بالتزود من التقوى: ﴿فلا رفث ولا فسوق ولا جدال في الحج﴾","آداب السفر"],
-  ["شرح أحكام النسك الأساسية: الإحرام، الطواف، السعي، الحلق أو التقصير","وجوب معرفة الأحكام", "go:nusuk"]]},
- {id:"road", t:"في الطريق", icon:"bus", items:[
-  ["قراءة دعاء السفر","دعاء السفر", "go:duas"],
-  ["الإكثار من الدعاء: دعوة المسافر مستجابة","آداب السفر"],
-  ["قصر الصلاة وجمعها في السفر","قصر الصلاة", "go:fatwa:safar"],
-  ["وضع خطة لاستغلال الوقت: أجزاء قرآن يومية، الصلاة على النبي ﷺ، الذكر، الصدقة","استغلال الوقت"],
-  ["التعريف بالمعالم التاريخية على الطريق","المعالم", "go:places:route"]]},
- {id:"miqat", t:"عند الميقات", icon:"flag", items:[
-  ["الإحرام من الميقات، ويجوز قبله، والأفضل عنده أو بحذائه","المواقيت", "go:fatwa:mawaqit"],
-  ["تنبيه الجميع أن لبس ثياب الإحرام وحده لا يُدخل في الإحرام حتى تُعقد النية","مسائل الإحرام"],
-  ["تجنب تجاوز الميقات بلا إحرام، ومن تجاوزه يرجع إن أمكن وإلا فعليه دم","مسائل الإحرام"],
-  ["التلبية ورفع الصوت بها للرجال","التلبية", "go:duas"]]},
- {id:"hotel", t:"في الفندق والحرم", icon:"hotel", items:[
-  ["القصر في الفندق يعتمد على نية الإقامة: أكثر من 4 أيام (الجمهور) إتمام، وأقل قصر","القصر في الفندق", "go:fatwa:safar"],
-  ["الصلاة في الحرم خلف الإمام: يجب الإتمام لأن الإمام مقيم","الصلاة خلف المقيم"],
-  ["أداء النسك مع المجموعة خطوة بخطوة","المناسك", "go:nusuk"]]},
- {id:"madinah", t:"في المدينة المنورة", icon:"dome", items:[
-  ["آداب زيارة المسجد النبوي: خفض الصوت، السكينة، عدم التمسح بالجدار، الوقوف بأدب","آداب الزيارة"],
-  ["الدعاء والصلاة والذكر وقراءة القرآن في الروضة الشريفة","الروضة"],
-  ["زيارة مسجد قباء (الصلاة فيه كأجر عمرة) والبقيع وأحد والشهداء","معالم المدينة", "go:places:madinah"]]},
- {id:"back", t:"الوداع والعودة", icon:"home", items:[
-  ["طواف الوداع عند إرادة مغادرة مكة مباشرة (واجب في الحج عند الجمهور، سنة في العمرة، ويسقط عن الحائض والنفساء)","طواف الوداع"],
-  ["دعاء الرجوع: آيبون، تائبون، عابدون، لربنا حامدون","دعاء السفر", "go:duas"],
-  ["رسالة للجميع: المطلوب أن نرجع بقلب جديد، وروح جديدة، وعلاقة مختلفة مع الله","رسالة للحاج"]]}
+ {id:"reg", t:"مرحلة التسجيل", items:[
+  ["معرفة الأنظمة","فهم نظام التعامل مع المكتب وطريقة التسجيل."],
+  ["دقة المعلومات","توصيل المعلومات الصحيحة للناس عند التسجيل."],
+  ["كشف بالأسماء","إعداد قائمة شاملة بأسماء {P}."],
+  ["مجموعة واتس آب","إنشاء قناة تواصل فعالة مع الجميع."],
+  ["تقسيم التسكين","توزيع {P} على الغرف بشكل مناسب."],
+  ["لقاء تعارفي","تنظيم لقاء قبل السفر للتعارف والتوجيه."]]},
+ {id:"prep", t:"الاستعداد للسفر", items:[
+  ["الأوراق الثبوتية","التأكد من اكتمال جميع الوثائق المطلوبة للسفر والدخول."],
+  ["التقسيم في الباص","ترتيب الجلوس بشكل مناسب ومريح للجميع."],
+  ["التعليمات الحدودية","الاستماع جيدًا للتعليمات والتقيد بها بدقة."],
+  ["المعالم والآثار","التعرف على المعالم التاريخية في الطريق.","go:places:route"]]},
+ {id:"heart", t:"تهيئة {P} قبل الانطلاق", items:[
+  ["إخلاص النية","التذكير بإخلاص النية لله عز وجل."],
+  ["التوبة","الندم، والإقلاع عن الذنب، والعزم على عدم العودة، ورد الحقوق إلى أصحابها."],
+  ["التزود من التقوى","﴿فلا رفث ولا فسوق ولا جدال في الحج﴾."],
+  ["معرفة الأحكام","شرح أحكام النسك الأساسية: الإحرام، الطواف، السعي، الحلق أو التقصير.","go:nusuk"]]},
+ {id:"road", t:"في الطريق", items:[
+  ["دعاء السفر","قراءة دعاء السفر عند الانطلاق.","go:duas"],
+  ["الدعاء","الإكثار من الدعاء، فدعوة المسافر مستجابة."],
+  ["قصر الصلاة","قصر الصلاة وجمعها في السفر.","go:fatwa:safar"],
+  ["استغلال الوقت","أجزاء قرآن يومية، والصلاة على النبي ﷺ، والذكر، والصدقة."],
+  ["المعالم","التعريف بالمعالم التاريخية على الطريق.","go:places:route"]]},
+ {id:"miqat", t:"عند الميقات", items:[
+  ["الإحرام من الميقات","ويجوز قبله، والأفضل عنده أو بحذائه.","go:fatwa:mawaqit"],
+  ["النية","لبس ثياب الإحرام وحده لا يُدخل في الإحرام حتى تُعقد النية."],
+  ["تجاوز الميقات","من تجاوزه بلا إحرام يرجع إن أمكن، وإلا أحرم من مكانه وعليه دم."],
+  ["التلبية","التلبية ورفع الرجال أصواتهم بها.","go:duas"]]},
+ {id:"hotel", t:"في الفندق والحرم", items:[
+  ["القصر في الفندق","يعتمد على نية الإقامة: أكثر من 4 أيام إتمام عند الجمهور، وأقل قصر.","go:fatwa:safar"],
+  ["الصلاة في الحرم","يجب الإتمام خلف الإمام لأنه مقيم."],
+  ["أداء النسك","أداء المناسك مع المجموعة خطوة بخطوة.","go:nusuk"]]},
+ {id:"madinah", t:"في المدينة المنورة", items:[
+  ["آداب الزيارة","خفض الصوت، والسكينة، وعدم التمسح بالجدار، والوقوف بأدب."],
+  ["الروضة الشريفة","الإكثار فيها من الدعاء والصلاة والذكر وقراءة القرآن."],
+  ["معالم المدينة","مسجد قباء (الصلاة فيه كأجر عمرة)، والبقيع، وأحد والشهداء.","go:places:madinah"]]},
+ {id:"back", t:"الوداع والعودة", items:[
+  ["طواف الوداع","عند إرادة مغادرة مكة مباشرة: واجب في الحج عند الجمهور، وسنة في العمرة، ويسقط عن الحائض والنفساء."],
+  ["دعاء الرجوع","آيبون، تائبون، عابدون، لربنا حامدون.","go:duas"],
+  ["رسالة للجميع","المطلوب أن نرجع بقلب جديد، وروح جديدة، وعلاقة مختلفة مع الله."]]}
 ];
 
 /* ================= التطبيق ================= */
@@ -797,7 +802,7 @@ const fatwaNow = () => FATWA_TOPICS.filter(inMode);
 const tabs = $("#tabs"), main = $("#main");
 let current = null;
 function viewsNow(){
-  return [["home","الرئيسية"],["admin","الإدارة"],["tools","أدوات الرحلة"],["nusuk", MODE === "hajj" ? "مناسك الحج" : "خطوات العمرة"],
+  return [["home","الرئيسية"],["admin","خطوات الإداري"],["nusuk", MODE === "hajj" ? "مناسك الحج" : "خطوات العمرة"],
           ["fatwa","الفتاوى"],["bank","الأسئلة"],["places","المعالم والطريق"],["duas","الأدعية"]];
 }
 function buildTabs(){ tabs.innerHTML = viewsNow().map(([id,t]) => `<button class="tab" role="tab" data-go="${id}" aria-selected="${id === current}">${t}</button>`).join(""); }
@@ -822,22 +827,19 @@ const RENDER = {};
 
 /* ---------- الرئيسية ---------- */
 RENDER.home = v => {
-  const done = store.get("idari-admin", {});
-  const phaseDone = p => p.items.every((_, i) => done[p.id + ":" + i]);
-  const trip = store.get("idari-trip", {people:[], seats:50}).people;
   v.innerHTML = `
   <div class="hero">
     <span class="eyebrow">دليل الإداري المرافق</span>
     <h1>${MODE === "hajj" ? "رحلة حج" : "رحلة عمرة"} منظّمة من التسجيل حتى العودة</h1>
-    <p>الإدارة والتسكين والباص والأوراق، والمناسك بأحكامها، والفتاوى مرتبة حسب الموضوع، في مكان واحد.</p>
+    <p>خطوات الإداري من التسجيل وكشف الأسماء والتسكين والأوراق حتى العودة، والمناسك بأحكامها، والفتاوى مرتبة حسب الموضوع، في مكان واحد.</p>
     <div class="choose" role="group" aria-label="اختر نوع الرحلة">
       <button data-mode="umrah" aria-pressed="${MODE === "umrah"}"><b>عمرة</b><span>خطوات العمرة وأحكامها</span></button>
       <button data-mode="hajj" aria-pressed="${MODE === "hajj"}"><b>حج</b><span>المناسك من التروية إلى التشريق</span></button>
     </div>
-    <div class="journey" style="--n:${ADMIN_PHASES.length}">${ADMIN_PHASES.map(p => `<button class="jstep ${phaseDone(p) ? "done" : ""}" data-go="admin">${esc(W(p.t))}</button>`).join("")}</div>
+    <div class="journey" style="--n:${ADMIN_PHASES.length}">${ADMIN_PHASES.map(p => `<button class="jstep" data-go="admin" data-arg="${p.id}">${esc(W(p.t))}</button>`).join("")}</div>
   </div>
   <div class="stats">
-    <button class="stat" data-go="tools"><b>${trip.length}</b><span>${trip.length ? "في كشف الأسماء" : "ابدأ كشف الأسماء"}</span></button>
+    <button class="stat" data-go="admin"><b>${ADMIN_PHASES.length}</b><span>مراحل خطوات الإداري</span></button>
     <button class="stat" data-go="nusuk"><b>${MODE === "hajj" ? HAJJ_DAYS.length : UMRAH_STEPS.length}</b><span>${MODE === "hajj" ? "محطات مناسك الحج" : "خطوات العمرة"}</span></button>
     <button class="stat" data-go="fatwa"><b>${fatwaNow().reduce((n,t)=>n+t.items.length,0)}</b><span>فتوى ومسألة</span></button>
     <button class="stat" data-go="bank"><b>${bankNow().reduce((n,b)=>n+b.items.length,0)}</b><span>سؤالًا وجوابًا</span></button>
@@ -852,188 +854,24 @@ RENDER.home = v => {
   v.querySelector(".choose").onclick = e => { const b = e.target.closest("button"); if(b) setMode(b.dataset.mode); };
 };
 
-/* ---------- الإدارة ---------- */
-RENDER.admin = v => {
-  const done = store.get("idari-admin", {});
-  const total = ADMIN_PHASES.reduce((n,p) => n + p.items.length, 0);
-  const linkBtn = l => {
-    if(!l) return "";
-    const [k, a, b] = l.split(":");
-    if(k === "tool") return `<button class="link tag" data-go="tools" data-arg="${a}">افتح الأداة</button>`;
-    return `<button class="link tag" data-go="${a}" ${b ? `data-arg="${b}"` : ""}>التفاصيل</button>`;
-  };
+/* ---------- خطوات الإداري ---------- */
+RENDER.admin = (v, arg) => {
+  const linkBtn = l => { if(!l) return ""; const [, a, b] = l.split(":"); return ` <button class="link" data-go="${a}" ${b ? `data-arg="${b}"` : ""}>التفاصيل</button>`; };
+  let n = 0;
   v.innerHTML = `
-  ${head("الإدارة","خطة الإداري الناجح","مراحل الرحلة مرتبة حسب وقت تنفيذها. علّم على كل بند تنجزه، ويُحفظ تقدمك على هذا الجهاز.")}
-  <div class="card" style="display:grid;gap:8px">
-    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><b>تقدمك</b><span class="muted small" id="pc"></span></div>
-    <div class="progress"><i id="pb"></i></div>
-    <div class="row"><button class="btn ghost small" id="reset" style="padding:4px 12px">مسح العلامات</button><span class="small muted" id="rmsg"></span></div>
-  </div>
+  ${head("خطوات الإداري","خطوات الإداري من التسجيل حتى العودة","خطوات مرتبة حسب وقت تنفيذها في رحلة " + TRIP() + ".")}
   <div class="grid">${ADMIN_PHASES.map((p,pi) => `
-    <article class="card phase" data-p="${p.id}">
+    <article class="card phase" id="ph-${p.id}">
       <div class="num">${pi+1}</div>
       <div>
         <h3>${esc(W(p.t))}</h3>
-        <ul class="checks" style="margin-top:6px">${p.items.map((it,i) => `<li><label><input type="checkbox" id="a-${p.id}-${i}" data-k="${p.id}:${i}" ${done[p.id+":"+i] ? "checked" : ""}><span>${esc(W(it[0]))} <span class="pill g">${esc(it[1])}</span></span></label>${linkBtn(it[2])}</li>`).join("")}</ul>
+        <ol class="substeps">${p.items.map(it => `<li><b>${esc(W(it[0]))}</b><span>${esc(W(it[1]))}${linkBtn(it[2])}</span></li>`).join("")}</ol>
       </div>
     </article>`).join("")}</div>
   ${head("من هو الإداري الناجح؟","شخص يمتلك مزيجًا من المهارات القيادية والإدارية","يحقق أهدافه مع المحافظة على الآخرين، ويتميز بقدرته على إدارة رحلات الحج والعمرة بكفاءة واحترافية عالية.")}
   <div class="grid g3">${ADMIN_TRAITS.map(t => `<div class="card trait"><b>${esc(W(t.t))}</b><span class="muted small">${esc(t.d)}</span></div>`).join("")}</div>
   <div class="card"><span class="eyebrow">رحلة مباركة بإدارة متميزة</span><p style="margin:4px 0 0">الإداري الناجح يجمع بين العلم الشرعي والمهارات الإدارية والمعرفة التاريخية: <b>التخطيط المحكم</b> من التسجيل حتى العودة، <b>المعرفة الشاملة</b> شرعية وتاريخية وإدارية، و<b>التواصل الفعال</b> مع ${P()} والجهات المعنية.</p></div>`;
-  const upd = () => {
-    const c = Object.keys(done).length;
-    $("#pc").textContent = `${c} من ${total}`; $("#pb").style.width = (c/total*100) + "%";
-    ADMIN_PHASES.forEach(p => v.querySelector(`[data-p="${p.id}"]`).classList.toggle("complete", p.items.every((_,i) => done[p.id+":"+i])));
-  };
-  v.addEventListener("change", e => { const k = e.target.dataset.k; if(!k) return; if(e.target.checked) done[k] = true; else delete done[k]; store.set("idari-admin", done); upd(); });
-  let armed = false;
-  $("#reset").onclick = () => {
-    if(!armed){ armed = true; $("#rmsg").textContent = "اضغط مرة أخرى للتأكيد"; setTimeout(() => { armed = false; $("#rmsg").textContent = ""; }, 3000); return; }
-    Object.keys(done).forEach(k => delete done[k]); store.set("idari-admin", done);
-    v.querySelectorAll(".checks input").forEach(i => i.checked = false); armed = false; $("#rmsg").textContent = "تم المسح"; upd();
-  };
-  upd();
-};
-
-/* ---------- أدوات الرحلة: كشف، أوراق، تسكين، باص ---------- */
-RENDER.tools = (v, arg) => {
-  const T = store.get("idari-trip", {people:[], seats:50});
-  if(!T.seats) T.seats = 50;
-  let tab = arg || store.get("idari-tooltab", "list");
-  let pick = null;
-  const save = () => store.set("idari-trip", T);
-  const uid = () => Math.random().toString(36).slice(2, 9);
-  v.innerHTML = `
-  ${head("أدوات الرحلة","كشف الأسماء والتسكين والباص","كشف بالأسماء، ومتابعة اكتمال الأوراق الثبوتية، وتقسيم التسكين على الغرف، وترتيب الجلوس في الباص. تُحفظ البيانات على هذا الجهاز فقط.")}
-  <div class="tiles" id="tiles"></div>
-  <div class="subtabs chips" id="tt">
-    <button class="chip" data-t="list">كشف الأسماء والأوراق</button>
-    <button class="chip" data-t="rooms">التسكين في الفندق</button>
-    <button class="chip" data-t="bus">مقاعد الباص</button>
-  </div>
-  <div id="tb"></div>`;
-  const tiles = () => {
-    const n = T.people.length, docs = T.people.filter(p => p.docs).length, rooms = T.people.filter(p => p.room).length, seats = T.people.filter(p => p.seat).length;
-    $("#tiles", v).innerHTML = `
-      <div class="tile"><b>${n}</b><span>في الكشف</span></div>
-      <div class="tile ${n && docs < n ? "warn" : ""}"><b>${docs}/${n}</b><span>أوراقهم مكتملة</span></div>
-      <div class="tile ${n && rooms < n ? "warn" : ""}"><b>${rooms}/${n}</b><span>لهم غرفة</span></div>
-      <div class="tile ${n && seats < n ? "warn" : ""}"><b>${seats}/${n}</b><span>لهم مقعد</span></div>`;
-  };
-  const draw = () => {
-    v.querySelectorAll("#tt .chip").forEach(c => c.setAttribute("aria-pressed", c.dataset.t === tab));
-    tiles();
-    ({list, rooms, bus})[tab]($("#tb", v));
-  };
-  $("#tt", v).onclick = e => { const c = e.target.closest(".chip"); if(!c) return; tab = c.dataset.t; store.set("idari-tooltab", tab); pick = null; draw(); };
-
-  function list(box){
-    box.innerHTML = `
-    <div class="card grid" style="gap:12px">
-      <form class="form" id="add">
-        <label>الاسم الكامل (كما في الجواز)<input class="inp" id="nm" required></label>
-        <label>رقم الهاتف<input class="inp" id="ph" inputmode="tel" dir="ltr"></label>
-        <button class="btn" type="submit">إضافة</button>
-      </form>
-      <details><summary class="small" style="cursor:pointer;color:var(--green);font-weight:600">إضافة عدة أسماء دفعة واحدة</summary>
-        <div class="grid" style="gap:8px;margin-top:8px">
-          <label class="fld">اكتب أو الصق اسمًا في كل سطر (ويمكن إضافة الهاتف بعد فاصلة)<textarea class="inp" id="bulk" placeholder="محمد أحمد، 0501234567&#10;فاطمة علي"></textarea></label>
-          <div><button class="btn ghost" type="button" id="bulkadd">إضافة الأسماء</button> <span class="hint" id="bmsg"></span></div>
-        </div>
-      </details>
-    </div>
-    ${T.people.length ? `
-    <div class="row" style="justify-content:space-between"><span class="hint">علّم «الأوراق» عند التأكد من اكتمال الجواز وجميع الوثائق المطلوبة للسفر والدخول.</span>
-      <button class="btn ghost small" id="cp" style="padding:4px 12px">نسخ الكشف للواتس آب</button></div>
-    <div class="tblw"><table class="ptable">
-      <thead><tr><th>#</th><th>الاسم</th><th>الهاتف</th><th>الأوراق</th><th>الغرفة</th><th>المقعد</th><th></th></tr></thead>
-      <tbody>${T.people.map((p,i) => `<tr data-id="${p.id}">
-        <td class="muted">${i+1}</td>
-        <td><input class="inp" data-f="name" value="${esc(p.name)}" aria-label="الاسم"></td>
-        <td><input class="inp" data-f="phone" value="${esc(p.phone || "")}" dir="ltr" aria-label="الهاتف" style="width:130px"></td>
-        <td><input type="checkbox" data-f="docs" ${p.docs ? "checked" : ""} aria-label="الأوراق مكتملة"></td>
-        <td><input class="inp w-r" data-f="room" value="${esc(p.room || "")}" placeholder="—" aria-label="رقم الغرفة"></td>
-        <td class="muted">${p.seat || "—"}</td>
-        <td><button class="x" data-del="${p.id}">حذف</button></td></tr>`).join("")}</tbody></table></div>` :
-    `<div class="card empty">الكشف فارغ. أضف أسماء ${P()} لتبدأ بمتابعة الأوراق والتسكين والمقاعد.</div>`}`;
-    $("#add", box).onsubmit = e => { e.preventDefault(); const n = $("#nm", box).value.trim(); if(!n) return; T.people.push({id:uid(), name:n, phone:$("#ph", box).value.trim()}); save(); draw(); $("#nm").focus(); };
-    $("#bulkadd", box).onclick = () => {
-      const lines = $("#bulk", box).value.split(/\n+/).map(s => s.trim()).filter(Boolean);
-      lines.forEach(l => { const [n, ph] = l.split(/[،,]/).map(s => s.trim()); if(n) T.people.push({id:uid(), name:n, phone:ph || ""}); });
-      save(); draw();
-    };
-    box.oninput = e => { const f = e.target.dataset.f; if(!f || f === "docs") return; const p = T.people.find(x => x.id === e.target.closest("tr").dataset.id); p[f] = e.target.value; save(); if(f === "room") tiles(); };
-    box.onchange = e => { if(e.target.dataset.f !== "docs") return; const p = T.people.find(x => x.id === e.target.closest("tr").dataset.id); p.docs = e.target.checked; save(); tiles(); };
-    box.onclick = e => {
-      const d = e.target.closest("[data-del]");
-      if(d){ if(!d.classList.contains("arm")){ d.classList.add("arm"); d.textContent = "تأكيد؟"; setTimeout(() => { d.classList.remove("arm"); d.textContent = "حذف"; }, 3000); return; }
-        T.people = T.people.filter(p => p.id !== d.dataset.del); save(); draw(); }
-      if(e.target.id === "cp"){
-        const txt = `كشف ${P()} – رحلة ${TRIP()}\n` + T.people.map((p,i) => `${i+1}. ${p.name}${p.room ? " – غرفة " + p.room : ""}${p.seat ? " – مقعد " + p.seat : ""}`).join("\n");
-        copyText(txt, e.target);
-      }
-    };
-  }
-
-  function rooms(box){
-    const by = {};
-    T.people.forEach(p => { const r = (p.room || "").trim(); (by[r] = by[r] || []).push(p); });
-    const keys = Object.keys(by).filter(Boolean).sort((a,b) => a.localeCompare(b, "ar", {numeric:true}));
-    const none = by[""] || [];
-    box.innerHTML = !T.people.length ? `<div class="card empty">أضف الأسماء أولًا في «كشف الأسماء».</div>` : `
-    <p class="hint" style="margin:0">تقسيم التسكين: توزيع ${P()} على الغرف بشكل مناسب. اكتب رقم الغرفة لكل شخص.</p>
-    <div class="grid g2" style="align-items:start">
-      <div class="card">
-        <b>تحديد الغرف</b>
-        <div class="grid" style="gap:6px;margin-top:8px">${T.people.map(p => `<label class="row" style="justify-content:space-between;gap:10px"><span>${esc(p.name)}</span><input class="inp" style="width:110px" data-rid="${p.id}" value="${esc(p.room || "")}" placeholder="رقم الغرفة"></label>`).join("")}</div>
-      </div>
-      <div class="grid" style="gap:10px">
-        <div class="row" style="justify-content:space-between"><b>${keys.length} غرفة</b>${keys.length ? `<button class="btn ghost small" id="cpr" style="padding:4px 12px">نسخ توزيع الغرف</button>` : ""}</div>
-        <div class="rooms">${keys.map(k => `<div class="room"><h4><span>غرفة ${esc(k)}</span><span class="pill g">${by[k].length}</span></h4><ol>${by[k].map(p => `<li>${esc(p.name)}</li>`).join("")}</ol></div>`).join("")}
-        ${none.length ? `<div class="room none"><h4><span>بدون غرفة</span><span class="pill">${none.length}</span></h4><ol>${none.map(p => `<li>${esc(p.name)}</li>`).join("")}</ol></div>` : ""}</div>
-      </div>
-    </div>`;
-    box.oninput = null; box.onclick = null;
-    box.onchange = e => { const id = e.target.dataset.rid; if(!id) return; T.people.find(p => p.id === id).room = e.target.value.trim(); save(); draw(); };
-    const c = $("#cpr", box);
-    if(c) c.onclick = () => copyText(`توزيع الغرف – رحلة ${TRIP()}\n` + keys.map(k => `غرفة ${k}: ` + by[k].map(p => p.name).join("، ")).join("\n"), c);
-  }
-
-  function bus(box){
-    const seatOf = n => T.people.find(p => +p.seat === n);
-    const free = T.people.filter(p => !p.seat);
-    let cells = "";
-    for(let n = 1; n <= T.seats; n++){
-      const col = (n - 1) % 4;
-      if(col === 2) cells += `<span class="aisle"></span>`;
-      const p = seatOf(n);
-      cells += `<button class="seat ${p ? "taken" : ""}" data-seat="${n}" title="${p ? esc(p.name) : "مقعد فارغ"}"><i>${n}</i>${p ? esc(p.name.split(" ").slice(0,2).join(" ")) : ""}</button>`;
-    }
-    box.innerHTML = !T.people.length ? `<div class="card empty">أضف الأسماء أولًا في «كشف الأسماء».</div>` : `
-    <p class="hint" style="margin:0">التقسيم في الباص: ترتيب الجلوس بشكل مناسب ومريح للجميع. اختر اسمًا ثم اضغط على المقعد، واضغط على مقعد مشغول لإفراغه.</p>
-    <div class="grid g2" style="align-items:start">
-      <div class="bus"><div class="front"><span>السائق</span><span>مقدمة الباص</span><span>الباب</span></div><div class="seats">${cells}</div></div>
-      <div class="card grid" style="gap:10px">
-        <label class="fld">عدد المقاعد<input class="inp" id="ns" type="number" min="4" max="80" value="${T.seats}" style="width:100px"></label>
-        <label class="fld">اختر ${P1()} ثم اضغط على المقعد
-          <select id="pk" class="inp"><option value="">— ${free.length} بدون مقعد —</option>${free.map(p => `<option value="${p.id}" ${pick === p.id ? "selected" : ""}>${esc(p.name)}</option>`).join("")}</select></label>
-        <button class="btn ghost small" id="auto" style="justify-self:start;padding:4px 12px">توزيع تلقائي حسب ترتيب الكشف</button>
-        <button class="btn ghost small" id="cpb" style="justify-self:start;padding:4px 12px">نسخ ترتيب المقاعد</button>
-      </div>
-    </div>`;
-    $("#pk", box).onchange = e => { pick = e.target.value || null; };
-    $("#ns", box).onchange = e => { T.seats = Math.max(4, Math.min(80, +e.target.value || 50)); T.people.forEach(p => { if(+p.seat > T.seats) p.seat = ""; }); save(); draw(); };
-    $("#auto", box).onclick = () => { let n = 1; T.people.forEach(p => { if(p.seat) return; while(n <= T.seats && seatOf(n)) n++; if(n <= T.seats) p.seat = n++; }); save(); draw(); };
-    $("#cpb", box).onclick = e => copyText(`مقاعد الباص – رحلة ${TRIP()}\n` + T.people.filter(p => p.seat).sort((a,b) => a.seat - b.seat).map(p => `${p.seat}: ${p.name}`).join("\n"), e.target);
-    box.oninput = null; box.onchange = null;
-    box.onclick = e => {
-      const s = e.target.closest("[data-seat]"); if(!s) return;
-      const n = +s.dataset.seat, occ = seatOf(n);
-      if(occ){ occ.seat = ""; save(); draw(); return; }
-      if(pick){ const p = T.people.find(x => x.id === pick); if(p) p.seat = n; pick = null; save(); draw(); }
-    };
-  }
-  draw();
+  if(arg){ const el = document.getElementById("ph-" + arg); if(el) setTimeout(() => el.scrollIntoView({block:"start"}), 0); }
 };
 
 /* ---------- المناسك ---------- */
