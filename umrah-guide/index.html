@@ -1,0 +1,1138 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>دليل إداري العمرة</title>
+<meta name="description" content="مرجع شامل لإداري باص الحج والعمرة: خطة الرحلة، خطوات العمرة والحج، الفتاوى حسب الموضوع، بنك الأسئلة، المعالم والأدعية.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#F3F5F2; --surface:#FFFFFF; --surface-2:#F8FAF7; --ink:#14201B; --muted:#5B6862; --line:#D8E0DA;
+  --green:#0D5C4B; --green-ink:#FFFFFF; --green-soft:#E2EFE9; --green-deep:#083B31;
+  --gold:#9A7219; --gold-soft:#F5EDD9; --gold-line:#E4D3A8;
+  --ok:#1E7B4F; --ok-soft:#E1F3E8; --bad:#B2362B; --bad-soft:#FBE7E4;
+  --shadow:0 1px 2px rgba(20,32,27,.06),0 6px 20px rgba(20,32,27,.06);
+  --r:14px;
+  --f-display:"Amiri","Traditional Arabic","Times New Roman",serif;
+  --f-body:"IBM Plex Sans Arabic","Segoe UI","Tahoma","Noto Sans Arabic",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0D1412; --surface:#141E1B; --surface-2:#18231F; --ink:#E5ECE8; --muted:#9AA9A2; --line:#26342F;
+    --green:#5CBFA3; --green-ink:#08231C; --green-soft:#16302A; --green-deep:#0A2520;
+    --gold:#D9B45E; --gold-soft:#2A2415; --gold-line:#4A3F22;
+    --ok:#5BCB8F; --ok-soft:#143023; --bad:#F08A7E; --bad-soft:#35191A;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0D1412; --surface:#141E1B; --surface-2:#18231F; --ink:#E5ECE8; --muted:#9AA9A2; --line:#26342F;
+  --green:#5CBFA3; --green-ink:#08231C; --green-soft:#16302A; --green-deep:#0A2520;
+  --gold:#D9B45E; --gold-soft:#2A2415; --gold-line:#4A3F22;
+  --ok:#5BCB8F; --ok-soft:#143023; --bad:#F08A7E; --bad-soft:#35191A;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html{direction:rtl}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+a{color:var(--green)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
+h1,h2,h3{text-wrap:balance;margin:0}
+.wrap{max-width:1040px;margin-inline:auto;padding-inline:16px}
+
+/* ---------- header ---------- */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top-row{display:flex;align-items:center;gap:12px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);flex-shrink:0}
+.brand svg{width:34px;height:34px}
+.brand b{font-family:var(--f-display);font-size:22px;line-height:1.1;font-weight:700}
+.brand small{display:block;font-size:11.5px;color:var(--muted);letter-spacing:.2px}
+.search{flex:1;min-width:0;position:relative}
+.search input{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 38px 8px 14px;font-size:15px}
+.search svg{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--muted);pointer-events:none}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-bottom:8px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex-shrink:0;border:0;background:transparent;padding:7px 13px;border-radius:999px;font-size:15px;font-weight:500;color:var(--muted);cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink);background:var(--surface)}
+.tab[aria-selected="true"]{background:var(--green);color:var(--green-ink)}
+@media (max-width:560px){.brand small{display:none}.brand b{font-size:19px}}
+
+/* ---------- common ---------- */
+main{padding-block:22px 60px}
+.view{display:grid;gap:22px}
+.sec-head{display:grid;gap:4px}
+.eyebrow{font-size:12.5px;font-weight:600;color:var(--gold);letter-spacing:.3px}
+.sec-head h2{font-family:var(--f-display);font-size:clamp(28px,5vw,38px);line-height:1.25;font-weight:700}
+.sec-head p{margin:0;color:var(--muted);max-width:68ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:14px;cursor:pointer;color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--green-soft);border-color:var(--green);color:var(--green);font-weight:600}
+.pill{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:1px 9px;background:var(--gold-soft);color:var(--gold);border:1px solid var(--gold-line);white-space:nowrap}
+.pill.g{background:var(--green-soft);color:var(--green);border-color:transparent}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.btn{border:1px solid var(--green);background:var(--green);color:var(--green-ink);border-radius:10px;padding:8px 16px;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--green)}
+.btn:disabled{opacity:.45;cursor:default}
+.tblw{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:420px}
+th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--surface-2);font-weight:600;color:var(--muted);font-size:13px}
+tr:last-child td{border-bottom:0}
+.ayah{font-family:var(--f-display);font-size:21px;line-height:1.9}
+.empty{padding:28px;text-align:center;color:var(--muted)}
+
+/* ---------- hero ---------- */
+.hero{position:relative;overflow:hidden;border-radius:20px;background:var(--green-deep);color:#F2F6F3;padding:30px 24px 26px}
+.hero::before{content:"";position:absolute;inset:0;opacity:.13;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23E9CF8A' stroke-width='1.2'%3E%3Crect x='18' y='18' width='28' height='28'/%3E%3Crect x='18' y='18' width='28' height='28' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='6'/%3E%3C/g%3E%3C/svg%3E");background-size:64px}
+.hero>*{position:relative}
+.hero .eyebrow{color:#E9CF8A}
+.hero h1{font-family:var(--f-display);font-size:clamp(34px,7vw,56px);line-height:1.15;font-weight:700;margin-top:6px}
+.hero p{max-width:60ch;color:#CFE0D8;margin:10px 0 0}
+.journey{margin-top:22px;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:0;counter-reset:j}
+.jstep{position:relative;border:0;background:transparent;color:#DDEAE3;text-align:center;cursor:pointer;padding:26px 2px 0;font-size:12.5px;line-height:1.35}
+.jstep::before{content:"";position:absolute;top:9px;right:50%;left:-50%;height:2px;background:#E9CF8A55}
+.jstep:last-child::before{display:none}
+.jstep::after{counter-increment:j;content:counter(j);position:absolute;top:0;right:50%;transform:translateX(50%);width:20px;height:20px;border-radius:50%;background:#0D5C4B;border:2px solid #E9CF8A;font-size:11px;line-height:16px;color:#F2F6F3;font-weight:700}
+.jstep:hover{color:#fff}
+.jstep.done::after{background:#E9CF8A;color:#083B31}
+@media (max-width:640px){.journey{grid-template-columns:repeat(4,minmax(0,1fr));row-gap:14px}.jstep:nth-child(4)::before{display:none}}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;text-align:right}
+.stat:hover{border-color:var(--green)}
+.stat b{display:block;font-size:26px;font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;line-height:1.2}
+.stat span{font-size:14px;color:var(--muted)}
+
+/* schedule */
+.sched{display:grid;gap:8px}
+.srow{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.srow .d{font-weight:600;font-size:14px}
+.srow .d small{display:block;font-weight:500;color:var(--muted)}
+.srow ul{margin:0;padding:0;list-style:none;display:grid;gap:4px}
+.srow li{display:grid;grid-template-columns:96px 1fr;gap:8px;font-size:14.5px}
+.srow li time{font-variant-numeric:tabular-nums;color:var(--muted);direction:ltr;text-align:right}
+.srow li em{font-style:normal;color:var(--muted);font-size:13px}
+.srow.past{opacity:.6}
+@media (max-width:560px){.srow{grid-template-columns:1fr}.srow li{grid-template-columns:1fr}}
+
+/* accordion */
+details.acc{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+details.acc>summary{list-style:none;cursor:pointer;padding:13px 16px;font-weight:600;display:flex;gap:10px;align-items:center}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary::after{content:"";margin-inline-start:auto;width:9px;height:9px;border-inline-start:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(-45deg);transition:transform .2s}
+details.acc[open]>summary::after{transform:rotate(135deg)}
+details.acc .body{padding:0 16px 14px}
+.kv{display:grid;gap:10px;margin:0}
+.kv div{display:grid;gap:2px}
+.kv dt{font-weight:600}
+.kv dd{margin:0;color:var(--muted)}
+
+/* ---------- plan ---------- */
+.progress{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--green);border-radius:99px;transition:width .3s}
+.phase{display:grid;grid-template-columns:44px 1fr;gap:14px}
+.phase .num{width:44px;height:44px;border-radius:12px;background:var(--green-soft);color:var(--green);display:grid;place-items:center;font-weight:700;font-size:18px;font-variant-numeric:tabular-nums}
+.phase.complete .num{background:var(--green);color:var(--green-ink)}
+.phase h3{font-size:19px;font-weight:700}
+.phase .meta{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;font-size:14px;color:var(--muted);margin:2px 0 8px}
+.checks{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.checks label{display:flex;gap:10px;align-items:flex-start;padding:6px 8px;border-radius:8px;cursor:pointer;font-size:15px}
+.checks label:hover{background:var(--surface-2)}
+.checks input{margin-top:6px;width:17px;height:17px;accent-color:var(--green);flex-shrink:0}
+.checks input:checked+span{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+.trait b{display:block;font-size:16px}
+.trait{border-inline-start:3px solid var(--gold)}
+
+/* route */
+.route{display:grid;gap:18px}
+.leg h3{font-size:16px;font-weight:700;color:var(--gold);margin-bottom:8px}
+.stops{list-style:none;margin:0;padding:0;border-inline-start:2px dashed var(--gold-line);margin-inline-start:9px}
+.stops li{position:relative;padding:0 22px 12px 0}
+.stops li::before{content:"";position:absolute;right:-7px;top:8px;width:12px;height:12px;border-radius:50%;background:var(--surface);border:2px solid var(--gold)}
+.stops li b{font-weight:600}
+.stops li p{margin:0;color:var(--muted);font-size:14.5px}
+
+/* ---------- steps ---------- */
+.steps{display:grid;gap:14px;counter-reset:s}
+.step{display:grid;grid-template-columns:50px 1fr;gap:14px}
+.step .n{counter-increment:s;width:50px;height:50px;border-radius:50%;border:2px solid var(--gold);display:grid;place-items:center;font-family:var(--f-display);font-size:24px;font-weight:700;color:var(--gold)}
+.step .n::before{content:counter(s)}
+.step h3{font-size:19px;font-weight:700;margin-bottom:4px}
+.step p{margin:0}
+.dua{margin-top:10px;background:var(--gold-soft);border:1px solid var(--gold-line);border-radius:12px;padding:10px 14px;font-family:var(--f-display);font-size:19px;line-height:1.9}
+.fatwa-list{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:6px}
+.fatwa-list li{font-size:14.5px;padding:8px 12px;border-radius:10px;background:var(--green-soft)}
+.fatwa-list li::before{content:"حكم: ";font-weight:700;color:var(--green)}
+.tip{margin-top:8px;font-size:14.5px;padding:8px 12px;border-radius:10px;border:1px dashed var(--line)}
+.tip::before{content:"للإداري: ";font-weight:700;color:var(--gold)}
+@media (max-width:520px){.step{grid-template-columns:1fr}.step .n{width:40px;height:40px;font-size:20px}}
+
+/* hajj days */
+.days{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.day{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.day .dh{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
+.day .dn{font-family:var(--f-display);font-size:34px;font-weight:700;color:var(--green);line-height:1;font-variant-numeric:tabular-nums}
+.day .dn.w{font-size:22px}
+.day .dh span{font-weight:700}
+.day .dh small{color:var(--muted);font-size:12.5px;display:block;font-weight:500}
+.day ul{margin:0;padding-inline-start:18px;display:grid;gap:4px;font-size:14.5px}
+.day.big{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold-line)}
+.arkan li{font-weight:600}
+
+/* ---------- fatwas ---------- */
+.toolbar{display:grid;gap:10px}
+.fq{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.fq>summary{list-style:none;cursor:pointer;padding:12px 16px;display:grid;gap:2px}
+.fq>summary::-webkit-details-marker{display:none}
+.fq>summary b{font-weight:600;font-size:16px}
+.fq>summary .pill{justify-self:start}
+.fq .body{padding:0 16px 14px;display:grid;gap:10px}
+.fq .body p{margin:0}
+.madhab{display:grid;gap:6px}
+.madhab div{display:grid;grid-template-columns:minmax(110px,max-content) 1fr;gap:10px;align-items:start;font-size:14.5px;padding:7px 10px;background:var(--surface-2);border-radius:8px}
+.madhab div b{color:var(--green);font-weight:600}
+.note{font-size:14px;border-inline-start:3px solid var(--gold);padding:4px 10px;color:var(--muted)}
+mark{background:var(--gold-soft);color:inherit;border-radius:3px;padding:0 1px}
+@media (max-width:480px){.madhab div{grid-template-columns:1fr;gap:0}}
+
+/* ---------- questions ---------- */
+.qbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;padding:7px 14px;cursor:pointer;font-weight:500;font-size:15px}
+.seg button[aria-pressed="true"]{background:var(--green);color:var(--green-ink)}
+select{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:7px 12px;font-size:15px;max-width:100%}
+.qa{display:grid;gap:8px}
+.qitem{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.qitem .q{font-weight:600;display:flex;gap:10px}
+.qitem .q i{font-style:normal;color:var(--muted);font-variant-numeric:tabular-nums;font-weight:500;min-width:26px}
+.qitem .a{margin-top:6px;padding-inline-start:36px;color:var(--ink);white-space:pre-line}
+.qitem .a::before{content:"الجواب: ";color:var(--ok);font-weight:700}
+.qitem .a.hide{filter:blur(6px);cursor:pointer;user-select:none}
+.qitem .a.hide::after{content:""}
+.ghead{font-size:14px;font-weight:700;color:var(--gold);margin-top:8px}
+.flash{min-height:260px;display:grid;place-items:center;text-align:center;cursor:pointer;padding:28px 22px;border-radius:18px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow)}
+.flash .fq-t{font-size:20px;font-weight:600;max-width:40ch}
+.flash .fa-t{font-size:18px;color:var(--ok);max-width:48ch;white-space:pre-line}
+.flash small{display:block;color:var(--muted);margin-top:12px;font-size:13px}
+.navrow{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.opts{display:grid;gap:8px;margin-top:12px}
+.opt{text-align:right;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:11px 14px;cursor:pointer;font-size:15.5px;display:flex;gap:10px}
+.opt b{color:var(--muted);font-weight:600}
+.opt:hover:not(:disabled){border-color:var(--green)}
+.opt.right{background:var(--ok-soft);border-color:var(--ok)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.score{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.ring{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:22px;font-variant-numeric:tabular-nums;background:conic-gradient(var(--green) calc(var(--p)*1%),var(--line) 0)}
+.ring span{width:66px;height:66px;border-radius:50%;background:var(--surface);display:grid;place-items:center}
+
+/* landmarks */
+.lm{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.lm .card{padding:14px 16px}
+.lm b{font-weight:700;display:block;margin-bottom:2px}
+.lm p{margin:0;color:var(--muted);font-size:14.5px}
+
+/* duas */
+.duas{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.duac{display:grid;gap:8px;align-content:start}
+.duac h3{font-size:17px;font-weight:700}
+.duac .when{font-size:13px;color:var(--muted)}
+.duac .x{font-family:var(--f-display);font-size:20px;line-height:1.95;margin:0}
+.copy{justify-self:start;border:1px solid var(--line);background:transparent;border-radius:8px;padding:3px 12px;font-size:13px;cursor:pointer;color:var(--muted)}
+
+.foot{border-top:1px solid var(--line);padding-block:18px;color:var(--muted);font-size:13.5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<header class="top">
+  <div class="wrap">
+    <div class="top-row">
+      <a class="brand" href="#home" data-go="home" aria-label="الرئيسية">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="7" y="9" width="26" height="24" rx="2" fill="var(--ink)"/><rect x="7" y="14" width="26" height="3.5" fill="var(--gold)"/><rect x="16.5" y="22" width="7" height="11" rx="1" fill="var(--gold)" opacity=".85"/></svg>
+        <span><b>دليل إداري العمرة</b><small>مرجع دورة تأهيل الإداريين المرافقين</small></span>
+      </a>
+      <label class="search">
+        <span hidden>ابحث</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="ابحث في الفتاوى والأسئلة والمعالم…" autocomplete="off">
+      </label>
+    </div>
+    <nav class="tabs" role="tablist" id="tabs"></nav>
+  </div>
+</header>
+
+<main class="wrap" id="main"></main>
+
+<footer class="wrap foot">
+  المحتوى مأخوذ من مواد دورة تأهيل الإداريين المرافقين للحجاج والمعتمرين (د. أيمن ريّان، د. رائد عاصي، أ. داهش أبو سرحان). عند الخلاف أو النازلة الجديدة يُرجع إلى أهل العلم ودار الإفتاء.
+</footer>
+
+<script>
+const QA_DOCX = {"makkah": [{"h": "", "qa": [["أين وضع إبراهيم عليه السلام زوجته هاجر وابنه إسماعيل؟", "في وادٍ غير ذي زرع"], ["ما الذي جعل العمران يبدأ في مكة؟", "تجمع القبائل حول ماء زمزم"], ["من أسماء مكة الواردة في النص؟", "البلد الأمين"], ["ما الدلالة على تعدد أسماء مكة؟", "شرف مكة وعِظَم مكانتها"], ["ما هو الشاذروان؟", "جزء من أساس الكعبة يحيط بها من ثلاث جهات"], ["ما حكم الطواف على الشاذروان؟", "لا يصح الطواف عليه بل حوله"], ["ما المقصود بـ\"المعجن\"؟", "موضع أساس الكعبة أو مكان عجن طين بنائها"], ["أين كانت تتم الدعوة السرية في بدايات الإسلام؟", "في دار الأرقم"], ["أين حوصِر النبي ﷺ وبنو هاشم ثلاث سنوات؟", "شِعب أبي طالب"], ["أين يقع مسجد نمرة؟", "في صعيد عرفات"], ["ما الحدث التاريخي المرتبط بوادي مُحَسَّر؟", "إهلاك أصحاب الفيل"]]}], "hajj": [{"h": "أولًا: يوم التروية (8 ذي الحجة)", "qa": [["متى يخرج الحجاج إلى منى؟", "اليوم الثامن من ذي الحجة."], ["ماذا يسمى اليوم الثامن من ذي الحجة؟", "يوم التروية."], ["ماذا يفعل الحاج عند إحرامه بالحج؟", "يفعل كما فعل عند إحرامه بالعمرة من غسل وتطيب."], ["من أين يُحرم الحاج بالحج في يوم التروية؟", "من المكان الذي هو فيه."], ["ما حكم صلاة الظهر والعصر والمغرب والعشاء في منى يوم التروية؟", "تصلى كل صلاة في وقتها مع قصر الرباعية."], ["ما عدد ركعات الظهر يوم التروية؟", "ركعتان."], ["ما عدد ركعات العصر يوم التروية؟", "ركعتان."], ["هل يجمع الحاج يوم التروية في منى بين الصلوات؟", "لا يجمع بينها."], ["ماذا يفعل الناس اليوم غالبًا بدل البقاء في منى؟", "يتوجهون مباشرة إلى عرفات."], ["لماذا يتوجه كثير من الحجاج إلى عرفات في اليوم الثامن؟", "تجنبًا للازدحام."]]}, {"h": "ثانيًا: يوم عرفة (9 ذي الحجة)", "qa": [["يوم عرفة هو اليوم:", "التاسع من ذي الحجة."], ["ما حكم الوقوف بعرفة؟", "ركن من أركان الحج."], ["متى يبدأ وقت الوقوف بعرفة؟", "بعد زوال شمس يوم عرفة."], ["متى ينتهي وقت الوقوف بعرفة؟", "بطلوع فجر يوم 10 ذي الحجة."], ["هل يشترط للحاج أن يكون واقفًا على قدميه في الوقوف؟", "لا يشترط."], ["هل يصح الوقوف بعرفة للمرض على كرسي ولم يعلم أنه في عرفة؟", "نعم يصح."], ["ما المكان الذي لا يصح الوقوف فيه ملاصق بعرفة؟", "بطن عُرَنة."], ["أين يقع وادي عُرَنة؟", "أمام مسجد نمرة (الثلث الأمامي منه)."], ["ماذا قال النبي ﷺ في الوقوف بعرفة؟", "\"الحج عرفة\"."], ["كيف يصلي الحاج يوم عرفة؟", "الظهر والعصر تقديم جمعًا وقصرًا."], ["ما أفضل الدعاء يوم عرفة؟", "لا إله إلا الله وحده لا شريك له…"], ["هل يغادر الحاج عرفة قبل غروب الشمس؟", "لا يجوز."], ["ماذا يلزم من نزل من عرفة قبل الغروب؟", "عليه دم (عند بعض الفقهاء)."], ["ما حكم حضور جزء من الليل بعرفة عند الشافعية في الصحيح؟", "مستحب."]]}, {"h": "ثالثًا: المبيت في مزدلفة", "qa": [["متى ينصرف الحاج من عرفة إلى مزدلفة؟", "بعد غروب الشمس."], ["ماذا يردد الحجاج أثناء السير إلى مزدلفة؟", "التلبية."], ["ماذا يصلي الحاج فور وصوله مزدلفة؟", "المغرب والعشاء جمعًا وقصرا، جمع تأخير."], ["عدد ركعات المغرب في مزدلفة؟", "ثلاث ركعات."], ["عدد ركعات العشاء في مزدلفة؟", "ركعتان."], ["هل يجمع الحاج في مزدلفة بين المغرب والعشاء بأذان واحد؟", "نعم."], ["إذا لم يصل الحاج مزدلفة قبل منتصف الليل، فماذا يفعل؟", "يصلي المغرب والعشاء في الطريق."], ["ما حكم المبيت بمزدلفة عند الجمهور؟", "واجب."], ["ما حكم المبيت بمزدلفة عند المالكية؟", "سنة."], ["ما حكم المبيت بمزدلفة عند بعض السلف؟", "ركن."], ["لا يتحقق المبيت بمزدلفة الا اذا مكث الحاج فيها:", "بعد منتصف ليلة النحر ولو لحظة."], ["هل يشترط النوم للمبيت في مزدلفة؟", "لا."], ["كم عدد الحصى التي تلتقط من مزدلفة لجمرة العقبة؟", "سبع حصيات."], ["من أين يجوز أخذ حصى أيام التشريق؟", "من مزدلفة ومن أي مكان آخر."], ["ما اسم الموضع الذي يستحب الوقوف عنده بعد الفجر بمزدلفة؟", "المشعر الحرام."], ["الوقوف عند المشعر الحرام بعد الفجر:", "سنة عند الجمهور."], ["الوقوف عند المشعر الحرام عند الحنفية:", "واجب."], ["ما معنى \"مزدلفة كلها موقف\"؟", "يجوز الوقوف في كل أرض مزدلفة."], ["من يجوز لهم مغادرة مزدلفة قبل الفجر؟", "أهل الضعفة والنساء."]]}, {"h": "رابعًا: يوم النحر (10 ذي الحجة)", "qa": [["أول أعمال يوم النحر؟", "رمي جمرة العقبة الكبرى."], ["عدد حصيات جمرة العقبة؟", "سبع."], ["حجم الحصى؟", "كحبة الحمص."], ["متى يقطع الحاج التلبية؟", "عند رمي أول حصاة."], ["هل يجب وقوع الحصى داخل الحوض؟", "نعم."], ["إذا ضربت الحصاة الشاخص ولم تقع في الحوض؟", "لا يجزئ."], ["إن ترك حصاة أو حصاتين؟", "يتصدق بشيء."], ["إن ترك ثلاث حصيات؟", "عليه دم."], ["بعد الرمي مباشرة يفعل الحاج؟", "ينحر هديه."], ["إلى متى يمتد وقت الذبح؟", "إلى غروب شمس يوم 13."], ["هل يجوز الذبح ليلاً؟", "نعم."], ["من لم يجد الهدي؟", "يصوم 3 أيام في الحج و7 عند العودة."], ["بعد الرمي والنحر يفعل الحاج؟", "يحلق أو يقصر."], ["مقدار التقصير عند الشافعية؟", "ثلاث شعرات."], ["مقدار التقصير عند الحنفية؟", "ربع الرأس."], ["الحلق أفضل أم التقصير؟", "الحلق."], ["لماذا كان الحلق أفضل؟", "لدعاء النبي ﷺ للمحلّقين ثلاثًا."], ["المرأة ماذا تفعل في شعرها؟", "تقصر قدر أنملة."], ["ما الذي يباح بعد الرمي والحلق؟", "كل شيء إلا النساء."], ["هذا التحلل يسمى:", "التحلل الأول."], ["التحلل الأكبر يكون بعد:", "الرمي + الحلق + طواف الإفاضة."], ["متى يبدأ وقت رمي جمرة العقبة عند الشافعية؟", "بعد منتصف الليل."], ["آخر وقت رمي جمرة العقبة عند الشافعية والحنابلة؟", "آخر أيام التشريق."], ["حكم رمي الجمار عند الجمهور؟", "واجب."]]}, {"h": "خامسًا: طواف الإفاضة", "qa": [["ما حكم طواف الإفاضة؟", "ركن."], ["يبدأ وقت طواف الإفاضة عند الجمهور:", "منتصف ليلة العاشر."], ["آخر وقت لطواف الإفاضة عند الجمهور؟", "لا آخر له."], ["آخر وقت لطواف الإفاضة عند الحنفية؟", "أيام التشريق."], ["لو أخره الحاج بعد أيام التشريق عند الحنفية؟", "عليه دم."], ["هل يُسن الرمل في طواف الإفاضة؟", "لا يسن."], ["ما هو طواف الركن", "هو طواف الزيارة (الافاضة)"], ["هل يسن الاضطباع في طواف الإفاضة؟", "لا يسن."], ["متى يسن الرمل والاضطباع في الإفاضة؟", "إذا لم يكن سعى بعد القدوم."], ["بعد طواف الإفاضة ماذا يحدث؟", "يحصل التحلل الأكبر."], ["ما هي أعمال يوم النحر؟", "رمي جمرة العقبة، ثم الذبح، ثم الحلق أو التقصير، ثم طواف الإفاضة."], ["الطواف كالصلاة من حيث:", "لا يصح كل منهما الا بطهارة"]]}, {"h": "بطلان الحج بالجماع", "qa": [["ما الواجب على من أفسد حجه بالجماع قبل التحلل الأول؟", "إتمام الحج الفاسد، وذبح بدنة، ثم قضاء الحج في العام القادم."], ["متى يحصل التحلل الأول للمحرم؟", "عند فعل اثنين من ثلاثة: رمي جمرة العقبة، الحلق أو التقصير، طواف الإفاضة."], ["ما حكم من جامع بعد التحلل الأول؟", "حجه صحيح، لكن يجب عليه دم يذبح في الحرم ويوزع على فقراء مكة."], ["ما رأي الحنفية والشافعية فيمن جامع بعد التحلل الأول من حيث تجديد الإحرام؟", "لا يجب عليه تجديد الإحرام من الحل."]]}, {"h": "سادسًا: أيام التشريق", "qa": [["أيام التشريق هي:", "11 و12 و13 ذي الحجة."], ["من تعجل يغادر منى:", "قبل غروب شمس اليوم 12."], ["من تأخر يغادر:", "بعد يوم 13."], ["الرمي في أيام التشريق يبدأ:", "بعد الزوال."], ["عدد الجمرات كل يوم من أيام التشريق:", "ثلاث."], ["عدد الحصى لكل جمرة:", "سبع حصيات."], ["ترتيب الجمرات:", "الصغرى ثم الوسطى ثم الكبرى."], ["هل يجوز الرمي ليلًا لمن تأخر؟", "نعم يجوز."], ["حكم المبيت بمنى أيام التشريق؟", "واجب عند الجمهور."], ["ما الذي يُجبَر تركه بدم أيام التشريق؟", "ترك المبيت بمنى."], ["ما المراد بوادي مُحَسِّر؟", "الوادي الذي توقفت فيه فيلة أبرهة."], ["ماذا يفعل الحاج إذا خشي الزحام؟", "يجوز له الرمي قبل الزوال (عند بعض السلف)."], ["هل يُلقى رمي اليوم التالي من منتصف الليل؟", "لا يجوز."]]}, {"h": "سابعًا: أحكام عامة", "qa": [["معنى قول النبي ﷺ: \"لتأخذوا عني مناسككم\":", "الاقتداء بأفعاله في الحج."], ["ما المراد بدم ترك الواجب؟", "ذبح شاة."], ["من أين أخذ ابن عمر الحصى؟", "من مزدلفة."]]}, {"h": "وقت الرمي وأحكام أيام التشريق", "qa": [["متى يبدأ وقت رمي الجمرات أيام التشريق عند جمهور الفقهاء؟", "بعد زوال الشمس."], ["ما الدليل على أن النبي ﷺ كان يرمي الجمار بعد الزوال؟", "حديث ابن عباس: \"كان رسول الله ﷺ يرمي الجمار إذا زالت الشمس\"."], ["ماذا كان يفعل ابن عمر رضي الله عنهما بالنسبة لوقت الرمي؟", "يتحيّن زوال الشمس ثم يرمي."], ["هل يجوز الرمي قبل الزوال عند بعض العلماء؟", "نعم، عند وجود مشقة أو زحام شديد."], ["ما الدليل على جواز التقديم والتأخير في النسك؟", "حديث ابن عمر: \"افعل ولا حرج\"."], ["من أخذ برخصة الرمي قبل الزوال، فمتى يبدأ رميه؟", "بعد طلوع الفجر."], ["هل يجوز الرمي من منتصف الليل عن اليوم التالي؟", "❌ لا يجوز."], ["هل يجوز تأخير الرمي إلى الليل؟", "نعم، يجوز."], ["متى ينتهي وقت رمي اليوم الأخير؟", "بغروب الشمس."], ["ما حكم المبيت بمنى ليالي التشريق عند جمهور العلماء؟", "واجب."], ["كيف يتحقق المبيت بمنى؟", "بالمكث معظم الليل."], ["ما حكم من ترك المبيت كل الليالي الثلاث؟", "عليه دم."], ["ما حكم من ترك ليلة واحدة فقط عند الشافعية؟", "عليه مُدٌّ من طعام."], ["ما حكم المبيت عند الحنفية؟", "سنة وليس بواجب."], ["ما الدليل على وجوب المبيت بمنى عند الجمهور؟", "\"خُذوا عني مناسككم\" مع فعله ﷺ للمبيت."], ["هل يجوز التعجيل والخروج من منى في اليوم الثاني؟", "نعم يجوز."], ["متى يجب على المتعجل الخروج من منى؟", "قبل غروب شمس اليوم الثاني."], ["ماذا لو غربت الشمس قبل خروجه ولم يكن متهيئًا؟", "يجب أن يبيت ويرمي اليوم الثالث."], ["ماذا لو غربت الشمس وهو متهيئ للخروج؟", "يُعدّ متعجّلًا ولا يلزمه المبيت."], ["كم عدد أيام منى؟", "ثلاثة أيام."], ["هل طواف الوداع واجب في الحج؟", "نعم، واجب عند الجمهور."], ["هل طواف الوداع واجب في العمرة؟", "سنة."], ["من الذي لا يجب عليه طواف الوداع؟", "الحائض والنفساء."], ["متى يؤدي طواف الوداع؟", "عند إرادة مغادرة مكة مباشرة."], ["ما حكم من ترك طواف الوداع عند الجمهور؟", "عليه دم."], ["هل العمرة واجبة؟", "واجبة مرة في العمر عند الشافعية وأحمد."], ["كم مرة اعتمر النبي ﷺ؟", "أربع مرات."], ["ما أفضل وقت للعمرة؟", "رمضان؛ لحديث: \"عمرة في رمضان تعدل حجة\"."], ["من أين يُحرم من كان داخل حدود الحرم ويريد العمرة؟", "من أدنى الحل (مثل التنعيم)."], ["كم عدد أركان العمرة عند الشافعية؟", "أربعة: الإحرام، الطواف، السعي، الحلق أو التقصير."], ["معنى التحلل:", "زوال أحكام الإحرام."], ["أقل ما يجزئ في التقصير للمرأة؟", "أنملة."], ["هل يجوز للحاج العودة إلى بلده قبل طواف الإفاضة؟", "لا، ويجب أن يعود ليطوف."], ["هل يجزئ الوقوف بعرفة لو كان الحاج نائمًا؟", "نعم."], ["هل يجوز صعود الجبال في عرفة للتعبد؟", "لا خصوصية لأي موضع."], ["ما تعريف \"المشعر الحرام\"؟", "مكان مخصص للدعاء والذكر بمزدلفة بعد الفجر."]]}, {"h": "أسئلة من غير متعدد حول زيارة المدينة المنوّرة", "qa": [["ما الدعاء الذي دعا به النبي ﷺ للمدينة المنوّرة مما يدل على فضلها وبركتها؟", "دعا لها بالبركة مضاعفة قائلاً: «اللهم بارك لنا في مدينتنا…»."], ["ما الموضع الذي تُعتبر المساحة بينه وبين الحجرة الشريفة هو الروضة؟", "المسافة الواقعة بين بيت عائشة والمنبر النبوي."], ["ما أفضل الأعمال التي يُستحب الإكثار منها داخل الروضة الشريفة؟", "الدعاء، الصلاة، الذكر، وقراءة القرآن."], ["كيف يُسلّم الزائر على النبي ﷺ عند الوقوف أمام الحجرة النبوية؟", "«السلام عليك يا رسول الله ورحمة الله وبركاته…» مع الشهادة له بأداء الرسالة ونصح الأمة."], ["ماذا يقول الزائر عند السلام على أبي بكر الصديق رضي الله عنه؟", "«السلام عليك يا أبا بكر الصديق… رضي الله عنك وجزاك عن أمة محمد خير الجزاء»."], ["ما حكم زيارة قبر النبي ﷺ عند المذاهب الأربعة؟", "زيارة قبره ﷺ مستحبة باتفاق المذاهب الأربعة."], ["ما أهم آداب زيارة المسجد النبوي وقبر النبي ﷺ؟", "خفض الصوت، السكينة، وعدم التمسّح بالجدار، والوقوف بأدب."], ["ما الفضيلة الواردة في الصلاة في مسجد قباء؟", "الصلاة فيه كأجر عمرة."], ["ما الدعاء الوارد عند زيارة مقبرة البقيع؟", "«السلام عليكم دار قوم مؤمنين، أنتم السابقون ونحن إن شاء الله بكم لاحقون…»."], ["لماذا تُزار مواقع أحد والشهداء؟", "للدعاء لهم والاعتبار بثباتهم وجهادهم."]]}], "tawaf": [{"h": "الطواف بالكعبة المشرفة", "qa": [["إذا لم يتمكن الطائف من تقبيل الحجر الأسود بسبب الزحام، فماذا يفعل؟", "يستقبله ببدنه ويشير إليه بيمينه دون تقبيلها قائلاً: بسم الله والله أكبر"], ["ما الدعاء الذي يُستحب أن يقوله الطائف في بداية الطواف؟", "اللهم إيمانًا بك، وتصديقًا بكتابك، ووفاءً بعهدك، واتباعًا لسنة نبيك"], ["كم عدد أشواط الطواف حول الكعبة؟", "سبعة أشواط"], ["متى يبدأ الطائف كل شوط ومتى ينتهي؟", "يبدأ من الحجر الأسود وينتهي بالحجر الأسود"], ["ماذا يفعل الطائف عند مروره بالركن اليماني؟", "يستلمه(يلمسه بيمينه) دون تكبير"], ["ماذا يفعل إن لم يتمكن من استلام الركن اليماني بسبب الزحام؟", "لا يشير ولا يكبر"], ["ما الدعاء المستحب بين الركن اليماني والحجر الأسود؟", "ربنا آتنا في الدنيا حسنة وفي الآخرة حسنة وقنا عذاب النار"], ["على من يكون الطواف بالكعبة ركنًا من أركان النسك عند القدوم؟", "على المتمتع"], ["ما شرط صحة الطواف حول الكعبة؟", "أن يكون الطائف على طهارة"]]}, {"h": "صفة الطواف وآدابه", "qa": [["ما المقصود بالرَّمَل في الطواف؟", "الإسراع في المشي مع تقارب الخطوات"], ["في أي أشواط يُسن للرجل أن يرمل أثناء الطواف؟", "في الأشواط الثلاثة الأولى"], ["ما حكم الرمل في حق النساء؟", "لا يُسن لهن"], ["إذا شك المسلم في عدد الأشواط التي طافها، فماذا يفعل؟", "يبني على الأقل (اليقين)"], ["إذا شك هل طاف ثلاثة أشواط أم أربعة، فكم يجعلها؟", "يجعلها ثلاثة"], ["بعد الفراغ من الطواف، إلى أين يتجه المسلم؟", "إلى مقام إبراهيم عليه السلام"], ["ماذا يتلو المسلم حين يتجه إلى مقام إبراهيم؟", "واتخذوا من مقام إبراهيم مصلى"], ["ماذا يفعل المسلم بعد التوجه إلى مقام إبراهيم؟", "يصلي ركعتين خلف المقام"], ["ماذا يفعل الطائف قبل صلاة ركعتي الطواف؟", "يزيل الاضطباع ويجعل رداءه على كتفيه"]]}, {"h": "أنواع الطواف وأحكامها", "qa": [["ما هو الطواف الذي يُعد ركنًا من أركان الحج ولا يتم الحج إلا به؟", "طواف الإفاضة"], ["متى يكون وقت طواف الإفاضة؟", "بعد الوقوف بعرفة ومزدلفة"], ["ما الاسم الآخر لطواف الإفاضة؟", "طواف الزيارة"], ["ما حكم طواف القدوم؟", "سنة"], ["على من يُسن طواف القدوم؟", "على المفرد والقارن"], ["ما الطواف الذي يكون واجبًا عند مغادرة مكة بعد الانتهاء من المناسك؟", "طواف الوداع"], ["من يُستثنى من طواف الوداع؟", "الحائض والنفساء"], ["ما حكم طواف العمرة؟", "ركن"], ["كم عدد أشواط الطواف في جميع أنواعه؟", "سبعة أشواط"], ["ما الطواف الذي يُشرع فعله في أي وقت من العام للتقرب إلى الله؟", "طواف التطوع"], ["ما حكم طواف التطوع؟", "سنة"], ["ما الطواف الذي يجب الوفاء به إذا نذره الإنسان؟", "طواف النذر"], ["ما الدليل على وجوب الوفاء بطواف النذر؟", "قول النبي ﷺ: \"من نذر أن يطيع الله فليطعه\""], ["ما الطواف الذي يُسمى أيضًا تحية البيت الحرام؟", "طواف القدوم"]]}, {"h": "أسئلة إضافية حول أنواع الطواف", "qa": [["من ترك طواف القدوم:", "لا شيء عليه لأنه سنة"], ["هل يصح الطواف بالكعبة أقل من سبعة أشواط إذا كان تطوعًا؟", "نعم، ويُثاب على ما طافه مذهب الحنفية وقول عند الشافعية."], ["ما رأي الحنفية وبعض الشافعية في الطواف الناقص؟", "يثاب على ما طافه ولو شوطًا(كما لو تطوع بركعة)"], ["ما الأفضل والأكمل في الطواف التطوعي؟", "أن يتم سبعة أشواط كاملة كما جاءت السنة"]]}, {"h": "أولًا: السعي بين الصفا والمروة", "qa": [["ما هو السعي بين الصفا والمروة؟", "هو الذهاب من الصفا إلى المروة سبعة أشواط، يبدأ الشوط من الصفا وينتهي بالمروة، ثم يعود من المروة إلى الصفا في الشوط الثاني وهكذا حتى يتم سبعة أشواط."], ["متى يبدأ المسلم السعي؟", "بعد الطواف مباشرة، سواء في الحج أو العمرة."], ["ماذا يُستحب أن يقرأ المسلم إذا اقترب من الصفا؟", "يقرأ قوله تعالى:\n{إِنَّ الصَّفَا وَالْمَرْوَةَ مِن شَعَائِرِ اللَّهِ فَمَنْ حَجَّ الْبَيْتَ أَوِ اعْتَمَرَ فَلَا جُنَاحَ عَلَيْهِ أَنْ يَطَّوَّفَ بِهِمَا وَمَنْ تَطَوَّعَ خَيْرًا فَإِنَّ اللَّهَ شَاكِرٌ عَلِيمٌ}."], ["ماذا يقول بعد قراءة الآية؟", "يقول: «نبدأ بما بدأ الله به»."], ["ماذا يفعل المسلم على الصفا؟", "يرقى على الصفا، يستقبل القبلة، يرفع يديه، ويقول:\nالله أكبر الله أكبر الله أكبر،\nلا إله إلا الله وحده لا شريك له،\nله الملك وله الحمد وهو على كل شيء قدير،\nلا إله إلا الله وحده، أنجز وعده، ونصر عبده، وهزم الأحزاب وحده. ثم يدعو بما فتح الله عليه."], ["كم مرة يكرر الذكر والدعاء على الصفا؟", "يكرر الذكر والدعاء ثلاث مرات، يدعو بين كل مرة سرًّا بما شاء، ولا يدعو بعد المرة الثالثة."], ["هل يكرر الذكر والدعاء على المروة أيضا وفي الأشواط السبعة؟", "نعم يكرر الذكر والدعاء على الصفا والمروة في الأشواط السبعة."], ["ماذا يفعل بعد الانتهاء من الدعاء على الصفا؟", "ينزل من الصفا ويمشي باتجاه المروة."], ["هل يكرر قراءة الاية {إِنَّ الصَّفَا وَالْمَرْوَةَ مِن شَعَائِرِ اللَّهِ..) في كل شوط على الصفا؟", "لا، فقط في اول السعي؟"], ["ماذا يُستحب أن يفعل الساعي بين العلمين الأخضرين؟", "يُسَنّ للرجال أن يُسرعوا في المشي (الهرولة الخفيفة)، أما النساء فيمشين مشيًا عاديًّا."], ["ماذا يفعل إذا وصل المروة؟", "يرقاها كما رقى الصفا، ويستقبل القبلة، ويرفع يديه، ويقول الأذكار والدعاء نفسه الذي قاله على الصفا."], ["ماذا يفعل في نهاية الشوط السابع؟", "ينتهي سعيه عند المروة ولا يكرر الذكر أو الدعاء كما في المرات السابقة."], ["هل للسعي ذكر خاص به؟", "لا يوجد للسعي ذكر مخصوص، ولكن يُستحب ذكر الله والدعاء وقراءة القرآن أثناءه."], ["هل يشترط الطهارة أثناء السعي؟", "لا تُشترط الطهارة، لكن يُستحب أن يكون المسلم متطهرًا."], ["ماذا يفعل إذا أقيمت الصلاة أثناء السعي؟", "يصلي مع الجماعة ثم يُكمل سعيه من الموضع الذي توقف عنده."]]}, {"h": "ثانيًا: الحلق أو التقصير بعد السعي", "qa": [["ماذا يفعل المسلم بعد الانتهاء من السعي في العمرة؟", "يحلق شعر رأسه أو يُقصّر منه."], ["أيهما أفضل في العمرة للمتمتع، الحلق أم التقصير؟", "التقصير أفضل ليبقي الحلق للحج."], ["ما صفة التقصير؟", "أن يُقصّر من جميع أنحاء الرأس، لا من جهة واحدة فقط."], ["ماذا تفعل المرأة بعد السعي؟", "تقصر من شعرها قدر أنملة (بمقدار الأصبع) من كل ظفيرة أو من كل جانب من الرأس."], ["متى يتحلل المعتمر من إحرامه؟", "بعد الحلق أو التقصير مباشرة، فيحلّ من إحرامه إلى أن يُحرم بالحج في اليوم الثامن من ذي الحجة."]]}, {"h": "ثالثًا: أنواع السعي وأحكامه", "qa": [["ما هو سعي الحج؟", "هو السعي الذي يكون بعد طواف الحج (الإفاضة أو القدوم)، وهو ركن من أركان الحج لا يتم الحج إلا به."], ["ما الدليل على أن السعي ركن في الحج؟", "قوله تعالى:\n{إِنَّ الصَّفَا وَالْمَرْوَةَ مِن شَعَائِرِ اللَّهِ...}\nوقول عائشة رضي الله عنها:\n\"ما أتمَّ الله حج امرئ ولا عمرته لم يطف بين الصفا والمروة\" (رواه مسلم)."], ["ما هو سعي العمرة؟", "هو السعي الذي يكون بعد طواف العمرة مباشرة، وهو ركن لا تصح العمرة إلا به."], ["متى يكون سعي العمرة؟", "بعد الطواف مباشرة، سواء في العمرة المفردة أو في عمرة التمتع."], ["ما حكم من ترك سعي العمرة؟", "لا تصح عمرته حتى يأتي بالسعي."], ["ما هو سعي القدوم؟", "هو السعي الذي يفعله القارن أو المفرد بعد طواف القدوم قبل الوقوف بعرفة."], ["ما حكم سعي القدوم؟", "سنة للقارن والمفرد، ويجزئ عن سعي الحج إن سعى بعد طواف القدوم قبل عرفة."], ["هل المتمتع يسعى سعي القدوم؟", "لا، لأن سعيه الأول يكون للعمرة، ثم يسعى سعيًا آخر للحج بعد طواف الإفاضة."], ["ما حكم السعي تطوعًا دون طواف؟", "لا يُشرع السعي تطوعًا بلا طواف قبله، اتفاقًا بين العلماء."]]}]};
+/* ============ بيانات مأخوذة من مواد دورة تأهيل الإداريين ============ */
+
+const SCHEDULE = [
+  {n:1, date:"الجمعة 04-09-2026", type:"زوم", items:[
+    ["17:00-17:30","مقدمة وترحيب – إدارة الكلية","د. رائد، د. أيمن"],
+    ["17:30-20:00","مقاصد الحج وأسراره، آداب السفر، مقدمة عن الحج وشروطه وحكمه، الإحرام","د. أيمن ريّان"]]},
+  {n:2, date:"السبت 05-09-2026", type:"زوم", items:[
+    ["17:00-18:20","أركان الحج: الطواف، السعي بين الصفا والمروة، الوقوف بعرفة","د. رائد عاصي"],
+    ["18:30-20:00","الحلق والتقصير، ذبح الهدي، رمي الجمرات، المبيت بمنى","د. رائد عاصي"]]},
+  {n:3, date:"الجمعة 11-09-2026", type:"زوم", items:[
+    ["17:00-18:20","كيف تكون إداريًا ناجحًا","أ. داهش أبو سرحان"],
+    ["18:30-20:00","دور الإداري ومسؤولياته أثناء رحلة الحج والعمرة","أ. داهش أبو سرحان"]]},
+  {n:4, date:"السبت 12-09-2026", type:"زوم", items:[
+    ["17:00-18:20","جغرافية الطريق إلى الحج والعمرة","أ. داهش أبو سرحان"],
+    ["18:30-20:00","معالم مهمة في مكة والمدينة","أ. داهش أبو سرحان"]]},
+  {n:5, date:"الجمعة 18-09-2026", type:"زوم", items:[
+    ["17:00-19:00","توجيهات في تسجيل الحجاج والعمّار","أ. يوسف عازم"],
+    ["19:00-20:00","تلخيص وتغذية مرتدة","د. رائد، د. أيمن"]]},
+  {n:6, date:"السبت 19-09-2026", type:"مودل", items:[
+    ["17:00-18:00","امتحان نهائي","المودل"]]},
+  {n:7, date:"السبت 26-09-2026", type:"وجاهي", items:[
+    ["15:30-16:30","اختبار تقييمي عملي لأداء المشاركين","د. رائد، د. أيمن"],
+    ["16:30-17:30","التكريم وتوزيع الشهادات","د. رائد، د. أيمن"]]}
+];
+
+/* ---------- أسئلة الاختيار من متعدد (من ملفات الدورة) ----------
+   c = رقم الإجابة الصحيحة (يبدأ من 0)
+   d = true إذا لم تكن الإجابة معلّمة في الملف واستنتجناها من نص الكتيّب */
+const MCQ_SETS = [
+ {id:"safar", title:"أسئلة آداب السفر", src:"ملف أسئلة آداب السفر (الإجابات معلّمة بالأحمر في الملف)", qs:[
+  {q:"الشرك الأصغر نعني به:", o:["الكفر ويحبط العمل فقط","الكفر ويخرج من الإيمان","عدم الكفر لكنه يحبط العمل","جميع الإجابات غير صحيحة"], c:2},
+  {q:"( ألا أنبئكم بأكبر الكبائر ثلاثًا ):", o:["حديث ضعيف رواه الترمذي","حديث صحيح رواه البخاري","حديث صحيح لم يروه إلا أصحاب السنن","جميع الإجابات غير صحيحة"], c:1},
+  {q:"من شروط التوبة ردّ الحقوق إلى أصحابها، نعني بالحقوق:", o:["حقوق الله فقط","حقوق العباد فقط","حقوق الله وحقوق العباد، وهذا اتفق عليه أصحاب المذاهب الأربعة","جميع الإجابات غير صحيحة"], c:2},
+  {q:"قوله تعالى: ﴿الحج أشهر معلومات﴾، نعني بالأشهر المعلومات عند الشافعي:", o:["شوال وذو القعدة ومحرم","شوال وذو القعدة وذو الحجة","شوال وذو القعدة وعشرة أيام من ذي الحجة","جميع الإجابات غير صحيحة"], c:2},
+  {q:"معنى (وعثاء السفر):", o:["الحزن","فساد الأمور","الشدة والمشقة","جميع الإجابات صحيحة"], c:2},
+  {q:"يجوز قصر وجمع الصلاة عند جمهور العلماء، هذا القول:", o:["صحيح","غير صحيح"], c:0},
+  {q:"حكم قصر الصلاة عند الحنفية في السفر:", o:["سنة","واجب","فرض","مكروه"], c:1},
+  {q:"مدة قصر الصلاة عند الحنفية في السفر:", o:["أربعة أيام غير الدخول والخروج","أربعة أيام مع الدخول والخروج","تسعة عشر يومًا","جميع الإجابات غير صحيحة"], c:3, note:"عند الحنفية: إن أقام خمسة عشر يومًا أتمّ، وإن نوى دون ذلك قصر."},
+  {q:"قوله تعالى: ﴿ولله على الناس حج البيت من استطاع إليه سبيلًا﴾:", o:["تخصيص العام بالاستثناء","تخصيص العام بالشرط","تخصيص العام بالصفة","تخصيص العام ببدل بعضٍ من كل"], c:3}
+ ]},
+ {id:"shurut", title:"أسئلة حكم الحج وشروطه", src:"كتيّب الدورة ص18–20 (الإجابات غير معلّمة في الملف؛ استُنتجت من نص الكتيّب نفسه)", qs:[
+  {q:"حكم الحج على الفور هو مذهب:", o:["الشافعية","جمهور العلماء","الحنابلة","جمهور العلماء ومنهم الشافعية"], c:2, d:true, note:"الكتيّب: القول بالفور قول بعض المالكية والحنابلة ورواية عن أبي حنيفة، والتراخي قول الشافعية."},
+  {q:"أجمع العلماء على أن حقوق الله تسقط بالحج:", o:["صحيح","غير صحيح"], c:1, d:true, note:"الجمهور: الحج يكفّر الصغائر دون الكبائر، وحقوق الله كالصلاة والكفارة لا تسقط بالحج (البهوتي)."},
+  {q:"إذا عجز المرء عن استحلال صاحب الحق فحكمه:", o:["غير مرجو المغفرة","مرجو المغفرة","يخلد في نار جهنم","جميع الإجابات غير صحيحة"], c:1, d:true},
+  {q:"حكم حج الصبي إذا كان مميزًا:", o:["يجزئ عن حجة الإسلام عند الشافعي","يجزئ عن حجة الإسلام عند جمهور العلماء","يجزئ عن حجة الإسلام عند الحنفية","جميع الإجابات غير صحيحة"], c:3, d:true, note:"من حج قبل بلوغه لا يجزئه عن حجة الإسلام، مع أنه يحصل له ثواب الحج."},
+  {q:"يُكتب للصبي ثواب الطاعات ولا يُكتب عليه إثم المعاصي عند:", o:["جمهور العلماء","الشافعي فقط","بالإجماع","عند الحنفية فقط"], c:2, d:true, note:"النووي: يكتب للصبي ثواب ما يعمله من الطاعات ولا يكتب عليه معصية بالإجماع."},
+  {q:"حكم المغمى عليه في عرفة إذا لم يفق:", o:["حجه صحيح عند المالكية","حجه صحيح عند الحنابلة","حجه صحيح عند الحنفية","جميع الإجابات صحيحة"], c:2, d:true, note:"المالكية والحنابلة: فاته الحج. الحنفية: وقوف المغمى عليه مجزئ. الشافعية: قولان."},
+  {q:"حكم حج العبد:", o:["جائز ويجزئ عن حجة الإسلام","جائز لكنه لا يجزئ عن حجة الإسلام","غير جائز شرعًا","جميع الإجابات غير صحيحة"], c:1, d:true},
+  {q:"أي من الآتي يرى أن الحج من بذل الغير لا يجب إلا من الابن:", o:["أبو حنيفة","الشافعي","مالك","جميع الإجابات صحيحة"], c:1, d:true, note:"الشافعي: الهدية من الولد للوالد تلزم الأب قبولها والحج بها لانتفاء المنّة."},
+  {q:"الذي يرى عدم وجوب المحرم في الحج للمرأة:", o:["الحنفية","الشافعية","المذاهب الأربعة","جميع الإجابات صحيحة"], c:1, d:true, note:"الشافعية والمالكية أجازوا للمرأة أن تخرج للحج مع نسوة ثقات."},
+  {q:"الذي يرى أن المعتدة ليس لها أن تخرج إلى الحج:", o:["الحنفية","الشافعية","المالكية","جميع الإجابات صحيحة"], c:3, d:true, note:"لا يجوز السفر للحج للمعتدة من وفاة عند جمهور الفقهاء ومنهم مالك والشافعي وأبو حنيفة وأحمد."}
+ ]}
+];
+
+/* ---------- أسئلة وأجوبة من ملفات PDF (المواقيت والإحرام) ---------- */
+const QA_PDF = {
+ mawaqit: [{h:"أسئلة مواقيت الحج", qa:[
+  ["ما هي أشهر الحج عند جمهور العلماء؟","شوّال، وذو القعدة، بالإضافة إلى الأيام العشر الأولى من شهر ذي الحجة."],
+  ["هل يجوز الإحرام قبل الميقات؟","نعم يجوز، والأفضل أن يبدأ الإحرام عندها أو بحذائها."],
+  ["ما هو ميقات أهل نجد؟","قرن المنازل."],
+  ["إذا كان أحدهم يسكن دون الميقات فمن أين يُحرم؟","له أن يُحرم من داره."],
+  ["من كان مسافرًا في الطائرة، فهل يجوز له أن يُحرم قبل الوصول للميقات؟","نعم يجوز ذلك."],
+  ["ما حكم من تجاوز الميقات بدون إحرام؟","يأثم وعليه دم."],
+  ["ما حكم من تجاوز الميقات عند الشافعية دون إحرام، ثم رجع بعد ذلك إلى الميقات وأحرم منه؟","إن رجع إلى الميقات صحّ إحرامه ولا يلزمه دم."],
+  ["ما حكم من تجاوز الميقات عند الحنفية دون إحرام، ثم رجع بعد ذلك إلى الميقات وأحرم منه؟","إن رجع إلى الميقات صحّ إحرامه ولا يلزمه دم."],
+  ["ما عدد المواقيت المكانية للإحرام؟","خمسة مواقيت: ذو الحليفة، الجحفة، قرن المنازل، يلملم، ذات عرق."],
+  ["أي من الفقهاء يرى أن الأشهر الحرم ثلاثة بتمامها: شوال وذو القعدة وذو الحجة؟","المالكية."],
+  ["ما هي أشهر الحج عند الشافعية؟","شوّال، وذو القعدة، بالإضافة إلى الأيام العشر الأولى من ذي الحجة (وتنتهي بطلوع فجر يوم النحر)."],
+  ["ما هي أشهر الحج عند الحنفية؟","شوّال، وذو القعدة، بالإضافة إلى الأيام العشر الأولى من ذي الحجة."]
+ ]}],
+ ihram: [{h:"أسئلة الإحرام", qa:[
+  ["«ما يلزم وجوده ليصح الحج»، هذا التعريف على ماذا يُطلق؟","هذا تعريف ركن الحج."],
+  ["هل من ترك ركنًا من أركان الحج يُجبر بدم أو فدية؟","من ترك ركنًا من أركان الحج فسد حجه، ولا يُجبر بدم ولا فدية ولا غيره."],
+  ["هل من لبس لباس الإحرام يُعتبر محرمًا؟","المحرم لا ينعقد إحرامه إلا بنية الدخول في الإحرام."],
+  ["هل يجب التلفظ بنية الإحرام في الحج أو العمرة؟","لا يجب ذلك، لكن المستحب للشخص التلفظ – عند التلبية – بما يريد الإحرام به من حج أو عمرة أو هما معًا."],
+  ["كم عدد أنواع الإحرام؟","ثلاثة: الإفراد، القِران، التمتع."],
+  ["ما المقصود بالإفراد في الحج؟","أن ينوي الحاج الدخول في الحج فقط، فيقول: لبيك اللهم حجًّا."],
+  ["هل يلزم من حج مفردًا أن يذبح الهدي؟","لا يلزمه ذلك، لكنه يستطيع أن يفعله تطوعًا."],
+  ["هل طواف القدوم واجب لمن حج مفردًا؟","من حج مفردًا إذا قدم مكة طاف طواف القدوم، وهو سنة في حقه ليس واجبًا."],
+  ["ما معنى القِران في الحج؟","هو نية الدخول في الحج والعمرة معًا دون التحلل بينهما، فينوي ويقول: لبيك اللهم عمرة وحجًّا."],
+  ["هل يتحلل من حج قارنًا قبل الثامن من ذي الحجة؟","لا يجوز ذلك، بل يجب أن لا يتحلل من الإحرام حتى يدخل في مناسك الحج من الثامن من ذي الحجة."],
+  ["هل يلزم من حج قارنًا أن يذبح هديًا؟","نعم يلزمه ذلك، فإن لم يستطع صام ثلاثة أيام في الحج وسبعة إذا رجع إلى موطنه."],
+  ["ما معنى التمتع في الحج؟","أن ينوي الحاج الدخول في العمرة والحج، ويفصل بينهما بأن يتحلل المحرم من إحرامه ويتمتع بكل ما يتمتع به غير المحرم، فإذا جاء يوم التروية أعاد إحرامه للحج."],
+  ["هل يلزم القارن طوافين وسعيين؟","القارن بين الحج والعمرة لا يلزمه إلا طواف واحد وسعي واحد كالمفرد."],
+  ["هل يلزم القارن طوافين وسعيين عند أبي حنيفة؟","القارن بين الحج والعمرة عند الحنفية يلزمه طوافان وسعيان."],
+  ["ما هو أفضل الأنساك الثلاثة عند الشافعية؟","الإفراد (ثم التمتع ثم القِران)."],
+  ["ما هو أفضل الأنساك الثلاثة عند المالكية؟","الإفراد (ثم القِران ثم التمتع)."],
+  ["ما هو أفضل الأنساك الثلاثة عند الحنفية؟","القِران (ثم التمتع ثم الإفراد)."],
+  ["ما هو أفضل الأنساك الثلاثة عند الحنابلة؟","التمتع (ثم الإفراد ثم القِران)."],
+  ["لو سألك أحدهم أي الأنساك الثلاثة يختار عند الحج، فماذا تنصحه؟","أن يأخذ الأيسر عليه؛ لأن الحج شاق، وكلما خففت على نفسك بالأمور المشروعة وفّرت طاقتك البدنية والنفسية لأداء المناسك على أفضل ما يمكنك."],
+  ["ما هو حكم المتمتع الذي سافر إلى أهله بعد العمرة عند أبي حنيفة؟","إن سافر إلى أهله سقط عنه الدم، ثم إذا رجع يحج صار مفردًا."],
+  ["عند أي من الفقهاء إن رجع المتمتع بعد العمرة إلى الميقات سقط عنه الدم؟","الشافعي."],
+  ["ما حكم من نوى الحج دون أن يضيف إلى نيته التلبية عند الشافعي؟","ينعقد إحرامه؛ لأن التلبية عند الشافعية سنة."],
+  ["ما حكم من نوى الحج دون أن يضيف إلى نيته التلبية عند الحنفية؟","لا ينعقد إحرامه بمجرد النية حتى يضاف إليها التلبية."],
+  ["ما معنى العجّ والثجّ؟","العجّ: رفع الصوت بالتلبية. الثجّ: نحر الهدي."],
+  ["ما هو وقت التلبية عند جمهور العلماء؟","يبدأ من الإحرام إلى يوم النحر حتى يرمي جمرة العقبة، ويقطعها مع أول حصاة."],
+  ["هل يجوز للمحرم أثناء الإحرام أن يعقد النكاح؟","لا يجوز ذلك."],
+  ["ما حكم من جامع زوجته قبل التحلل الأول عند الشافعية؟","فسد حجه."],
+  ["ما حكم من جامع زوجته قبل التحلل الأول عند المالكية؟","فسد حجه."],
+  ["ما حكم من جامع زوجته قبل عرفة؟","فسد حجه عند الجميع."],
+  ["ما حكم من جامع زوجته بعد عرفة وقبل التحلل الأول عند أبي حنيفة؟","لم يفسد حجه وعليه بدنة."],
+  ["ما هو حكم من حلق رأسه بعذر عند الأئمة الأربعة؟","عليه فدية على التخيير: صيام ثلاثة أيام، أو إطعام ستة مساكين، أو ذبح شاة."],
+  ["ما هو حكم من حلق رأسه بغير عذر عند الأئمة الأربعة؟","عليه فدية على التخيير عند الأئمة الثلاثة: صيام ثلاثة أيام، أو إطعام ستة مساكين، أو ذبح شاة. وعند أبي حنيفة إذا كان لغير عذر فعليه الدم من غير تخيير."],
+  ["ما هو حكم من باشر زوجته فيما دون الفرج وهو محرم عند الشافعية؟","إن باشر امرأته فيما دون الفرج بشهوة أو قبّلها بشهوة فعليه فدية الأذى، والاستمناء عنده كالمباشرة فيما دون الفرج."],
+  ["متى يبدأ صيام الثلاثة أيام عند الشافعية لمن لم يستطع أن يذبح الهدي؟","يبدأ صيام ثلاثة أيام عند الشافعي إذا أحرم بالحج؛ لذلك ينبغي أن يُحرم بالحج قبل يوم التروية؛ لأن الصوم بعرفة كرهه بعض أهل العلم."]
+ ]}]
+};
+
+/* ---------- الفتاوى والأحكام حسب الموضوع (من كتيّب الدورة وملفات الأسئلة) ---------- */
+const FATWA_TOPICS = [
+ {id:"safar", t:"السفر وقصر الصلاة", items:[
+  {q:"ما هو قصر الصلاة؟ ولمن يكون؟", a:"أن تُصلّى الصلاة الرباعية (الظهر، العصر، العشاء) ركعتين بدل أربع، ولا يكون القصر إلا للمسافر. والقصر ثابت في القرآن والسنة والإجماع، وهدي النبي ﷺ في سفره الاقتصار على الفرض."},
+  {q:"هل الحاج يعتبر مسافرًا؟", a:"نعم، الحاج يُعتبر مسافرًا في الأصل، لذلك يُشرع له القصر."},
+  {q:"الجمع بين الصلاتين للمسافر", a:"للمسافر أن يجمع بين الظهر والعصر، وبين المغرب والعشاء، إذا احتاج ذلك في سفره، جمع تقديم أو تأخير."},
+  {q:"القصر في المشاعر (منى وعرفة ومزدلفة)", a:"جميع الحجاج يقصرون في منى وعرفة ومزدلفة لأنهم في حالة تنقل وسفر، وهذا فعل النبي ﷺ. والسنة في يوم التروية: القصر دون الجمع، والمبيت بمنى، وصلاة فجر يوم عرفة فيها، ثم التوجه إلى عرفة بعد طلوع الشمس. ويجمع في عرفة جمع تقديم (الظهر والعصر) وفي مزدلفة جمع تأخير (المغرب والعشاء)."},
+  {q:"حاج صلّى خلف إمام مقيم (من أهل مكة)", a:"المذاهب الأربعة: إذا صلّى المسافر خلف المقيم يجب عليه الإتمام (4 ركعات) حتى لو كان هو مسافرًا. وكذلك الصلاة في الحرم خلف الإمام: يجب الإتمام لأن الإمام مقيم."},
+  {q:"حاج أقام في مكة 5 أيام، هل يقصر؟", r:[["الحنفية","يقصر"],["الجمهور","يُتم"]], a:"الأصل عند الحنفية: إن نوى إقامة خمسة عشر يومًا أتم، وإن نوى دون ذلك قصر. وعند مالك والشافعي: إذا نوى الإقامة أكثر من أربعة أيام غير يومي الدخول والخروج أتم. وعن ابن عباس: أن النبي ﷺ أقام تسعة عشر يومًا يقصر (رواه البخاري)."},
+  {q:"القصر في الفندق بمكة", a:"يعتمد على نية الإقامة: أكثر من 4 أيام ← إتمام (عند الجمهور)، أقل ← قصر. وحاج لا يدري متى ينتهي (إقامة غير محددة) يقصر عند كثير من الفقهاء لأنه لم ينوِ إقامة محددة."},
+  {q:"حكم القصر عند الحنفية", a:"القصر في السفر عند الحنفية واجب، والجمهور على جواز القصر والجمع."}
+ ]},
+ {id:"hukm", t:"حكم الحج والعمرة وفضلهما", items:[
+  {q:"حكم الحج", a:"الحج من فرائض الإسلام وأركانه المعلومة من الدين بالضرورة، وهو فرض عين على كل مسلم بالغ عاقل حر مستطيع، مرة واحدة في العمر. قال تعالى: ﴿ولله على الناس حج البيت من استطاع إليه سبيلًا﴾ [آل عمران: 97]."},
+  {q:"حكم العمرة", r:[["الحنفية والمالكية","سنة"],["الشافعي وأحمد","فرض (واجبة مرة في العمر)"]], a:"وللخروج من الخلاف: من حج لأول مرة يجمع بين الحج والعمرة ليقوم بالفريضتين معًا."},
+  {q:"هل الحج واجب على الفور أم على التراخي؟", r:[["الفور","بعض المالكية والحنابلة، ورواية عن أبي حنيفة وأبي يوسف"],["التراخي","الشافعية، ورواية عن أبي حنيفة وأحمد وأبي يوسف"]], a:"الدليل على التراخي: فُرض الحج في السنة السادسة للهجرة ولم يحج النبي ﷺ إلا في العاشرة. دار الإفتاء الأردنية ترجح التراخي بعد الإمكان. والأصل أن من توفرت فيه الاستطاعة أن يحج خروجًا من الخلاف. والراجح عند الكثير أن الحج والعمرة واجبان على التراخي لقوة أدلة الجمهور."},
+  {q:"فضل الحج والعمرة", a:"العمرة تكفر ما بينها وبين العمرة، والحج المبرور ليس له جزاء إلا الجنة. «من حج هذا البيت فلم يرفث ولم يفسق رجع كما ولدته أمه». والحجاج والعمار وفد الله: إن دعوه أجابهم وإن استغفروه غفر لهم. «تابعوا بين الحج والعمرة فإنهما ينفيان الفقر والذنوب كما ينفي الكير خبث الحديد والذهب والفضة»."},
+  {q:"هل الحج يكفر الكبائر؟", a:"جمهور العلماء: الحج يكفر الصغائر دون الكبائر، ومنهم من ذهب إلى أنه يكفر الصغائر والكبائر كالرملي وابن رجب. وفصّل بعضهم: يكفر الكبائر التي هي حقوق الله دون حقوق العباد. قال البهوتي: من كان عليه صلاة أو كفارة لا تسقط عنه لأنها حقوق لا ذنوب. أما حقوق العباد فلا تسقط إلا باستحلال أهلها، ومن عجز عن ذلك مع بذل الجهد فهو مرجو المغفرة."}
+ ]},
+ {id:"shurut", t:"شروط الحج والاستطاعة", items:[
+  {q:"شروط الحج", a:"الإسلام، البلوغ، العقل، الحرية، الاستطاعة (البدنية والمالية وأمن الطريق)."},
+  {q:"من ارتد بعد الحج؟", r:[["المالكية والحنفية","تجب عليه إعادة الحج"],["الشافعية (والصحيح عند الحنابلة)","لا يجب عليه قضاؤه"]]},
+  {q:"حكم الصبي إذا حج قبل أن يبلغ", a:"لا يجزئه ذلك عن حجة الإسلام، مع أنه يحصل له ثواب الحج. قال النووي: يُكتب للصبي ثواب ما يعمله من الطاعات ولا يُكتب عليه معصية بالإجماع."},
+  {q:"من أصابه غيبوبة كاملة في عرفة", a:"الإغماء لا يؤثر على الإحرام. وإذا حُمل إلى عرفة وأفاق ولو لحظة في زمن الوقوف أجزأه الحج بالإجماع. وإن لم يفق إلا بعد الوقوف:", r:[["المالكية والحنابلة","فاته الحج في ذلك العام"],["الحنفية","وقوف المغمى عليه مجزئ"],["الشافعية","قولان"]]},
+  {q:"الاستطاعة البدنية", a:"لا يُفرض الحج على المريض، ولا على الشيخ الفاني الذي لا يثبت على الراحلة. والمشقة المحتملة لا تضر لأن الحج لا يخلو منها. والمريض الذي لا يُرجى برؤه يسقط عنه الحج بالمباشرة. والأعمى لا يُفرض عليه الحج بنفسه إلا إذا وجد من يكفيه خدمة السفر."},
+  {q:"الاستطاعة المالية", a:"أن يملك نفقات الحج كاملة مع نفقة أهله وعياله حتى يرجع، زائدة عن حاجاته الأصلية وعن ديونه. والهدايا للأقارب والأصحاب ليست من الحاجات الأصلية. ولا يلزمه الحج حتى يكون الطريق آمنًا."},
+  {q:"هل تتحقق الاستطاعة إذا أُعطي المال هبة؟", a:"لا يلزمه الحج ببذل غيره له، ولا يلزمه قبولها لما يلحقه من المنّة. وعند الشافعي: الهدية من الولد لوالده تلزم الأب قبولها والحج بها لانتفاء المنّة."},
+  {q:"حكم الحج عن الغير (النيابة)", a:"لا يجوز أن يستنيب في الحج الواجب من يقدر على الحج بنفسه إجماعًا. وتكون النيابة في حق المريض الذي لا يُرجى برؤه أو الشيخ الهرم الفاني. ويجب أن ينيب إن كان قادرًا بماله والطريق آمن (الشافعية والحنفية). ويشترط الجمهور أن يكون النائب قد حج عن نفسه، وأجاز الحنفية غير ذلك، والأحوط أن يحج عن نفسه أولًا. ومن استناب لمرض لا يُرجى شفاؤه ثم شُفي لزمه أن يحج بنفسه (الشافعية والحنفية)."}
+ ]},
+ {id:"mar2a", t:"أحكام المرأة في السفر والحج", items:[
+  {q:"المحرم للمرأة في الحج", a:"الشافعية والمالكية أجازوا للمرأة أن تخرج للحج مع نسوة ثقات. وإذا توفي المحرم بعد شروع المرأة في السفر مضت في حجها. والأصل عند الجمهور وجود المحرم، مع الميل إلى رأي المالكية والشافعية في جواز خروجها مع صحبة آمنة إذا تعذر خروج محرم معها."},
+  {q:"حج المرأة بدون إذن زوجها", a:"إن كان حج الفرض استُحب أن تستأذن زوجها، ولا يجوز للرجل أن يمنع زوجته من حجة الإسلام، وإذا منعها تخرج بغير إذنه. أما حج التطوع فله منعها (ابن قدامة في المغني)."},
+  {q:"خروج المعتدة من وفاة إلى الحج", a:"لا يجوز السفر للحج للمعتدة من وفاة عند جمهور الفقهاء (مالك والشافعي وأبو حنيفة وأحمد). فإن خالفت وخرجت: تكون آثمة لمخالفة لزوم بيت العدة، لكن حجها صحيح ومجزئ عن حجة الإسلام.", note:"فتوى دار الإفتاء المصرية: والدة قدّمت أوراق الحج قبل وفاة زوجها ودفعت الرسوم ولا تستطيع استردادها ← يجوز لها أن تسافر للحج في العدة، لأن تفويت الحج أعظم من جلب مصلحة الاعتداد في المنزل."},
+  {q:"لباس المرأة وإحرامها", a:"لا يجوز للمرأة أن تغطي وجهها وهي محرمة. ويُمنع لبس المخيط على الرجال دون النساء. والمرأة تقصر من شعرها قدر أنملة ولا تحلق، ولا يُسن لها الرمل في الطواف ولا الإسراع بين العلمين الأخضرين."},
+  {q:"الحائض والنفساء وطواف الوداع", a:"لا يجب طواف الوداع على الحائض والنفساء."}
+ ]},
+ {id:"mawaqit", t:"المواقيت", items:[
+  {q:"المواقيت الزمانية", a:"أشهر الحج المعلومة ﴿الحج أشهر معلومات﴾ [البقرة: 197]. العمرة تصح طوال العام، وتكره يوم عرفة لمن يحج.", r:[["الحنفية والحنابلة والشافعية","شوال وذو القعدة والعشر الأولى من ذي الحجة (الشافعية: تنتهي بطلوع فجر يوم النحر)"],["المالكية","ثلاثة أشهر بتمامها: شوال وذو القعدة وذو الحجة"]]},
+  {q:"المواقيت المكانية الخمسة", a:"أهل المدينة: ذو الحليفة. أهل الشام: الجحفة. أهل نجد: قرن المنازل. أهل اليمن: يلملم. أهل العراق وإيران: ذات عرق. من كان بمكة أو دون الميقات يحرم من داره، ومن كان في الطائرة ينوي إذا حاذى الميقات."},
+  {q:"تجاوز الميقات بلا إحرام (في الطائرة أو السيارة ولم يتذكر إلا في جدة)", r:[["الحنفية","يجب الرجوع إن أمكن، فإن رجع فأحرم فلا دم، وإن أحرم من دونه لزمه دم"],["المالكية","يجب الرجوع إن أمكن، فإن لم يرجع وأحرم لزمه دم"],["الشافعية","يجب الرجوع إن قدر، وإلا أحرم من موضعه وعليه دم"],["الحنابلة","يجب الرجوع إن أمكن، فإن أحرم من دونه ولم يرجع فعليه دم"]], a:"الخلاصة: يحاول الرجوع قبل التلبس بما يمنع، فإن تعذر رجوعه أحرم من مكانه وجبر ترك الميقات بدم."},
+  {q:"لبس ثياب الإحرام قبل الميقات من غير نية", a:"المذاهب الأربعة: مجرد لبس ثياب الإحرام لا يُدخله في الإحرام حتى يعقد النية. الإحرام هو نية الدخول في النسك، وليس مجرد تغيير اللباس. وهذا يضبط كثيرًا من الأسئلة الواقعية في المطارات والحافلات."}
+ ]},
+ {id:"ihram", t:"الإحرام: أنواعه ومستحباته ومباحاته", items:[
+  {q:"تعريف الإحرام", a:"نية الدخول في أحد النسكين الحج أو العمرة أو هما معًا، والإحرام ركن لأن الحج والعمرة عبادة ولا تصح العبادة إلا بنية."},
+  {q:"أنواع الإحرام", a:"الإفراد (لبيك اللهم حجًّا، لا يلزمه هدي)، القِران (لبيك اللهم عمرة وحجًّا، يبقى محرمًا حتى يوم النحر وعليه هدي)، التمتع (عمرة ثم يتحلل ثم يحرم بالحج يوم التروية، وعليه هدي، ومن لم يجد صام ثلاثة أيام في الحج وسبعة إذا رجع)."},
+  {q:"أفضل الأنساك", r:[["المالكية","الإفراد ثم القِران ثم التمتع"],["الشافعية","الإفراد ثم التمتع ثم القِران"],["الحنفية","القِران ثم التمتع ثم الإفراد"],["الحنابلة","التمتع ثم الإفراد ثم القِران"]], a:"والنصيحة: أن تأخذ الأيسر عليك، لأن الحج شاق."},
+  {q:"المتمتع إذا سافر بعد العمرة", r:[["أبو حنيفة","إن سافر إلى أهله سقط عنه الدم، ثم إذا رجع يحج صار مفردًا"],["أحمد","إذا سافر مسافة قصر ثم رجع بالحج صار مفردًا وسقط عنه الدم"],["الشافعي","إن رجع إلى الميقات سقط عنه الدم"]]},
+  {q:"مستحبات الإحرام", a:"1) التنظيف: حلق العانة ونتف الإبط وتقليم الأظافر وقص الشارب، ومس الطيب، والاغتسال. 2) أن يلبس الرجل إزاره ورداءه ونعلين ويتجرد من المخيط. 3) أن ينوي رافعًا صوته بالتلبية. 4) التلبية. 5) أن يلبّد رأسه. 6) أن يتطيب في رأسه ولحيته وبدنه. 7) أن يصلي ركعتين قبل الإحرام (الشافعي وأبو حنيفة وأحمد). 8) قلة الكلام إلا من ذكر الله."},
+  {q:"هل تنعقد النية بلا تلبية؟", r:[["أبو حنيفة","لا ينعقد الإحرام بمجرد النية حتى يضاف إليها التلبية"],["الشافعي ومالك وأحمد","مجرد النية تكفي"]], a:"ويُستحب لمن خشي شيئًا يعوقه عن إتمام نسكه أن يشترط عند الإحرام: «إن حبسني حابس فمحلّي حيث حبستني»."},
+  {q:"مباحات الإحرام", a:"الاغتسال للتنظيف وتغيير الإزار والرداء، لبس الحزام لحفظ النقود والأوراق، الاستظلال من الشمس أو المطر بالمظلة أو الخيمة أو السقف، الاكتحال والخضاب بالحناء بشرط ألا يكون القصد التزين، التداوي وحك الشعر والبدن، قتل الفواسق: الحدأة والغراب والعقرب والفأرة والكلب العقور."},
+  {q:"الدبوس في ملابس الإحرام", a:"تثبيت الرداء العلوي بالدبوس: يُمنع عند المالكية والشافعية والحنابلة، ويكره عند الحنفية بلا فدية. تثبيت الإزار: الأفضل استعمال الحزام أو عقد الإزار، وربطه بخيط جائز عند الشافعية وجماعة. إن احتاج إلى الدبوس خوف انكشاف العورة فله الأخذ بالقول المجيز ولا شيء عليه. وخلصت دار الإفتاء المصرية إلى أن الأصل منع عقد الرداء أو الإزار بالدبوس، لكن إن فعله المحرم فلا شيء عليه عملًا بقول من أجاز."},
+  {q:"الصندل للمحرم", a:"الصندل المتفق على جوازه: يكشف الكعبين الناتئين ورؤوس الأصابع ومؤخرة القدم، ولا يحيط بالقدم إحاطة الحذاء. أما المغلق من الأمام أو الخلف فيمنعه الجمهور مع وجود الصندل المفتوح. الصندل الطبي المفتوح: جائز بلا فدية. الصندل الطبي الذي يغطي الأصابع أو العقب: يجوز للحاجة مع الفدية عند الجمهور."}
+ ]},
+ {id:"mahzurat", t:"محظورات الإحرام والفدية", items:[
+  {q:"محظورات الإحرام", a:"1) الجماع ومقدماته، وهو أشد المحظورات. 2) صيد البر أو الأكل منه. 3) لبس المخيط للرجال، ولبس ما له رائحة زكية أو مس الطيب للرجال والنساء. 4) تغطية المرأة وجهها. 5) تقليم الأظافر أو حلق الشعر أو تقصيره (ومن به أذى من رأسه يحلق وعليه فدية). 6) عقد النكاح. 7) مخاصمة الرفقاء ومجادلتهم وارتكاب المعاصي. 8) استعمال الطيب في البدن أو الثوب أو الشعر."},
+  {q:"متى تجب الفدية؟ (النوع الأول)", a:"إذا ارتكب محظورًا من محظورات الإحرام: حلق الرأس، تقليم الأظافر، التطيب، لبس المخيط، تغطية الرأس ← عليه فدية على التخيير: صيام ثلاثة أيام، أو إطعام ستة مساكين (لكل مسكين نصف صاع)، أو ذبح شاة. وهذا مذهب الأئمة الأربعة لمن كان له عذر. وعند أبي حنيفة إذا كان لغير عذر فعليه الدم من غير تخيير."},
+  {q:"النوع الثاني من الدماء: ترك واجب", a:"إذا ترك واجبًا من واجبات الحج أو العمرة فعليه دم: رمي الجمار، المبيت بمنى، الإحرام من الميقات، التلبية عند من يرى أنها واجب، طواف الوداع. فإن لم يجد الدم صام عشرة أيام: ثلاثة في الحج وسبعة إذا رجع. ويبدأ الصيام عند الشافعي إذا أحرم بالحج، لذلك ينبغي أن يحرم قبل يوم التروية لأن الصوم بعرفة كرهه بعض أهل العلم."},
+  {q:"استعمل الطيب أو لبس المخيط جاهلًا أو ناسيًا", a:"عند جماعة من أهل العلم: الجاهل والناسي لا شيء عليه، ولا إثم ولا فدية عند الشافعية، لكن يجب عليه عند العلم أو التذكر أن يزيل الطيب فورًا وينزع اللباس. والدليل حديث يعلى بن أمية: «اغسل عنك أثر الخلوق، واخلع عنك جبتك» ولم يأمره بفدية.", r:[["الشافعية","لا فدية على الناسي والجاهل"],["الحنفية والمالكية والمعتمد عند الحنابلة","تجب الفدية ولو كان ناسيًا أو جاهلًا، مع سقوط الإثم"]]},
+  {q:"لبس المخيط للحاجة أو المرض", a:"يجوز للمحرم أن يلبس المخيط إذا احتاج إليه بسبب مرض (كطفح جلدي) أو برد شديد أو جرح أو ضرورة معتبرة، ولا إثم عليه، لكن تجب عليه فدية الأذى عند المذاهب الأربعة: صيام ثلاثة أيام، أو إطعام ستة مساكين لكل مسكين نصف صاع، أو ذبح شاة."},
+  {q:"تعدد محظورات الإحرام (لبس المخيط ثم تطيب ثم حلق)", a:"هذه محظورات مختلفة الأجناس فلا تتداخل فديتها عند جمهور الفقهاء، بل تجب لكل محظور فدية مستقلة: فدية عن اللبس، وفدية عن الطيب، وفدية عن الحلق إذا بلغ الشعر المقدار الموجب للفدية الكاملة."},
+  {q:"مقدار الشعر الموجب للفدية عند الشافعية", a:"الفدية الكاملة بإزالة ثلاث شعرات فأكثر، من الرأس أو البدن، بأي طريقة، بشرط اتحاد الزمان والمكان عرفًا. شعرة واحدة: مُدّ من الطعام. شعرتان: مُدّان. ثلاث فأكثر: فدية أذى كاملة. وإزالة الشعر ناسيًا أو جاهلًا توجب الفدية عند الشافعية لأنها من باب الإتلاف، والجهل والنسيان يُسقطان الإثم فقط.", table:{head:["الحالة","الفدية","الإثم"], rows:[["أزال الشعر عالمًا متعمدًا بلا عذر","واجبة","آثم"],["أزاله ناسيًا للإحرام","واجبة","لا إثم"],["أزاله جاهلًا بالتحريم","واجبة","لا إثم"],["سقط الشعر بنفسه دون فعل منه","لا فدية","لا إثم"]]}},
+  {q:"قضم ظفرًا من أظافره ناسيًا وهو محرم (دار الإفتاء المصرية)", a:"إذا قضم المحرم أظافره عامدًا عالمًا مختارًا وجبت عليه الفدية، بخلاف ما لو انكسر ظفره فأزال باقيه لأنه يؤذيه فلا شيء عليه. أما الناسي فجمهور الفقهاء (الحنفية والمالكية والشافعية والحنابلة في المشهور) أن عليه الفدية، وذهب بعض الحنابلة إلى أنه غير مؤاخذ. فمن استطاع أخرجها ومن لم يستطع فلا حرج. وعند الشافعية: الفدية الكاملة بثلاثة أظافر فأكثر، الظفر الواحد مُدّ، والظفران مُدّان."}
+ ]},
+ {id:"jima3", t:"الجماع ومفسدات الحج", items:[
+  {q:"الجماع يوجب فساد الحج بشرطين", a:"1) أن يكون الجماع في الفرج (مذهب الأئمة الأربعة). 2) أن يكون قبل التحلل الأول، سواء قبل الوقوف أو بعده (قول الجمهور) وعليه بدنة. وعند أبي حنيفة: إن كان قبل الوقوف بعرفة فسد حجه وعليه شاة، وإن كان بعد الوقوف لم يفسد حجه وعليه بدنة."},
+  {q:"جامع زوجته قبل التحلل الأول", a:"الجماع أخطر محظورات الإحرام، ونقل أهل العلم الإجماع على أن الحج لا يفسد بشيء من المحظورات إلا الجماع. الجمهور: يفسد الحج ويلزمه إتمامه وقضاؤه وذبح بدنة.", table:{head:["المذهب","حكم الحج","ما يلزمه"], rows:[["الحنفية قبل الوقوف بعرفة","يفسد الحج","إتمام الحج، والقضاء، وذبح شاة"],["الحنفية بعد الوقوف وقبل التحلل","لا يفسد الحج","بدنة"],["المالكية","يفسد الحج","إتمامه، وقضاؤه، والهدي"],["الشافعية","يفسد الحج","إتمامه، والقضاء، وبدنة"],["الحنابلة","يفسد الحج","إتمامه، والقضاء، وبدنة"]]}},
+  {q:"الجماع بعد التحلل الأول وقبل الثاني", a:"ارتكب محظورًا ووجبت عليه التوبة، وحجه صحيح باتفاق المذاهب الأربعة، ولا يلزمه القضاء، وتلزمه شاة في الجملة. وعند المالكية والحنابلة يلزمه الخروج إلى الحل وتجديد الإحرام لإكمال الطواف، بخلاف الحنفية والمعتمد عند الشافعية.", table:{head:["المذهب","صحة الحج","الواجب"], rows:[["الحنفية","الحج صحيح","شاة"],["المالكية","الحج صحيح","هدي، وإتمام ما بقي على الوجه المقرر عندهم"],["الشافعية","الحج صحيح في الأصح","شاة"],["الحنابلة","الحج صحيح","شاة، وتجديد الإحرام من الحل لطواف الإفاضة"]]}},
+  {q:"حكم مقدمات الجماع (التقبيل واللمس بشهوة)", r:[["أبو حنيفة","التلذذ بما دون الجماع كالقبلة واللمس بشهوة يلزمه بسببه دم، ولو ردد النظر إلى امرأته حتى أنزل فلا شيء عليه"],["الشافعي","إن باشر فيما دون الفرج بشهوة أو قبّل بشهوة فعليه فدية الأذى، والاستمناء كالمباشرة، وصحح بعض الشافعية أن عليه شاة، ولو ردد النظر حتى أمنى فلا شيء عليه"]]},
+  {q:"متى يحصل التحلل الأول؟", a:"عند فعل اثنين من ثلاثة: رمي جمرة العقبة، الحلق أو التقصير، طواف الإفاضة. فيباح كل شيء إلا النساء. والتحلل الأكبر بعد الثلاثة: الرمي والحلق وطواف الإفاضة."}
+ ]},
+ {id:"tawaf", t:"الطواف والسعي", items:[
+  {q:"شرط صحة الطواف", a:"أن يكون الطائف على طهارة. الطواف كالصلاة: لا يصح كل منهما إلا بطهارة. أما السعي فلا تُشترط له الطهارة لكن تُستحب."},
+  {q:"الشك في عدد الأشواط", a:"يبني على الأقل (اليقين). فإذا شك هل طاف ثلاثة أم أربعة جعلها ثلاثة."},
+  {q:"تقبيل الحجر الأسود مع الزحام", a:"يستقبله ببدنه ويشير إليه بيمينه دون تقبيلها قائلًا: بسم الله والله أكبر. أما الركن اليماني فيستلمه بيمينه دون تكبير، فإن لم يتمكن فلا يشير ولا يكبر."},
+  {q:"الرمل والاضطباع", a:"الرمل: الإسراع في المشي مع تقارب الخطوات، يُسن للرجل في الأشواط الثلاثة الأولى من طواف القدوم أو العمرة، ولا يُسن للنساء. ولا يُسن الرمل ولا الاضطباع في طواف الإفاضة إلا إذا لم يكن سعى بعد القدوم. ويزيل الاضطباع قبل صلاة ركعتي الطواف."},
+  {q:"أنواع الطواف وأحكامها", table:{head:["الطواف","الحكم","ملاحظة"], rows:[["طواف الإفاضة (الزيارة)","ركن","بعد الوقوف بعرفة ومزدلفة، ولا يتم الحج إلا به"],["طواف العمرة","ركن","لا تصح العمرة إلا به"],["طواف القدوم (تحية البيت)","سنة","للمفرد والقارن، ومن تركه فلا شيء عليه"],["طواف الوداع","واجب في الحج عند الجمهور","يُستثنى الحائض والنفساء، ومن تركه فعليه دم؛ وفي العمرة سنة"],["طواف النذر","واجب الوفاء","«من نذر أن يطيع الله فليطعه»"],["طواف التطوع","سنة","في أي وقت من العام"]]}},
+  {q:"الطواف الناقص تطوعًا", a:"الحنفية وقول عند الشافعية: يُثاب على ما طافه ولو شوطًا (كما لو تطوع بركعة)، والأفضل والأكمل أن يتم سبعة أشواط كما جاءت السنة."},
+  {q:"أقيمت الصلاة أثناء السعي", a:"يصلي مع الجماعة ثم يُكمل سعيه من الموضع الذي توقف عنده."},
+  {q:"أنواع السعي", a:"سعي العمرة: ركن بعد طوافها مباشرة، لا تصح العمرة بدونه. سعي الحج: ركن بعد طواف الإفاضة أو القدوم. سعي القدوم: سنة للقارن والمفرد ويجزئ عن سعي الحج إن سعى بعد طواف القدوم قبل عرفة. المتمتع لا يسعى سعي القدوم، بل يسعى للعمرة ثم للحج بعد الإفاضة. ولا يُشرع السعي تطوعًا بلا طواف باتفاق العلماء."}
+ ]},
+ {id:"arafa", t:"عرفة ومزدلفة ومنى والرمي", items:[
+  {q:"وقت الوقوف بعرفة", a:"يبدأ بعد زوال شمس يوم عرفة (9 ذي الحجة) وينتهي بطلوع فجر يوم النحر. ولا يشترط أن يكون واقفًا على قدميه، ويصح الوقوف للنائم وللمريض المحمول ولو لم يعلم أنه في عرفة. ولا يصح الوقوف في بطن عُرَنة (أمام مسجد نمرة، الثلث الأمامي منه). ولا يجوز مغادرة عرفة قبل غروب الشمس، ومن نزل قبل الغروب فعليه دم عند بعض الفقهاء، وحضور جزء من الليل مستحب عند الشافعية في الصحيح."},
+  {q:"المبيت بمزدلفة", r:[["الجمهور","واجب"],["المالكية","سنة"],["بعض السلف","ركن"]], a:"يتحقق المبيت بالمكث بعد منتصف ليلة النحر ولو لحظة، ولا يشترط النوم. ويجوز للضعفة والنساء المغادرة قبل الفجر. والوقوف عند المشعر الحرام بعد الفجر سنة عند الجمهور وواجب عند الحنفية."},
+  {q:"رمي جمرة العقبة يوم النحر", a:"أول أعمال يوم النحر، سبع حصيات كحبة الحمص، ويقطع التلبية مع أول حصاة. يجب وقوع الحصى في الحوض، فإن ضربت الشاخص ولم تقع في الحوض لم تجزئ. من ترك حصاة أو حصاتين يتصدق بشيء، ومن ترك ثلاثًا فعليه دم. ويبدأ وقتها عند الشافعية بعد منتصف ليلة النحر، وآخر وقتها عند الشافعية والحنابلة آخر أيام التشريق."},
+  {q:"الرمي في أيام التشريق", a:"يبدأ بعد الزوال عند الجمهور لحديث ابن عباس: «كان رسول الله ﷺ يرمي الجمار إذا زالت الشمس». يرمي ثلاث جمرات كل يوم، سبع حصيات لكل جمرة، بالترتيب: الصغرى ثم الوسطى ثم الكبرى. ويجوز الرمي قبل الزوال عند بعض العلماء عند المشقة والزحام الشديد (ويبدأ بعد طلوع الفجر)، ويجوز تأخير الرمي إلى الليل، ولا يجوز الرمي من منتصف الليل عن اليوم التالي. وحكم رمي الجمار عند الجمهور: واجب."},
+  {q:"المبيت بمنى ليالي التشريق", r:[["الجمهور","واجب، ويتحقق بالمكث معظم الليل"],["الحنفية","سنة وليس بواجب"]], a:"من ترك المبيت الليالي الثلاث فعليه دم، ومن ترك ليلة واحدة عند الشافعية فعليه مُدّ من طعام. ودليل الوجوب: «خذوا عني مناسككم» مع فعله ﷺ."},
+  {q:"التعجل من منى", a:"يجوز التعجل والخروج في اليوم الثاني من أيام التشريق (12 ذي الحجة) قبل غروب الشمس. فإن غربت الشمس قبل خروجه ولم يكن متهيئًا وجب أن يبيت ويرمي اليوم الثالث، وإن غربت وهو متهيئ للخروج يُعدّ متعجلًا ولا يلزمه المبيت."},
+  {q:"الذبح والحلق", a:"بعد الرمي ينحر هديه، ويمتد وقت الذبح إلى غروب شمس يوم 13، ويجوز الذبح ليلًا. ومن لم يجد الهدي صام 3 أيام في الحج و7 عند العودة. ثم يحلق أو يقصر، والحلق أفضل لدعاء النبي ﷺ للمحلّقين ثلاثًا. مقدار التقصير عند الشافعية ثلاث شعرات، وعند الحنفية ربع الرأس، والمرأة تقصر قدر أنملة."},
+  {q:"طواف الإفاضة: وقته", a:"ركن. يبدأ وقته عند الجمهور من منتصف ليلة العاشر ولا آخر لوقته. وعند الحنفية آخر وقته أيام التشريق، ومن أخره بعدها فعليه دم. ولا يجوز للحاج العودة إلى بلده قبل طواف الإفاضة، ويجب أن يعود ليطوف."}
+ ]}
+];
+
+/* ---------- خطوات العمرة ---------- */
+const UMRAH_STEPS = [
+ {t:"قبل الميقات: الاستعداد", body:"الاغتسال والتنظيف (قص الشارب وتقليم الأظافر وحلق العانة ونتف الإبط)، والتطيب في البدن لا في ثياب الإحرام. يلبس الرجل الإزار والرداء والنعلين ويتجرد من المخيط، وتلبس المرأة ثيابها العادية الساترة ولا تغطي وجهها.", fatwa:["لبس ثياب الإحرام في الفندق أو الطائرة دون نية لا يُدخل في الإحرام (المذاهب الأربعة).","يجوز الإحرام قبل الميقات، والأفضل عنده أو بحذائه."], tip:"ذكّر الركاب بالاغتسال ولبس الإحرام في آخر محطة استراحة قبل الميقات، وحدد لهم وقتًا واضحًا."},
+ {t:"عند الميقات: النية والتلبية", body:"يصلي ركعتين إن تيسر (مستحب عند الشافعي وأبي حنيفة وأحمد)، ثم ينوي العمرة ويقول: «لبيك اللهم عمرة». ومن خشي عائقًا يشترط: «إن حبسني حابس فمحلّي حيث حبستني». ثم يرفع صوته بالتلبية (الرجال).", dua:"لبيك اللهم لبيك، لبيك لا شريك لك لبيك، إن الحمد والنعمة لك والملك، لا شريك لك", fatwa:["عند أبي حنيفة لا ينعقد الإحرام بالنية حتى تضاف إليها التلبية، وعند الشافعي ومالك وأحمد تكفي النية.","من تجاوز الميقات بلا إحرام يلزمه الرجوع إن أمكن، وإلا أحرم من مكانه وعليه دم."], tip:"أعلن في الباص قبل الميقات بربع ساعة، ولقّن الجميع التلبية بصوت واحد."},
+ {t:"الطريق إلى مكة: التلبية ومحظورات الإحرام", body:"يكثر من التلبية ويقلل الكلام إلا من ذكر الله. ويجتنب المحظورات: الطيب، تغطية الرأس للرجل، قص الشعر والأظافر، لبس المخيط للرجل، تغطية المرأة وجهها، الجماع ومقدماته، عقد النكاح، الجدال والخصام.", fatwa:["من تطيب أو لبس المخيط ناسيًا أو جاهلًا: يزيله فورًا عند التذكر، ولا فدية عند الشافعية، وتجب عند الحنفية والمالكية والمعتمد عند الحنابلة.","الحزام والمظلة والاغتسال وتغيير الإحرام كلها مباحة."], tip:"وزّع بطاقة صغيرة بمحظورات الإحرام على كل معتمر."},
+ {t:"الطواف: سبعة أشواط", body:"يبدأ من الحجر الأسود ويجعل الكعبة عن يساره. يستلم الحجر ويقبله إن تيسر، وإلا أشار إليه بيمينه قائلًا «بسم الله والله أكبر». يضطبع الرجل (يجعل وسط الرداء تحت إبطه الأيمن) ويرمل في الأشواط الثلاثة الأولى. يستلم الركن اليماني دون تكبير، ولا يشير إليه إن لم يتمكن.", dua:"ربنا آتنا في الدنيا حسنة وفي الآخرة حسنة وقنا عذاب النار (بين الركن اليماني والحجر الأسود)", fatwa:["الطهارة شرط لصحة الطواف.","إن شك في عدد الأشواط بنى على الأقل.","طواف العمرة ركن لا تصح العمرة إلا به."], tip:"ثبّت نقطة التقاء واضحة (رقم باب أو علامة) قبل دخول المطاف، واجعل كبار السن في مجموعة مع مرافق."},
+ {t:"ركعتا الطواف وزمزم", body:"يزيل الاضطباع ويجعل رداءه على كتفيه، ثم يتجه إلى مقام إبراهيم ويتلو ﴿واتخذوا من مقام إبراهيم مصلى﴾، ويصلي ركعتين خلف المقام إن تيسر وإلا في أي مكان من المسجد. ثم يشرب من ماء زمزم.", fatwa:["ماء زمزم يرتبط بالبركة والشفاء في الأحاديث النبوية."]},
+ {t:"السعي بين الصفا والمروة", body:"إذا اقترب من الصفا قرأ ﴿إن الصفا والمروة من شعائر الله...﴾ وقال «نبدأ بما بدأ الله به» (في أول السعي فقط). يرقى الصفا ويستقبل القبلة ويرفع يديه ويكبر ويذكر ويدعو ثلاث مرات. يمشي إلى المروة، ويسرع الرجال بين العلمين الأخضرين. يفعل على المروة كما فعل على الصفا. من الصفا إلى المروة شوط، ومن المروة إلى الصفا شوط، حتى سبعة أشواط تنتهي بالمروة.", dua:"الله أكبر الله أكبر الله أكبر، لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير، لا إله إلا الله وحده، أنجز وعده، ونصر عبده، وهزم الأحزاب وحده", fatwa:["لا تشترط الطهارة للسعي لكنها مستحبة.","ليس للسعي ذكر مخصوص؛ يذكر الله ويدعو ويقرأ القرآن.","إذا أقيمت الصلاة صلى ثم أكمل من موضعه."], tip:"الكراسي المتحركة متوفرة في المسعى؛ رتّب مسبقًا لمن يحتاجها."},
+ {t:"الحلق أو التقصير والتحلل", body:"يحلق الرجل رأسه أو يقصر من جميع أنحاء الرأس، والمتمتع الذي سيحج قريبًا الأفضل له التقصير ليبقى الحلق للحج. تقصر المرأة قدر أنملة من كل ظفيرة أو من كل جانب. وبذلك تمت العمرة ويحلّ له كل ما حرم عليه بالإحرام.", fatwa:["أركان العمرة عند الشافعية أربعة: الإحرام، الطواف، السعي، الحلق أو التقصير.","التحلل: زوال أحكام الإحرام."], tip:"أعلن في مجموعة الواتس آب تمام العمرة وموعد التجمع التالي."}
+];
+
+/* ---------- أيام الحج ---------- */
+const HAJJ_DAYS = [
+ {d:"قبل 8", name:"القدوم", acts:["المتمتع: يؤدي العمرة ثم يتحلل.","المفرد والقارن: طواف القدوم (سنة)، ولهما أن يسعيا بعده فيجزئ عن سعي الحج.","القارن يبقى على إحرامه حتى يوم النحر."]},
+ {d:"8", name:"يوم التروية", acts:["يحرم المتمتع بالحج من مكانه، ويفعل كما فعل عند إحرامه بالعمرة من غسل وتطيب.","يخرج إلى منى، ويصلي الظهر والعصر والمغرب والعشاء كل صلاة في وقتها مع قصر الرباعية دون جمع.","يبيت بمنى ويصلي فجر عرفة فيها.","كثير من الحجاج اليوم يتوجهون مباشرة إلى عرفات تجنبًا للازدحام."]},
+ {d:"9", name:"يوم عرفة", acts:["الوقوف بعرفة ركن الحج الأعظم: «الحج عرفة».","يبدأ الوقوف بعد الزوال ويمتد إلى فجر يوم 10.","يصلي الظهر والعصر جمع تقديم وقصرًا.","أفضل الدعاء: لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير.","لا يغادر قبل غروب الشمس، ولا يقف في بطن عُرَنة."]},
+ {d:"ليلة 10", name:"مزدلفة", acts:["ينصرف بعد الغروب ملبيًا.","يصلي المغرب والعشاء جمع تأخير وقصرًا بأذان واحد (المغرب 3، العشاء 2).","إن لم يصل مزدلفة قبل منتصف الليل صلاهما في الطريق.","يبيت ولو لحظة بعد منتصف الليل، ويلتقط سبع حصيات لجمرة العقبة.","يقف عند المشعر الحرام بعد الفجر للدعاء، وللضعفة والنساء الدفع قبل الفجر."]},
+ {d:"10", name:"يوم النحر", acts:["رمي جمرة العقبة الكبرى بسبع حصيات، ويقطع التلبية مع أول حصاة.","ذبح الهدي (يمتد إلى غروب يوم 13).","الحلق أو التقصير ← التحلل الأول: يباح كل شيء إلا النساء.","طواف الإفاضة ثم سعي الحج ← التحلل الأكبر.","الترتيب سنة، ومن قدّم أو أخّر: «افعل ولا حرج»."]},
+ {d:"11", name:"أول أيام التشريق", acts:["المبيت بمنى (واجب عند الجمهور).","رمي الجمرات الثلاث بعد الزوال: الصغرى ثم الوسطى ثم الكبرى، سبع حصيات لكل جمرة."]},
+ {d:"12", name:"ثاني أيام التشريق", acts:["الرمي بعد الزوال كاليوم السابق.","المتعجل يغادر منى قبل غروب الشمس."]},
+ {d:"13", name:"ثالث أيام التشريق", acts:["للمتأخر: المبيت ليلة 13 والرمي بعد الزوال، وينتهي وقت الرمي بغروب الشمس.","ثم طواف الوداع عند إرادة مغادرة مكة (واجب عند الجمهور، ويسقط عن الحائض والنفساء)."]}
+];
+
+const HAJJ_PILLARS = {
+ arkan:["الإحرام","الطواف (طواف الإفاضة)","السعي بين الصفا والمروة","الوقوف بعرفة"],
+ wajibat:["الإحرام من الميقات","المبيت بمزدلفة (عند الجمهور)","رمي الجمار","المبيت بمنى أيام التشريق (عند الجمهور)","طواف الوداع","التلبية (عند من يرى وجوبها)","البقاء بعرفة إلى الغروب (من نزل قبله فعليه دم عند بعض الفقهاء)"],
+ rule:"ركن الحج: ما يلزم وجوده ليصح الحج؛ من تركه فسد حجه ولا يُجبر بدم ولا فدية. الواجب: من تركه صح حجه وعليه دم (شاة)، فإن لم يجد صام عشرة أيام: ثلاثة في الحج وسبعة إذا رجع."
+};
+
+/* ---------- المعالم ---------- */
+const LANDMARKS = {
+ makkah:[
+  {n:"الكعبة المشرفة", d:"أول بيت وُضع للناس لعبادة الله، قبلة المسلمين، والطواف حولها ركن في الحج والعمرة."},
+  {n:"الشاذروان والمعجن", d:"الشاذروان جزء من أساس الكعبة يحيط بها من ثلاث جهات (باستثناء جهة حِجر إسماعيل)، لا يصح الطواف عليه بل حوله. المعجن: موضع أساس الكعبة أو مكان عجن طين بنائها، ويرتبط بموضع وقوف إبراهيم عليه السلام أثناء البناء."},
+  {n:"الحجر الأسود", d:"في الركن الجنوبي الشرقي من الكعبة، نقطة بداية الطواف ومنتهاه. نزل من الجنة أشد بياضًا من اللبن فسودته خطايا بني آدم."},
+  {n:"بئر زمزم", d:"نبع مبارك فُجّر بأمر الله تحت قدمي إسماعيل عليه السلام، ويرتبط بالبركة والشفاء."},
+  {n:"المسجد الحرام", d:"أكبر مسجد في العالم، يضم المطاف والمسعى، وكانت حوله دار الندوة وبيت أم هانئ."},
+  {n:"بيت السيدة خديجة", d:"في زقاق الحجر قرب المسجد الحرام، سكن فيه النبي ﷺ بعد زواجه، وشهد نزول الوحي وتربية بناته الكريمات."},
+  {n:"دار أبي بكر الصديق", d:"شهدت التخطيط للهجرة، ومنها انطلق النبي ﷺ وصاحبه، وكانت أسماء تحمل الزاد إلى غار ثور."},
+  {n:"دار الأرقم بن أبي الأرقم", d:"أول مركز للدعوة السرية، أسلم فيها حمزة وعمر رضي الله عنهما."},
+  {n:"دار أبي سفيان", d:"«من دخل دار أبي سفيان فهو آمن» يوم فتح مكة، رمز للعفو والتسامح."},
+  {n:"شعب أبي طالب", d:"حوصر فيه النبي ﷺ وبنو هاشم وبنو المطلب ثلاث سنوات حتى نُقضت الصحيفة الظالمة."},
+  {n:"جبل النور وغار حراء", d:"كان النبي ﷺ يتعبد فيه قبل البعثة، ومنه بدأ نزول الوحي."},
+  {n:"جبل ثور وغاره", d:"اختبأ فيه النبي ﷺ وأبو بكر أثناء الهجرة."},
+  {n:"جبال قريبة من الحرم", d:"الصفا والمروة (موضع السعي)، أبو قبيس (يطل على الكعبة)، الجبل الأحمر (قيقعان)."},
+  {n:"مقبرة المعلاة", d:"من أقدم مقابر مكة، دُفن فيها عدد من أقارب النبي ﷺ والصحابة."},
+  {n:"مسجد الجن", d:"استمع فيه جماعة من الجن للقرآن وآمنوا، ووردت قصتهم في سورة الجن."},
+  {n:"مسجد الراية ومسجد الشجرة وبئر طوى", d:"مواضع ارتبطت بأحداث من السيرة ودخول النبي ﷺ إلى مكة."}
+ ],
+ mashaer:[
+  {n:"عرفات", d:"الوقوف بها ركن الحج الأعظم في التاسع من ذي الحجة."},
+  {n:"وادي عُرَنة", d:"وادٍ غرب صعيد عرفات، الوقوف فيه لا يجزئ لأنه خارج حدود عرفة الشرعية."},
+  {n:"مسجد نمرة", d:"في صعيد عرفات، يخطب فيه الإمام يوم عرفة وتُصلى الظهر والعصر جمعًا وقصرًا، ومقدمته في بطن عرنة."},
+  {n:"جبل الرحمة", d:"في قلب عرفات، ويُعرف بجبل الدعاء."},
+  {n:"قناة زبيدة", d:"قناة مائية أنشأتها السيدة زبيدة زوجة هارون الرشيد لسقاية الحجاج في مكة والمشاعر."},
+  {n:"مزدلفة", d:"يبيت فيها الحجاج ليلة العاشر، ويجمعون الحصى، وفيها المشعر الحرام."},
+  {n:"مسجد الخيف", d:"في منى، مسجد الأنبياء، صلى فيه النبي ﷺ وخطب في حجة الوداع."},
+  {n:"وادي مُحَسِّر", d:"بين مزدلفة ومنى، أُهلك فيه أصحاب الفيل، ويُسن الإسراع عند المرور به."},
+  {n:"مجر الكبش (مقام الذبح)", d:"في منى، موضع فداء إسماعيل بذبح عظيم."},
+  {n:"مسجد البيعة", d:"عند سفح جبل ثبير في منى، يخلّد بيعتي العقبة الأولى والثانية."},
+  {n:"الجمرات الثلاث", d:"الصغرى والوسطى والكبرى (العقبة)، تُرمى جمرة العقبة يوم 10 والثلاث أيام التشريق."}
+ ],
+ madinah:[
+  {n:"المسجد النبوي", d:"بناه النبي ﷺ بعد الهجرة، والصلاة فيه خير من ألف صلاة فيما سواه إلا المسجد الحرام."},
+  {n:"الحجرة الشريفة", d:"تضم قبر النبي ﷺ وصاحبيه أبي بكر وعمر رضي الله عنهما."},
+  {n:"الروضة الشريفة", d:"بين بيت النبي ﷺ ومنبره: «ما بين بيتي ومنبري روضة من رياض الجنة». يُكثر فيها من الدعاء والصلاة والذكر وقراءة القرآن."},
+  {n:"المنبر النبوي", d:"الموضع الحالي هو نفس موضع منبر النبي ﷺ الأصلي."},
+  {n:"أبواب المسجد النبوي", d:"أكثر من مئة باب، أشهرها باب السلام (المدخل الرئيسي للزوار باتجاه الروضة والقبر الشريف)، وباب البقيع، وباب الملك فهد، وباب الملك سعود."},
+  {n:"مسجد الغمامة (المصلى)", d:"صلى فيه النبي ﷺ العيد والاستسقاء، وسمي لغمامة أظلته."},
+  {n:"مساجد أبي بكر وعمر وعلي", d:"قرب المسجد النبوي، تنسب لمواضع صلاة الخلفاء الراشدين."},
+  {n:"سقيفة بني ساعدة", d:"غرب المسجد النبوي، بويع فيها أبو بكر الصديق خليفة للمسلمين."},
+  {n:"مسجد قباء", d:"أول مسجد أُسس في الإسلام، والصلاة فيه كأجر عمرة، وكان النبي ﷺ يزوره راكبًا وماشيًا."},
+  {n:"بئر أريس (بئر الخاتم)", d:"قرب قباء، سقط فيها خاتم النبي ﷺ من يد عثمان رضي الله عنه."},
+  {n:"مسجد القبلتين", d:"صلى فيه المسلمون إلى بيت المقدس ثم حُولت القبلة إلى الكعبة."},
+  {n:"جبل أحد ومقبرة الشهداء", d:"غزوة أحد سنة 3هـ، استشهد فيها سبعون صحابيًا منهم سيد الشهداء حمزة رضي الله عنه."},
+  {n:"الخندق والمساجد السبعة", d:"غزوة الأحزاب سنة 5هـ بإشارة سلمان الفارسي بحفر الخندق. المساجد السبعة: سلمان، أبو بكر، عمر، علي، الفتح، بني حرام، فاطمة الزهراء."},
+  {n:"مقبرة البقيع", d:"شرق المسجد النبوي، فيها عثمان بن عفان وعائشة وفاطمة الزهراء والحسن بن علي وآلاف الصحابة."},
+  {n:"آبار المدينة", d:"بئر غرس، بئر رومة (عثمان)، بئر أريس، بئر حاء (أبي طلحة)، وغيرها."},
+  {n:"جبال وأودية المدينة", d:"جبل أحد، جبل عير، جبل ثور، جبل سلع (قرب الخندق)، وادي العقيق (الوادي المبارك)، وادي بطحان."}
+ ],
+ route:[
+  {sec:"في بلادنا (فلسطين)", pts:[
+   {n:"المسجد الأقصى المبارك", d:"أولى القبلتين وثالث الحرمين الشريفين، مسرى النبي ﷺ ومعراجه."},
+   {n:"قبور بعض الصحابة", d:"تميم بن أوس الداري، ميسرة بن مسروق العبسي، دحية الكلبي، شداد بن أوس، عبادة بن الصامت."},
+   {n:"مقام النبي موسى", d:"نحو 10 كم جنوب أريحا."},
+   {n:"أريحا", d:"أقدم مدينة مأهولة في العالم (أكثر من 10,000 عام)، واحة النخيل."},
+   {n:"نهر الأردن", d:"نحو 251 كم من جبل الشيخ إلى البحر الميت، نقطة عبور الحجاج."}]},
+  {sec:"في الأردن", pts:[
+   {n:"قبور الصحابة في الغور", d:"أبو عبيدة بن الجراح، شرحبيل بن حسنة، ضرار بن الأزور، معاذ بن جبل، عبد الرحمن بن معاذ، عامر بن أبي وقاص."},
+   {n:"مقام أصحاب الكهف", d:"نحو 7 كم جنوب شرق عمّان."},
+   {n:"مؤتة (الكرك)", d:"معركة مؤتة 8هـ، القادة الثلاثة: زيد بن حارثة، جعفر بن أبي طالب، عبد الله بن رواحة."},
+   {n:"ضريح الحارث بن عمير الأزدي (الطفيلة)", d:"رسول النبي ﷺ إلى أمير بصرى، واستشهاده كان سببًا لغزوة مؤتة."},
+   {n:"الشجرة المباركة (البقيعاوية)", d:"شرق الأزرق، يُعتقد أن النبي ﷺ استظل تحتها في رحلته إلى الشام قبل البعثة."}]},
+  {sec:"الطريق إلى المدينة المنورة", pts:[
+   {n:"تبوك", d:"غزوة تبوك سنة 9هـ في ظروف الحر الشديد."},
+   {n:"تيماء", d:"واحة تاريخية عريقة، فيها بئر هداج «شيخ الآبار»."},
+   {n:"خيبر", d:"فتح خيبر سنة 7هـ."}]},
+  {sec:"الطريق من المدينة إلى مكة", pts:[
+   {n:"ذو الحليفة (أبيار علي)", d:"ميقات أهل المدينة ومن مرّ بها."},
+   {n:"حمراء الأسد", d:"غزوة بعد أحد بيوم، نحو ثمانية أميال من المدينة."},
+   {n:"وادي قديد", d:"خيمة أم معبد ومعجزة الشاة، وقصة سراقة بن مالك."},
+   {n:"وادي عسفان", d:"نحو 80 كم شمال مكة."},
+   {n:"وادي فاطمة (مر الظهران)", d:"محطة القوافل قرب الحرم."},
+   {n:"الجموم", d:"نحو 25 كم شمال غرب مكة، عين الجموم."},
+   {n:"وادي سرف", d:"نحو 10 كم شمال مكة، قبر أم المؤمنين ميمونة بنت الحارث."},
+   {n:"التنعيم", d:"أقرب الحل إلى الحرم (نحو 7.5 كم)، مسجد السيدة عائشة (ميقات أهل مكة للعمرة) ومسجد خبيب بن عدي."}]}
+ ]
+};
+
+/* ---------- خطة الإداري (مرتبة حسب مراحل الرحلة) ---------- */
+const ADMIN_PLAN = [
+ {id:"p1", t:"قبل التسجيل: بناء الثقة", when:"أسابيع قبل الرحلة", goal:"أن يُقبل الناس عليك وتعطيهم معلومات دقيقة.", items:[
+  "افهم نظام التعامل مع المكتب وطريقة التسجيل جيدًا قبل أن تشرح لأحد",
+  "جهّز معلومات دقيقة: السعر، ما يشمله، الفنادق، مدة الإقامة في مكة والمدينة، الأوراق المطلوبة",
+  "راجع المسائل الفقهية الأساسية للعمرة (هذا الموقع) لتجيب بثقة",
+  "اسأل أهل الخبرة عن كل ما لا تعرفه: «من يسأل لا يجهل»"]},
+ {id:"p2", t:"مرحلة التسجيل", when:"عند فتح التسجيل", goal:"كشف كامل وتواصل منظم مع كل معتمر.", items:[
+  "إعداد كشف شامل بأسماء المعتمرين (الاسم كما في الجواز، رقم الهوية، الهاتف، العمر، الحالة الصحية، رقم هاتف قريب للطوارئ)",
+  "إنشاء مجموعة واتس آب للرحلة وتحديد قواعدها (إعلانات فقط أو نقاش)",
+  "تقسيم التسكين: توزيع المعتمرين على الغرف بشكل مناسب (عائلات، نساء، رجال، كبار سن)",
+  "تحديد الأشخاص الذين يحتاجون عناية خاصة: كبار السن، كرسي متحرك، أمراض مزمنة",
+  "تنظيم لقاء تعارفي قبل السفر للتعارف والتوجيه"]},
+ {id:"p3", t:"اللقاء التعارفي قبل السفر", when:"قبل السفر بأسبوع تقريبًا", goal:"كل معتمر يعرف ماذا سيحدث ومتى.", items:[
+  "شرح برنامج الرحلة يومًا بيوم ومواعيد التجمع",
+  "شرح خطوات العمرة باختصار: الإحرام، الطواف، السعي، الحلق أو التقصير",
+  "التذكير بآداب السفر: إخلاص النية، التوبة ورد الحقوق، التزود بالتقوى، اجتناب الرفث والفسوق والجدال",
+  "شرح قصر الصلاة وجمعها في السفر، ومتى يتم خلف الإمام المقيم",
+  "قائمة الأغراض: ملابس الإحرام، حزام، نعل مفتوح، أدوية شخصية مع الوصفة، شاحن، مبلغ نقدي",
+  "توزيع أرقام هواتف الإداري والمرشد والمكتب"]},
+ {id:"p4", t:"الاستعداد للسفر", when:"قبل يوم الانطلاق", goal:"لا أحد يتأخر أو يُرجع من الحدود.", items:[
+  "التأكد من اكتمال الأوراق الثبوتية لكل معتمر: الجواز، التأشيرة، التصاريح",
+  "ترتيب الجلوس في الباص بشكل مناسب ومريح للجميع (كبار السن في الأمام، العائلات معًا)",
+  "تجهيز حقيبة إسعاف أولي وماء",
+  "تجهيز ملف أو صورة لكل الوثائق على هاتفك",
+  "التأكيد على موعد التجمع ومكانه في مجموعة الواتس آب"]},
+ {id:"p5", t:"في الطريق والحدود", when:"أيام السفر", goal:"رحلة آمنة ومنظمة وممتعة.", items:[
+  "قراءة دعاء السفر جماعيًا عند الانطلاق",
+  "العدّ عند كل صعود للباص (عدد الركاب ثابت)",
+  "الاستماع جيدًا للتعليمات الحدودية والتقيد بها بدقة، وإبلاغ الركاب بها قبل الوصول",
+  "التعريف بالمعالم التاريخية على الطريق (فلسطين، الأردن، تبوك، تيماء، خيبر)",
+  "استغلال الوقت: تحديد أجزاء قرآن يومية، الإكثار من الذكر والصلاة على النبي ﷺ",
+  "التنبيه إلى الإحرام قبل الميقات بوقت كافٍ"]},
+ {id:"p6", t:"في المدينة المنورة", when:"أيام الزيارة", goal:"زيارة بأدب وتعريف بالمعالم.", items:[
+  "تعريف المعتمرين بباب السلام والروضة وآداب السلام على النبي ﷺ وصاحبيه",
+  "آداب الزيارة: خفض الصوت، السكينة، عدم التمسح بالجدران، الوقوف بأدب",
+  "برنامج زيارة: قباء (أجر عمرة)، البقيع، أحد ومقبرة الشهداء، القبلتين، الخندق والمساجد السبعة",
+  "تحديد نقطة تجمع ثابتة بعد كل صلاة"]},
+ {id:"p7", t:"في مكة المكرمة: العمرة", when:"يوم الوصول", goal:"عمرة صحيحة لكل فرد في المجموعة.", items:[
+  "الإحرام من ذي الحليفة (للقادمين من المدينة)",
+  "تسكين المعتمرين في الفندق وإعطاؤهم وقت راحة قبل العمرة",
+  "الانطلاق للعمرة كمجموعة مع تحديد نقطة التقاء داخل الحرم",
+  "مرافقة كبار السن والمرضى أو ترتيب كراسي متحركة",
+  "التأكد أن الجميع أتم الطواف والسعي والتقصير",
+  "برنامج زيارة المعالم والمشاعر: عرفات، مزدلفة، منى، جبل النور، جبل ثور",
+  "التذكير بطواف الوداع قبل المغادرة"]},
+ {id:"p8", t:"العودة والمتابعة", when:"بعد الرحلة", goal:"علاقة طويلة ورحلة قادمة أفضل.", items:[
+  "التأكد من وصول الجميع وأغراضهم",
+  "رسالة شكر في المجموعة وتذكير: المطلوب أن نرجع بقلب جديد وروح جديدة",
+  "جمع الملاحظات لتحسين الرحلة القادمة",
+  "تسجيل ما تعلمته من أخطاء ومواقف"]}
+];
+
+const ADMIN_TRAITS = [
+ {t:"جذب المعتمرين", d:"إقبال الناس عليك عند التسجيل أو قبله."},
+ {t:"دقة المعلومات", d:"توصيل المعلومات الصحيحة عند التسجيل."},
+ {t:"معرفة الأنظمة", d:"فهم نظام التعامل مع المكتب وطريقة التسجيل."},
+ {t:"التواصل الفعال", d:"إجادة التعامل مع الأطراف الأخرى خارج حدود المكتب."},
+ {t:"حسن الإدارة", d:"الترقي الإداري بالتعلم والمتابعة وسؤال أهل الخبرة."},
+ {t:"المعرفة الشرعية", d:"المسائل الفقهية الأساسية، السيرة، ومعالم مكة والمدينة."}
+];
+
+/* ---------- الأدعية ---------- */
+const DUAS = [
+ {t:"دعاء السفر", when:"عند ركوب الباص وبداية الرحلة", x:"الله أكبر، الله أكبر، الله أكبر، سُبحانَ الذي سخَّرَ لنا هذا وما كنَّا له مُقرِنين، وإنَّا إلى ربِّنا لمُنقلِبون. اللهمَّ إنَّا نسألُك في سفرِنا هذا البرَّ والتقوى، ومن العملِ ما ترضى. اللهمَّ هوِّن علينا سفرَنا هذا واطوِ عنَّا بُعدَه. اللهمَّ أنت الصاحبُ في السفر، والخليفةُ في الأهل. اللهمَّ إنِّي أعوذُ بك من وعثاءِ السفر، وكآبةِ المنظر، وسوءِ المنقلَب في المال والأهل. وإذا رجع قالهنَّ وزاد فيهنَّ: آيبون، تائبون، عابدون، لربِّنا حامدون."},
+ {t:"التلبية", when:"من الإحرام حتى رمي جمرة العقبة (للحاج) أو بدء الطواف (للمعتمر)", x:"لبَّيكَ اللهمَّ لبَّيك، لبَّيكَ لا شريكَ لك لبَّيك، إنَّ الحمدَ والنِّعمةَ لك والمُلك، لا شريكَ لك."},
+ {t:"عند بداية الطواف", when:"عند الحجر الأسود", x:"بسم الله والله أكبر. اللهمَّ إيمانًا بك، وتصديقًا بكتابك، ووفاءً بعهدك، واتِّباعًا لسنَّة نبيِّك ﷺ."},
+ {t:"بين الركن اليماني والحجر الأسود", when:"في كل شوط", x:"ربَّنا آتِنا في الدنيا حسنةً وفي الآخرةِ حسنةً وقِنا عذابَ النار."},
+ {t:"عند مقام إبراهيم", when:"بعد الطواف", x:"﴿وَاتَّخِذُوا مِن مَّقَامِ إِبْرَاهِيمَ مُصَلًّى﴾"},
+ {t:"عند الصفا (أول السعي)", when:"مرة واحدة عند الاقتراب من الصفا", x:"﴿إِنَّ الصَّفَا وَالْمَرْوَةَ مِن شَعَائِرِ اللَّهِ ۖ فَمَنْ حَجَّ الْبَيْتَ أَوِ اعْتَمَرَ فَلَا جُنَاحَ عَلَيْهِ أَن يَطَّوَّفَ بِهِمَا ۚ وَمَن تَطَوَّعَ خَيْرًا فَإِنَّ اللَّهَ شَاكِرٌ عَلِيمٌ﴾ ثم يقول: نبدأ بما بدأ الله به."},
+ {t:"على الصفا والمروة", when:"ثلاث مرات في كل شوط، ويدعو بينها", x:"الله أكبر، الله أكبر، الله أكبر. لا إله إلا الله وحده لا شريك له، له المُلك وله الحمد وهو على كل شيء قدير. لا إله إلا الله وحده، أنجزَ وعدَه، ونصرَ عبدَه، وهزمَ الأحزابَ وحدَه."},
+ {t:"خير دعاء يوم عرفة", when:"يوم عرفة", x:"لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير."},
+ {t:"السلام على النبي ﷺ", when:"أمام الحجرة الشريفة", x:"السلامُ عليك يا رسولَ الله ورحمةُ الله وبركاته. أشهد أنك قد بلَّغتَ الرسالة، وأدَّيتَ الأمانة، ونصحتَ الأمة."},
+ {t:"السلام على أبي بكر الصديق", when:"بعد السلام على النبي ﷺ", x:"السلامُ عليك يا أبا بكرٍ الصدِّيق، رضي الله عنك وجزاك عن أمة محمد خيرَ الجزاء."},
+ {t:"دعاء زيارة البقيع", when:"عند المقابر", x:"السلامُ عليكم دارَ قومٍ مؤمنين، أنتم السابقون ونحن إن شاء الله بكم لاحقون."},
+ {t:"دعاء النبي ﷺ للمدينة", when:"للتذكير بفضلها", x:"اللهمَّ بارك لنا في مدينتنا…"}
+];
+
+/* ---------- مقاصد الحج وآداب السفر ---------- */
+const MAQASID = {
+ maqasid:[
+  ["تحقيق العبودية الكاملة لله","أن يتربى القلب على الامتثال لا على الهوى."],
+  ["تربية القلب على التجرد من الدنيا","كسر التعلق بالدنيا وربط القلب بالدار الآخرة."],
+  ["تعظيم شعائر الله","﴿ومن يعظم شعائر الله فإنها من تقوى القلوب﴾، القداسة تأتي من أمر الله لا من ذات الأشياء."],
+  ["استحضار سيرة الأنبياء","إبراهيم في بناء الكعبة، هاجر في السعي، إسماعيل في قصة الذبح، محمد ﷺ في حجة الوداع."],
+  ["تحقيق الوحدة الإسلامية","ملايين من كل لون ولسان ومذهب في مكان واحد، بلباس واحد، بعبادة واحدة."],
+  ["تزكية النفس وتطهيرها","التخلية (تطهير النفس) والتحلية (ملؤها بالأخلاق الفاضلة): ترك الرفث والفسوق وضبط اللسان."]
+ ],
+ adab:[
+  ["إخلاص النية لله","أخطر ما يفسد الإخلاص: حب المدح، انتظار ثناء الناس، نشر العبادة طلبًا للإعجاب، المقارنة مع الآخرين. علامته: ألا يهمك من رآك، ولا تنتظر شكرًا، ويلين قلبك، وتعود بعد الحج مختلفًا."],
+  ["التوبة","الحج لا يبدأ بالإحرام بل بتوبة صادقة. أركانها: الندم، الإقلاع، العزم على عدم العودة، رد الحقوق لأصحابها (حقوق الله وحقوق العباد)."],
+  ["التزود من التقوى","﴿فلا رفث ولا فسوق ولا جدال في الحج﴾. الرفث: الجماع ومقدماته والكلام الفاحش. الفسوق: المعاصي ومنها محظورات الإحرام. الجدال: المخاصمة والمماراة بغير حق."],
+  ["قراءة دعاء السفر","عند الانطلاق وعند الرجوع."],
+  ["الإكثار من الدعاء","«ثلاث دعوات مستجابات لا شك فيهن: دعوة المظلوم، ودعوة المسافر، ودعوة الوالد على ولده» (الترمذي)."],
+  ["قصر الصلاة في السفر","ثابت بالقرآن والسنة والإجماع."],
+  ["وضع خطة لاستغلال الوقت","أجزاء قرآن يومية، الإكثار من الصلاة على النبي ﷺ، ذكر الله، الصدقة."],
+  ["معرفة أحكام الحج","الإحرام، الطواف، السعي، الوقوف بعرفة، رمي الجمرات، الحلق أو التقصير."],
+  ["الابتعاد عما يضيع ثواب الحج","الرياء، المعاصي والذنوب، الجدال، محظورات الإحرام."]
+ ]
+};
+
+/* ================= التطبيق ================= */
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+const norm = s => String(s).replace(/[ً-ْٰـ]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").toLowerCase();
+function hl(text, term){
+  const t = esc(text);
+  if(!term) return t;
+  const n = norm(term).trim(); if(n.length < 2) return t;
+  // تمييز تقريبي: نبحث في النص المطبّع ونرسم على الأصل بنفس الطول بعد إزالة التشكيل
+  const raw = String(text); let map = [], plain = "";
+  for(let i=0;i<raw.length;i++){ const c = norm(raw[i]); if(c){ plain += c; map.push(i);} }
+  let out = "", last = 0, idx = plain.indexOf(n);
+  if(idx < 0) return t;
+  while(idx >= 0){
+    const s = map[idx], e = map[idx + n.length - 1] + 1;
+    out += esc(raw.slice(last, s)) + "<mark>" + esc(raw.slice(s, e)) + "</mark>";
+    last = e; idx = plain.indexOf(n, idx + n.length);
+  }
+  return out + esc(raw.slice(last));
+}
+
+/* ---------- تجهيز بنك الأسئلة ---------- */
+QA_DOCX.tawaf.forEach(g => g.qa.forEach(p => { if(p[1] === "لا، فقط في اول السعي؟") p[1] = "لا، فقط في أول السعي."; }));
+const hajjGroups = QA_DOCX.hajj.slice(0, -1);
+hajjGroups.forEach(g => { if(g.h.startsWith("وقت الرمي")) g.h = "وقت الرمي، أيام التشريق، الوداع والعمرة"; });
+const madinahGroup = QA_DOCX.hajj[QA_DOCX.hajj.length - 1];
+madinahGroup.h = "زيارة المدينة المنورة";
+QA_DOCX.makkah[0].h = "معالم مكة";
+
+const BANK = [
+  {id:"safar",   t:"آداب السفر",          mcq: MCQ_SETS[0]},
+  {id:"shurut",  t:"حكم الحج وشروطه",      mcq: MCQ_SETS[1]},
+  {id:"mawaqit", t:"المواقيت",            groups: QA_PDF.mawaqit},
+  {id:"ihram",   t:"الإحرام وأنواع النسك", groups: QA_PDF.ihram},
+  {id:"tawaf",   t:"الطواف والسعي والتقصير", groups: QA_DOCX.tawaf},
+  {id:"hajj",    t:"أعمال الحج يومًا بيوم",  groups: hajjGroups},
+  {id:"madinah", t:"زيارة المدينة",         groups: [madinahGroup]},
+  {id:"makkah",  t:"معالم مكة",            groups: QA_DOCX.makkah}
+];
+BANK.forEach(b => {
+  b.items = [];
+  if(b.mcq){
+    b.mcq.qs.forEach(x => b.items.push({q:x.q, a:x.o[x.c] + (x.note ? "\n" + x.note : ""), g:b.mcq.title, mcq:x, d:x.d}));
+  } else {
+    b.groups.forEach(g => g.qa.forEach(([q,a]) => b.items.push({q, a, g:g.h})));
+  }
+});
+const TOTAL_Q = BANK.reduce((n,b) => n + b.items.length, 0);
+const TOTAL_F = FATWA_TOPICS.reduce((n,t) => n + t.items.length, 0);
+const TOTAL_L = LANDMARKS.makkah.length + LANDMARKS.mashaer.length + LANDMARKS.madinah.length + LANDMARKS.route.reduce((n,l)=>n+l.pts.length,0);
+
+/* ---------- التنقل ---------- */
+const VIEWS = [
+  ["home","الرئيسية"],["plan","خطة الإداري"],["umrah","العمرة خطوة بخطوة"],["hajj","الحج"],
+  ["fatwa","الفتاوى"],["bank","بنك الأسئلة"],["places","المعالم والطريق"],["duas","الأدعية"]
+];
+const tabs = $("#tabs"), main = $("#main");
+tabs.innerHTML = VIEWS.map(([id,t]) => `<button class="tab" role="tab" data-go="${id}" aria-selected="false">${t}</button>`).join("");
+document.addEventListener("click", e => {
+  const g = e.target.closest("[data-go]");
+  if(g){ e.preventDefault(); go(g.dataset.go, g.dataset.arg); }
+});
+let current = null;
+function go(id, arg){
+  if(!RENDER[id]) id = "home";
+  current = id;
+  [...tabs.children].forEach(b => b.setAttribute("aria-selected", b.dataset.go === id));
+  const sel = tabs.querySelector(`[data-go="${id}"]`); if(sel) sel.scrollIntoView({inline:"nearest", block:"nearest"});
+  main.innerHTML = "";
+  const v = document.createElement("section"); v.className = "view"; main.appendChild(v);
+  RENDER[id](v, arg);
+  if(id !== "search"){ try{ history.replaceState(null, "", "#" + id); }catch(e){} $("#q").value = ""; }
+  window.scrollTo({top:0});
+  store.set("idari-view", id);
+}
+const head = (eb, h, p) => `<div class="sec-head"><span class="eyebrow">${eb}</span><h2>${h}</h2>${p ? `<p>${p}</p>` : ""}</div>`;
+
+/* ---------- الرئيسية ---------- */
+const RENDER = {};
+RENDER.home = v => {
+  const done = store.get("idari-plan", {});
+  const phaseDone = p => p.items.every((_, i) => done[p.id + ":" + i]);
+  v.innerHTML = `
+  <div class="hero">
+    <span class="eyebrow">لإداري باص الحج والعمرة</span>
+    <h1>من التسجيل حتى العودة</h1>
+    <p>كل ما تحتاجه لتقود رحلة عمرة ناجحة في مكان واحد: خطة عمل بمراحلها، خطوات العمرة والحج بأحكامها، الفتاوى مرتبة حسب الموضوع، وبنك أسئلة الدورة للمراجعة والاختبار.</p>
+    <div class="journey">${ADMIN_PLAN.map(p => `<button class="jstep ${phaseDone(p) ? "done" : ""}" data-go="plan">${esc(p.t.split(":")[0])}</button>`).join("")}</div>
+  </div>
+  <div class="stats">
+    <button class="stat" data-go="plan"><b>${ADMIN_PLAN.length}</b><span>مراحل في خطة الإداري</span></button>
+    <button class="stat" data-go="umrah"><b>${UMRAH_STEPS.length}</b><span>خطوات العمرة</span></button>
+    <button class="stat" data-go="fatwa"><b>${TOTAL_F}</b><span>فتوى ومسألة في ${FATWA_TOPICS.length} مواضيع</span></button>
+    <button class="stat" data-go="bank"><b>${TOTAL_Q}</b><span>سؤالًا من ملفات الدورة</span></button>
+    <button class="stat" data-go="places"><b>${TOTAL_L}</b><span>معلمًا في مكة والمدينة والطريق</span></button>
+  </div>
+  <div class="grid g2">
+    <div class="card">
+      <h3 style="font-size:18px;margin-bottom:6px">شروط النجاح في الدورة</h3>
+      <ol style="margin:0;padding-inline-start:20px" class="small">
+        <li>الالتزام بالحضور والمشاركة في لقاءات الدورة.</li>
+        <li>اجتياز الامتحان النهائي.</li>
+        <li>اجتياز الامتحان العملي الذي يُعقد في نهاية الدورة.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 style="font-size:18px;margin-bottom:6px">كيف تستعمل هذا الدليل؟</h3>
+      <ul style="margin:0;padding-inline-start:20px" class="small">
+        <li><b>قبل الرحلة:</b> اتبع «خطة الإداري» وعلّم على كل مهمة تنجزها.</li>
+        <li><b>للامتحان:</b> راجع «بنك الأسئلة» ثم اختبر نفسك.</li>
+        <li><b>أثناء الرحلة:</b> ابحث عن أي مسألة من شريط البحث بالأعلى.</li>
+      </ul>
+    </div>
+  </div>
+  ${head("برنامج الدورة","لقاءات دورة التأهيل","تبدأ في 4.9.2026: خمسة لقاءات عبر زوم، وامتحان على المودل، ولقاء وجاهي تطبيقي.")}
+  <div class="sched">${SCHEDULE.map(s => `
+    <div class="srow ${isPast(s.date) ? "past" : ""}">
+      <div class="d">اللقاء ${s.n} <span class="pill g">${s.type}</span><small>${s.date}</small></div>
+      <ul>${s.items.map(([t,x,w]) => `<li><time>${t}</time><span>${esc(x)} <em>— ${esc(w)}</em></span></li>`).join("")}</ul>
+    </div>`).join("")}</div>
+  ${head("اللقاء الأول","مقاصد الحج وآداب السفر","ما يجب أن يعرفه الإداري ويذكّر به الركاب قبل الانطلاق.")}
+  <div class="grid g2">
+    <details class="acc" open><summary>مقاصد الحج الكبرى</summary><div class="body"><dl class="kv">${MAQASID.maqasid.map(([a,b]) => `<div><dt>${a}</dt><dd>${b}</dd></div>`).join("")}</dl>
+      <p class="note" style="margin-top:12px">أكبر خطأ يقع فيه بعض الحجاج: أنهم يعتنون بصحة العمل وينسون روح العمل. المطلوب أن ترجع بقلب جديد، وروح جديدة، وعلاقة مختلفة مع الله.</p></div></details>
+    <details class="acc" open><summary>آداب السفر</summary><div class="body"><dl class="kv">${MAQASID.adab.map(([a,b]) => `<div><dt>${a}</dt><dd>${b}</dd></div>`).join("")}</dl></div></details>
+  </div>`;
+};
+function isPast(d){ const m = d.match(/(\d\d)-(\d\d)-(\d{4})/); if(!m) return false; return new Date(+m[3], +m[2]-1, +m[1], 23) < new Date(); }
+
+/* ---------- خطة الإداري ---------- */
+RENDER.plan = v => {
+  const done = store.get("idari-plan", {});
+  const total = ADMIN_PLAN.reduce((n,p) => n + p.items.length, 0);
+  const count = () => Object.values(done).filter(Boolean).length;
+  v.innerHTML = `
+  ${head("خطة عمل","خطة الإداري من التسجيل حتى العودة","ثماني مراحل مرتبة حسب وقت تنفيذها. علّم على كل مهمة تنجزها، ويُحفظ تقدمك على هذا الجهاز.")}
+  <div class="card" style="display:grid;gap:8px">
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><b>تقدمك في التجهيز</b><span class="muted small" id="pc"></span></div>
+    <div class="progress"><i id="pb"></i></div>
+    <div><button class="btn ghost small" id="reset" style="padding:4px 12px">مسح العلامات</button> <span class="small muted" id="rmsg"></span></div>
+  </div>
+  <div class="grid" id="phases">${ADMIN_PLAN.map((p,pi) => `
+    <article class="card phase" data-p="${p.id}">
+      <div class="num">${pi+1}</div>
+      <div>
+        <h3>${esc(p.t)}</h3>
+        <div class="meta"><span class="pill">${esc(p.when)}</span><span>الهدف: ${esc(p.goal)}</span></div>
+        <ul class="checks">${p.items.map((it,i) => `<li><label><input type="checkbox" id="c-${p.id}-${i}" data-k="${p.id}:${i}" ${done[p.id+":"+i] ? "checked" : ""}><span>${esc(it)}</span></label></li>`).join("")}</ul>
+      </div>
+    </article>`).join("")}</div>
+  ${head("من الدورة","صفات الإداري الناجح","الإداري الناجح يجمع بين العلم الشرعي والمهارات الإدارية والمعرفة التاريخية.")}
+  <div class="grid g3">${ADMIN_TRAITS.map(t => `<div class="card trait"><b>${t.t}</b><span class="muted small">${t.d}</span></div>`).join("")}</div>
+  <div class="card" style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
+    <span>خريطة الطريق ومعالمه من فلسطين إلى مكة في قسم «المعالم والطريق».</span>
+    <button class="btn" data-go="places" data-arg="route">افتح خريطة الطريق</button>
+  </div>`;
+  const upd = () => {
+    const c = count(); $("#pc").textContent = `${c} من ${total} مهمة`;
+    $("#pb").style.width = (c/total*100) + "%";
+    ADMIN_PLAN.forEach(p => v.querySelector(`[data-p="${p.id}"]`).classList.toggle("complete", p.items.every((_,i) => done[p.id+":"+i])));
+  };
+  v.addEventListener("change", e => {
+    const k = e.target.dataset.k; if(!k) return;
+    done[k] = e.target.checked; if(!done[k]) delete done[k];
+    store.set("idari-plan", done); upd();
+  });
+  let armed = false;
+  $("#reset").onclick = () => {
+    if(!armed){ armed = true; $("#rmsg").textContent = "اضغط مرة أخرى للتأكيد"; setTimeout(() => { armed = false; $("#rmsg").textContent = ""; }, 3000); return; }
+    Object.keys(done).forEach(k => delete done[k]); store.set("idari-plan", done);
+    v.querySelectorAll(".checks input").forEach(i => i.checked = false); armed = false; $("#rmsg").textContent = "تم المسح"; upd();
+  };
+  upd();
+};
+
+/* ---------- العمرة ---------- */
+RENDER.umrah = v => {
+  v.innerHTML = `
+  ${head("العمرة","العمرة خطوة بخطوة","لكل خطوة: ما يفعله المعتمر، والذكر الوارد، والأحكام من الدورة، وملاحظة عملية للإداري.")}
+  <div class="grid g3">
+    <div class="card"><span class="eyebrow">حكم العمرة</span><p style="margin:4px 0 0">سنة عند الحنفية والمالكية، وفرض مرة في العمر عند الشافعي وأحمد.</p></div>
+    <div class="card"><span class="eyebrow">أركانها عند الشافعية</span><p style="margin:4px 0 0">الإحرام، الطواف، السعي، الحلق أو التقصير.</p></div>
+    <div class="card"><span class="eyebrow">أفضل وقتها</span><p style="margin:4px 0 0">رمضان: «عمرة في رمضان تعدل حجة». اعتمر النبي ﷺ أربع مرات.</p></div>
+  </div>
+  <div class="steps">${UMRAH_STEPS.map(s => `
+    <article class="card step">
+      <div class="n" aria-hidden="true"></div>
+      <div>
+        <h3>${esc(s.t)}</h3>
+        <p>${esc(s.body)}</p>
+        ${s.dua ? `<div class="dua">${esc(s.dua)}</div>` : ""}
+        ${s.fatwa ? `<ul class="fatwa-list">${s.fatwa.map(f => `<li>${esc(f)}</li>`).join("")}</ul>` : ""}
+        ${s.tip ? `<div class="tip">${esc(s.tip)}</div>` : ""}
+      </div>
+    </article>`).join("")}</div>
+  <div class="card small">من كان داخل حدود الحرم ويريد العمرة يُحرم من أدنى الحل مثل <b>التنعيم</b> (مسجد السيدة عائشة، نحو 7.5 كم من المسجد الحرام). وطواف الوداع في العمرة سنة.</div>`;
+};
+
+/* ---------- الحج ---------- */
+RENDER.hajj = v => {
+  v.innerHTML = `
+  ${head("الحج","مناسك الحج يومًا بيوم","من يوم التروية إلى آخر أيام التشريق، مع الأركان والواجبات وأنواع النسك.")}
+  <div class="days">${HAJJ_DAYS.map(d => `
+    <div class="day ${d.d === "9" || d.d === "10" ? "big" : ""}">
+      <div class="dh"><span class="dn ${d.d.length > 2 ? "w" : ""}">${esc(d.d)}</span><span>${esc(d.name)}<small>${/^\d+$/.test(d.d) ? "ذو الحجة" : ""}</small></span></div>
+      <ul>${d.acts.map(a => `<li>${esc(a)}</li>`).join("")}</ul>
+    </div>`).join("")}</div>
+  <div class="grid g2">
+    <div class="card"><span class="eyebrow">لا يصح الحج إلا بها</span><h3 style="font-size:20px;margin:2px 0 8px">أركان الحج الأربعة</h3>
+      <ol class="arkan" style="margin:0;padding-inline-start:20px">${HAJJ_PILLARS.arkan.map(a => `<li>${a}</li>`).join("")}</ol></div>
+    <div class="card"><span class="eyebrow">تُجبر بدم</span><h3 style="font-size:20px;margin:2px 0 8px">واجبات الحج</h3>
+      <ul style="margin:0;padding-inline-start:20px">${HAJJ_PILLARS.wajibat.map(a => `<li>${a}</li>`).join("")}</ul></div>
+  </div>
+  <p class="note" style="margin:0">${HAJJ_PILLARS.rule}</p>
+  ${head("أنواع النسك","الإفراد والقِران والتمتع","")}
+  <div class="tblw"><table>
+    <thead><tr><th>النسك</th><th>التلبية</th><th>الهدي</th><th>الطواف والسعي</th></tr></thead>
+    <tbody>
+      <tr><td><b>الإفراد</b></td><td>لبيك اللهم حجًّا</td><td>لا يلزم (تطوع)</td><td>طواف القدوم سنة، ثم الإفاضة والسعي</td></tr>
+      <tr><td><b>القِران</b></td><td>لبيك اللهم عمرة وحجًّا</td><td>يلزم، ومن لم يجد صام 3 + 7</td><td>طواف وسعي واحد (الحنفية: طوافان وسعيان)، ولا يتحلل قبل 8 ذي الحجة</td></tr>
+      <tr><td><b>التمتع</b></td><td>عمرة ثم يتحلل، ويحرم بالحج يوم التروية</td><td>يلزم، ومن لم يجد صام 3 + 7</td><td>طواف وسعي للعمرة، ثم طواف الإفاضة وسعي للحج</td></tr>
+    </tbody></table></div>
+  <div class="tblw"><table>
+    <thead><tr><th>المذهب</th><th>ترتيب الأنساك في الأفضلية</th></tr></thead>
+    <tbody><tr><td>المالكية</td><td>الإفراد ← القِران ← التمتع</td></tr><tr><td>الشافعية</td><td>الإفراد ← التمتع ← القِران</td></tr><tr><td>الحنفية</td><td>القِران ← التمتع ← الإفراد</td></tr><tr><td>الحنابلة</td><td>التمتع ← الإفراد ← القِران</td></tr></tbody>
+  </table></div>
+  <div class="card" style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
+    <span>تفاصيل أحكام عرفة ومزدلفة ومنى والرمي في الفتاوى.</span>
+    <button class="btn" data-go="fatwa" data-arg="arafa">افتح فتاوى المشاعر</button>
+  </div>`;
+};
+
+/* ---------- الفتاوى ---------- */
+function fatwaHTML(it, topic, term){
+  return `<details class="fq" ${term ? "open" : ""}>
+    <summary>${topic ? `<span class="pill">${esc(topic)}</span>` : ""}<b>${hl(it.q, term)}</b></summary>
+    <div class="body">
+      ${it.a ? `<p>${hl(it.a, term)}</p>` : ""}
+      ${it.r ? `<div class="madhab">${it.r.map(([m,x]) => `<div><b>${esc(m)}</b><span>${hl(x, term)}</span></div>`).join("")}</div>` : ""}
+      ${it.table ? `<div class="tblw"><table><thead><tr>${it.table.head.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${it.table.rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : ""}
+      ${it.note ? `<div class="note">${hl(it.note, term)}</div>` : ""}
+    </div></details>`;
+}
+RENDER.fatwa = (v, arg) => {
+  let sel = arg || store.get("idari-ftopic", "all");
+  if(sel !== "all" && !FATWA_TOPICS.some(t => t.id === sel)) sel = "all";
+  v.innerHTML = `
+  ${head("الفتاوى","الفتاوى والأحكام حسب الموضوع","من كتيّب الدورة وملفات الأسئلة، مع أقوال المذاهب حيث ذُكرت. اضغط على المسألة لعرض جوابها.")}
+  <div class="toolbar">
+    <div class="chips" id="ft"><button class="chip" data-t="all">الكل</button>${FATWA_TOPICS.map(t => `<button class="chip" data-t="${t.id}">${t.t} <span class="muted">${t.items.length}</span></button>`).join("")}</div>
+  </div>
+  <div id="fl" class="grid" style="gap:8px"></div>`;
+  const draw = () => {
+    v.querySelectorAll("#ft .chip").forEach(c => c.setAttribute("aria-pressed", c.dataset.t === sel));
+    const list = FATWA_TOPICS.filter(t => sel === "all" || t.id === sel);
+    $("#fl", v).innerHTML = list.map(t => (sel === "all" ? `<div class="ghead">${t.t}</div>` : "") + t.items.map(it => fatwaHTML(it)).join("")).join("");
+  };
+  $("#ft", v).onclick = e => { const c = e.target.closest(".chip"); if(!c) return; sel = c.dataset.t; store.set("idari-ftopic", sel); draw(); };
+  draw();
+};
+
+/* ---------- بنك الأسئلة ---------- */
+const shuffle = a => { a = a.slice(); for(let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; };
+const LET = ["أ","ب","ج","د","هـ"];
+function makeMCQ(item, pool){
+  if(item.mcq) return {q:item.q, o:item.mcq.o, c:item.mcq.c, note:item.mcq.note, d:item.d, src:item.g};
+  const same = pool.filter(x => x !== item && !x.mcq && x.a !== item.a);
+  const firstLine = s => s.split("\n")[0];
+  const pick = shuffle(same.filter(x => x.g === item.g)).concat(shuffle(same.filter(x => x.g !== item.g)));
+  const ds = [];
+  for(const x of pick){ const t = firstLine(x.a); if(!ds.includes(t) && t !== firstLine(item.a)) ds.push(t); if(ds.length === 3) break; }
+  const opts = shuffle([firstLine(item.a), ...ds]);
+  return {q:item.q, o:opts, c:opts.indexOf(firstLine(item.a)), full:item.a, src:item.g};
+}
+RENDER.bank = (v, arg) => {
+  const st = store.get("idari-bank", {topic:"all", mode:"review"});
+  if(arg) st.mode = arg;
+  v.innerHTML = `
+  ${head("بنك الأسئلة",`${TOTAL_Q} سؤالًا من ملفات الدورة`,"راجع الأسئلة بأجوبتها، أو تدرّب بالبطاقات، أو اختبر نفسك بأسئلة اختيار من متعدد.")}
+  <div class="qbar">
+    <div class="seg" id="mode"><button data-m="review">مراجعة</button><button data-m="flash">بطاقات</button><button data-m="quiz">اختبار</button></div>
+    <label><span class="small muted">الموضوع: </span><select id="topic"><option value="all">كل المواضيع (${TOTAL_Q})</option>${BANK.map(b => `<option value="${b.id}">${b.t} (${b.items.length})</option>`).join("")}</select></label>
+    <label class="small" id="hidew" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="hide"> أخفِ الأجوبة</label>
+  </div>
+  <div id="qb"></div>`;
+  const pool = () => st.topic === "all" ? BANK.flatMap(b => b.items) : BANK.find(b => b.id === st.topic).items;
+  $("#topic", v).value = st.topic;
+  $("#topic", v).onchange = e => { st.topic = e.target.value; save(); draw(); };
+  $("#mode", v).onclick = e => { const b = e.target.closest("button"); if(!b) return; st.mode = b.dataset.m; save(); draw(); };
+  $("#hide", v).onchange = draw;
+  const save = () => store.set("idari-bank", {topic:st.topic, mode:st.mode});
+  function draw(){
+    v.querySelectorAll("#mode button").forEach(b => b.setAttribute("aria-pressed", b.dataset.m === st.mode));
+    $("#hidew", v).hidden = st.mode !== "review";
+    const box = $("#qb", v), items = pool();
+    if(st.mode === "review") review(box, items);
+    else if(st.mode === "flash") flash(box, items);
+    else quiz(box, items);
+  }
+  function review(box, items){
+    const hide = $("#hide", v).checked; let last = null, n = 0;
+    box.innerHTML = `<div class="qa">${items.map(it => {
+      let h = ""; if(it.g !== last){ last = it.g; h = `<div class="ghead">${esc(it.g)}</div>`; }
+      n++;
+      return h + `<div class="qitem"><div class="q"><i>${n}</i><span>${esc(it.q)}${it.d ? ` <span class="pill" title="الإجابة غير معلّمة في الملف؛ استُنتجت من الكتيّب">مستنتجة</span>` : ""}</span></div><div class="a ${hide ? "hide" : ""}">${esc(it.a)}</div></div>`;
+    }).join("")}</div>`;
+    box.onclick = e => { const a = e.target.closest(".a.hide"); if(a) a.classList.remove("hide"); };
+  }
+  function flash(box, items){
+    let order = shuffle(items), i = 0, open = false;
+    const r = () => {
+      const it = order[i];
+      box.innerHTML = `<div class="grid" style="gap:12px">
+        <div class="navrow"><span class="muted small">بطاقة ${i+1} من ${order.length} · ${esc(it.g)}</span><button class="btn ghost small" id="sh" style="padding:4px 12px">خلط</button></div>
+        <div class="flash" id="card" role="button" tabindex="0">${open ? `<div><div class="muted small" style="margin-bottom:8px">${esc(it.q)}</div><div class="fa-t">${esc(it.a)}</div></div>` : `<div><div class="fq-t">${esc(it.q)}</div><small>اضغط لإظهار الجواب</small></div>`}</div>
+        <div class="navrow"><button class="btn ghost" id="pv" ${i === 0 ? "disabled" : ""}>السابق</button><button class="btn" id="nx">${i === order.length-1 ? "من البداية" : "التالي"}</button></div></div>`;
+      $("#card", box).onclick = () => { open = !open; r(); };
+      $("#card", box).onkeydown = e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); open = !open; r(); } };
+      $("#pv", box).onclick = () => { i--; open = false; r(); };
+      $("#nx", box).onclick = () => { i = (i+1) % order.length; open = false; r(); };
+      $("#sh", box).onclick = () => { order = shuffle(items); i = 0; open = false; r(); };
+    };
+    r();
+  }
+  function quiz(box, items){
+    const N = Math.min(10, items.length);
+    let qs = shuffle(items).slice(0, N).map(it => makeMCQ(it, items)), i = 0, score = 0, answered = false, wrong = [];
+    const r = () => {
+      if(i >= qs.length){
+        const p = Math.round(score / qs.length * 100);
+        box.innerHTML = `<div class="card grid" style="gap:14px">
+          <div class="score"><div class="ring" style="--p:${p}"><span>${p}%</span></div><div><b style="font-size:20px">${score} من ${qs.length} إجابات صحيحة</b><div class="muted">${p >= 80 ? "ممتاز، أنت جاهز لهذا الموضوع." : p >= 60 ? "جيد، راجع الأسئلة التي أخطأت فيها." : "تحتاج مراجعة هذا الموضوع مرة أخرى."}</div></div></div>
+          ${wrong.length ? `<div class="grid" style="gap:8px"><b>راجع هذه الأسئلة:</b>${wrong.map(w => `<div class="qitem"><div class="q"><span>${esc(w.q)}</span></div><div class="a">${esc(w.full || w.o[w.c])}</div></div>`).join("")}</div>` : ""}
+          <div><button class="btn" id="again">اختبار جديد</button></div></div>`;
+        $("#again", box).onclick = () => quiz(box, items); return;
+      }
+      const q = qs[i]; answered = false;
+      box.innerHTML = `<div class="card">
+        <div class="navrow"><span class="muted small">سؤال ${i+1} من ${qs.length} · ${esc(q.src)}</span><span class="pill g">${score} صحيحة</span></div>
+        <div class="progress" style="margin:10px 0 14px"><i style="width:${i/qs.length*100}%"></i></div>
+        <b style="font-size:18px">${esc(q.q)}</b>
+        <div class="opts">${q.o.map((o,k) => `<button class="opt" data-k="${k}"><b>${LET[k]}</b><span>${esc(o)}</span></button>`).join("")}</div>
+        <div id="fb" style="margin-top:12px"></div>
+        <div class="navrow" style="margin-top:12px"><span></span><button class="btn" id="nx" hidden>${i === qs.length-1 ? "النتيجة" : "التالي"}</button></div></div>`;
+      box.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+        if(answered) return; answered = true;
+        const k = +b.dataset.k, ok = k === q.c;
+        if(ok) score++; else wrong.push(q);
+        box.querySelectorAll(".opt").forEach(x => { x.disabled = true; if(+x.dataset.k === q.c) x.classList.add("right"); });
+        if(!ok) b.classList.add("wrong");
+        const extra = q.note || (q.full && q.full.includes("\n") ? q.full : "");
+        $("#fb", box).innerHTML = (ok ? `<b style="color:var(--ok)">إجابة صحيحة</b>` : `<b style="color:var(--bad)">الإجابة الصحيحة: ${LET[q.c]}</b>`) +
+          (extra ? `<div class="note" style="margin-top:6px;white-space:pre-line">${esc(extra)}</div>` : "") +
+          (q.d ? `<div class="small muted" style="margin-top:6px">هذه الإجابة غير معلّمة في ملف الدورة، واستُنتجت من نص الكتيّب.</div>` : "");
+        $("#nx", box).hidden = false; $("#nx", box).focus();
+      });
+      $("#nx", box).onclick = () => { i++; r(); };
+    };
+    r();
+  }
+  draw();
+};
+
+/* ---------- المعالم ---------- */
+RENDER.places = (v, arg) => {
+  let sel = arg || "makkah";
+  const T = [["makkah","مكة المكرمة"],["mashaer","المشاعر المقدسة"],["madinah","المدينة المنورة"],["route","الطريق من بلادنا"]];
+  v.innerHTML = `
+  ${head("المعالم","المعالم والطريق","من عروض أ. داهش أبو سرحان: معالم مكة والمدينة، والمشاعر، ومحطات الطريق التي يعرّف بها الإداري ركاب الباص.")}
+  <div class="chips" id="pt">${T.map(([id,t]) => `<button class="chip" data-t="${id}">${t}</button>`).join("")}</div>
+  <div id="pl"></div>`;
+  const draw = () => {
+    v.querySelectorAll("#pt .chip").forEach(c => c.setAttribute("aria-pressed", c.dataset.t === sel));
+    const box = $("#pl", v);
+    if(sel === "route"){
+      box.innerHTML = `<div class="grid g2" style="align-items:start">${LANDMARKS.route.map(l => `<div class="card leg"><h3>${l.sec}</h3><ul class="stops">${l.pts.map(p => `<li><b>${esc(p.n)}</b><p>${esc(p.d)}</p></li>`).join("")}</ul></div>`).join("")}</div>
+      <p class="note">الإداري الناجح يعرّف الركاب بالمعالم التاريخية في الطريق، ويحوّل ساعات الباص الطويلة إلى درس في السيرة.</p>`;
+    } else {
+      box.innerHTML = `<div class="lm">${LANDMARKS[sel].map(p => `<div class="card"><b>${esc(p.n)}</b><p>${esc(p.d)}</p></div>`).join("")}</div>`;
+      if(sel === "makkah") box.innerHTML += `<div class="card" style="margin-top:12px"><span class="eyebrow">أسماء مكة</span><p style="margin:4px 0 0">مكة، بكة، أم القرى، البلد الأمين، البلد الحرام. وتعدد الأسماء يدل على شرف مكة وعظم مكانتها. نشأت حين وضع إبراهيم عليه السلام زوجته هاجر وابنه إسماعيل في وادٍ غير ذي زرع، فتفجرت زمزم وتجمعت القبائل حول الماء فبدأ العمران.</p></div>`;
+      if(sel === "madinah") box.innerHTML += `<div class="card" style="margin-top:12px"><span class="eyebrow">آداب زيارة المسجد النبوي</span><p style="margin:4px 0 0">خفض الصوت، السكينة، عدم التمسح بالجدار، والوقوف بأدب. وزيارة قبره ﷺ مستحبة باتفاق المذاهب الأربعة، وتُزار مواقع أحد والشهداء للدعاء لهم والاعتبار بثباتهم.</p></div>`;
+    }
+  };
+  $("#pt", v).onclick = e => { const c = e.target.closest(".chip"); if(!c) return; sel = c.dataset.t; draw(); };
+  draw();
+};
+
+/* ---------- الأدعية ---------- */
+RENDER.duas = v => {
+  v.innerHTML = `
+  ${head("الأدعية","أدعية الرحلة والمناسك","مرتبة حسب ترتيب الرحلة. يمكنك نسخ أي دعاء وإرساله لمجموعة الواتس آب.")}
+  <div class="duas">${DUAS.map((d,i) => `<article class="card duac"><h3>${esc(d.t)}</h3><span class="when">${esc(d.when)}</span><p class="x" id="dua-${i}">${esc(d.x)}</p><button class="copy" data-i="${i}">نسخ</button></article>`).join("")}</div>`;
+  v.onclick = async e => {
+    const b = e.target.closest(".copy"); if(!b) return;
+    const d = DUAS[+b.dataset.i];
+    try{ await navigator.clipboard.writeText(d.t + "\n" + d.x); b.textContent = "تم النسخ"; }
+    catch(err){ const r = document.createRange(); r.selectNodeContents($("#dua-" + b.dataset.i)); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "حدّد النص وانسخه"; }
+    setTimeout(() => b.textContent = "نسخ", 2000);
+  };
+};
+
+/* ---------- البحث ---------- */
+RENDER.search = (v, term) => {
+  const n = norm(term || "").trim();
+  const m = s => norm(s).includes(n);
+  const fr = [], qr = [], lr = [];
+  FATWA_TOPICS.forEach(t => t.items.forEach(it => { if(m(it.q) || m(it.a || "") || (it.r || []).some(r => m(r.join(" "))) || m(it.note || "") || (it.table && m(JSON.stringify(it.table.rows)))) fr.push([it, t.t]); }));
+  BANK.forEach(b => b.items.forEach(it => { if(m(it.q) || m(it.a)) qr.push([it, b.t]); }));
+  [...LANDMARKS.makkah, ...LANDMARKS.mashaer, ...LANDMARKS.madinah, ...LANDMARKS.route.flatMap(l => l.pts)].forEach(p => { if(m(p.n) || m(p.d)) lr.push(p); });
+  const total = fr.length + qr.length + lr.length;
+  v.innerHTML = `
+  ${head("نتائج البحث", `«${esc(term)}»`, total ? `${total} نتيجة: ${fr.length} فتوى، ${qr.length} سؤال، ${lr.length} معلم.` : "")}
+  ${!total ? `<div class="card empty">لا توجد نتائج. جرّب كلمة أقصر مثل: ميقات، حائض، قصر، فدية، دبوس، صندل.</div>` : ""}
+  ${fr.length ? `<div class="ghead">الفتاوى</div><div class="grid" style="gap:8px">${fr.map(([it,t]) => fatwaHTML(it, t, term)).join("")}</div>` : ""}
+  ${qr.length ? `<div class="ghead">بنك الأسئلة</div><div class="qa">${qr.map(([it,t]) => `<div class="qitem"><div class="q"><span>${hl(it.q, term)} <span class="pill">${esc(t)}</span></span></div><div class="a">${hl(it.a, term)}</div></div>`).join("")}</div>` : ""}
+  ${lr.length ? `<div class="ghead">المعالم</div><div class="lm">${lr.map(p => `<div class="card"><b>${hl(p.n, term)}</b><p>${hl(p.d, term)}</p></div>`).join("")}</div>` : ""}`;
+};
+let sT;
+$("#q").addEventListener("input", e => {
+  clearTimeout(sT);
+  const t = e.target.value;
+  sT = setTimeout(() => {
+    if(norm(t).trim().length < 2){ if(current === "search") go(store.get("idari-last", "home")); return; }
+    if(current !== "search") store.set("idari-last", current);
+    current = "search";
+    [...tabs.children].forEach(b => b.setAttribute("aria-selected", "false"));
+    main.innerHTML = ""; const v = document.createElement("section"); v.className = "view"; main.appendChild(v);
+    RENDER.search(v, t);
+  }, 180);
+});
+
+/* ---------- البداية ---------- */
+const h0 = (location.hash || "").slice(1);
+go(RENDER[h0] && h0 !== "search" ? h0 : "home");
+window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if(RENDER[h] && h !== current) go(h); });
+
+</script>
+</body>
+</html>
