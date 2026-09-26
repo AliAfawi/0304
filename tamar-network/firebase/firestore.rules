@@ -1,0 +1,54 @@
+rules_version = '2';
+// רשת תמר – חוקי אבטחה ל-Firestore.
+// רק המנהל (מייל מאומת) כותב את תוכן האתר וקורא פניות. מבקרים יכולים רק לקרוא את התוכן ולשלוח טופס.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email == 'aliafawi116@gmail.com'
+        && request.auth.token.email_verified == true;
+    }
+
+    // Published site content: site/meta + site/part0..part39
+    match /site/{docId} {
+      allow read: if true;
+      allow write: if isAdmin() && (docId == 'meta' || docId.matches('part[0-9]{1,2}'));
+    }
+
+    // Form submissions: anyone may create one well-formed entry; only the admin reads or changes them.
+    match /inbox/{id} {
+      allow read, update, delete: if isAdmin();
+      allow create: if validSubmission(request.resource.data);
+    }
+
+    function str(m, k, n) { return !(k in m) || (m[k] is string && m[k].size() <= n); }
+
+    function validSubmission(r) {
+      return r.keys().hasOnly(['type', 'lang', 'data', 'status', 'createdAt'])
+        && r.type in ['enroll', 'job', 'donate', 'contact', 'join', 'newsletter']
+        && r.lang in ['he', 'ar', 'en']
+        && r.status == 'new'
+        && r.createdAt == request.time
+        && r.data is map
+        && r.data.keys().hasOnly(['parent', 'phone', 'email', 'child', 'grade', 'school', 'interest', 'notes',
+                                  'job', 'name', 'message', 'cv', 'amount', 'note', 'subject', 'org', 'town', 'role'])
+        && str(r.data, 'parent', 200) && str(r.data, 'phone', 20) && str(r.data, 'email', 200)
+        && str(r.data, 'child', 200) && str(r.data, 'grade', 20) && str(r.data, 'school', 200)
+        && str(r.data, 'interest', 100) && str(r.data, 'notes', 2000) && str(r.data, 'job', 200)
+        && str(r.data, 'name', 200) && str(r.data, 'message', 2000) && str(r.data, 'amount', 20)
+        && str(r.data, 'note', 2000) && str(r.data, 'subject', 50) && str(r.data, 'org', 200)
+        && str(r.data, 'town', 100) && str(r.data, 'role', 100)
+        && (!('cv' in r.data) || (r.data.cv is map
+              && r.data.cv.keys().hasOnly(['name', 'type', 'data'])
+              && r.data.cv.name is string && r.data.cv.name.size() <= 200
+              && r.data.cv.type is string && r.data.cv.type.size() <= 100
+              && r.data.cv.data is string && r.data.cv.data.size() <= 900000));
+    }
+
+    // Everything else is closed.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
