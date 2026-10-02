@@ -1,0 +1,76 @@
+# Nightly encrypted backup of the clinic database and X-ray files
+# to a second provider (Backblaze B2, S3-compatible) with Object Lock,
+# so a backup can't be deleted or changed, not even by someone who has the passwords.
+#
+# Repository secrets needed (Settings → Secrets and variables → Actions):
+#   SUPABASE_DB_URL      Supabase → Project Settings → Database → Connection string (URI, session pooler)
+#   BACKUP_PASSPHRASE    a long random sentence; keep a printed copy in a safe place
+#   B2_KEY_ID, B2_APP_KEY, B2_ENDPOINT (e.g. https://s3.eu-central-003.backblazeb2.com), B2_BUCKET
+#   SUPABASE_S3_ENDPOINT, SUPABASE_S3_KEY_ID, SUPABASE_S3_SECRET   Supabase → Storage → S3 access keys
+name: Nightly backup
+
+on:
+  schedule:
+    - cron: "30 1 * * *"   # 01:30 UTC, about 04:30 in Israel
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Install PostgreSQL 17 client and rclone
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-common rclone
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get install -y -qq postgresql-client-17
+
+      - name: Dump the database
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          /usr/lib/postgresql/17/bin/pg_dump "$DB_URL" --format=custom --no-owner --no-privileges \
+            --schema=public -f clinic.dump
+          # fail the run if the dump is unreadable
+          /usr/lib/postgresql/17/bin/pg_restore --list clinic.dump > /dev/null
+          ls -lh clinic.dump
+
+      - name: Encrypt and upload the database dump
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.B2_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_APP_KEY }}
+          B2_ENDPOINT: ${{ secrets.B2_ENDPOINT }}
+          B2_BUCKET: ${{ secrets.B2_BUCKET }}
+        run: |
+          set -euo pipefail
+          STAMP=$(date -u +%Y-%m-%dT%H%MZ)
+          gpg --batch --yes --pinentry-mode loopback --symmetric --cipher-algo AES256 \
+              --passphrase "$BACKUP_PASSPHRASE" -o clinic.dump.gpg clinic.dump
+          aws s3 cp clinic.dump.gpg "s3://$B2_BUCKET/database/$STAMP.dump.gpg" \
+              --endpoint-url "$B2_ENDPOINT" --only-show-errors
+          rm -f clinic.dump clinic.dump.gpg
+          echo "Database backup stored as database/$STAMP.dump.gpg"
+
+      - name: Copy new X-ray files
+        env:
+          RCLONE_CONFIG_SRC_TYPE: s3
+          RCLONE_CONFIG_SRC_PROVIDER: Other
+          RCLONE_CONFIG_SRC_ENDPOINT: ${{ secrets.SUPABASE_S3_ENDPOINT }}
+          RCLONE_CONFIG_SRC_ACCESS_KEY_ID: ${{ secrets.SUPABASE_S3_KEY_ID }}
+          RCLONE_CONFIG_SRC_SECRET_ACCESS_KEY: ${{ secrets.SUPABASE_S3_SECRET }}
+          RCLONE_CONFIG_DST_TYPE: s3
+          RCLONE_CONFIG_DST_PROVIDER: Other
+          RCLONE_CONFIG_DST_ENDPOINT: ${{ secrets.B2_ENDPOINT }}
+          RCLONE_CONFIG_DST_ACCESS_KEY_ID: ${{ secrets.B2_KEY_ID }}
+          RCLONE_CONFIG_DST_SECRET_ACCESS_KEY: ${{ secrets.B2_APP_KEY }}
+          B2_BUCKET: ${{ secrets.B2_BUCKET }}
+        run: |
+          set -euo pipefail
+          # copy only adds files; nothing already in the backup is ever deleted or overwritten
+          rclone copy src:patient-files "dst:$B2_BUCKET/files" --immutable --transfers 8 --stats-one-line -v
