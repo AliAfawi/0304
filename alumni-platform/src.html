@@ -151,6 +151,16 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); ou
 .links a::before { counter-increment: l; content: counter(l); color: var(--accent); font: 800 17px/1 var(--f-display); min-width: 1.2em; }
 .links a::after { content: "↖"; margin-inline-start: auto; color: var(--muted); }
 
+.req { margin: 0; padding-inline-start: 1.2em; display: grid; gap: 6px; }
+.req li { overflow-wrap: anywhere; }
+h4 { margin: 0; font: 700 15px/1.3 var(--f-display); color: var(--accent); }
+.inst-title { font-size: 19px; }
+.about { margin: 0; }
+.fac { display: grid; gap: 6px; }
+.fac-name { font-size: 13px; font-weight: 700; color: var(--muted); }
+.tag { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 13px; background: var(--surface-2); border: 1px solid var(--line); }
+.tag.hit { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+
 /* tools */
 .tool-cards { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); }
 .tool-card { appearance: none; text-align: start; cursor: pointer; background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--accent); padding: 14px 16px; box-shadow: var(--shadow); display: grid; gap: 4px; color: var(--ink); }
@@ -219,72 +229,7 @@ footer { border-top: 1px solid var(--line); padding-block: 18px; color: var(--mu
 // ---------- reference data ----------
 const REGIONS = ["الجنوب", "المركز", "الشمال", "القدس", "المثلث", "عن بُعد"];
 const TYPES = { u: "جامعة", c: "كلية", e: "معهد هندسائيين" };
-// [Arabic name, Hebrew name, type, region, official domain or "" when we only offer a search]
-const INST = [
-  ["جامعة بن غوريون في النقب", "אוניברסיטת בן-גוריון בנגב", "u", "الجنوب", "bgu.ac.il"],
-  ["الجامعة العبرية في القدس", "האוניברסיטה העברית", "u", "القدس", "huji.ac.il"],
-  ["جامعة تل أبيب", "אוניברסיטת תל אביב", "u", "المركز", "tau.ac.il"],
-  ["التخنيون", "הטכניון – מכון טכנולוגי לישראל", "u", "الشمال", "technion.ac.il"],
-  ["جامعة حيفا", "אוניברסיטת חיפה", "u", "الشمال", "haifa.ac.il"],
-  ["جامعة بار إيلان", "אוניברסיטת בר-אילן", "u", "المركز", "biu.ac.il"],
-  ["جامعة أريئيل", "אוניברסיטת אריאל", "u", "المركز", "ariel.ac.il"],
-  ["جامعة رايخمان", "אוניברסיטת רייכמן", "u", "المركز", "runi.ac.il"],
-  ["الجامعة المفتوحة", "האוניברסיטה הפתוחה", "u", "عن بُعد", "openu.ac.il"],
-  ["معهد وايزمن للعلوم (ألقاب متقدمة)", "מכון ויצמן למדע", "u", "المركز", "weizmann.ac.il"],
-
-  ["كلية سبير", "המכללה האקדמית ספיר", "c", "الجنوب", "sapir.ac.il"],
-  ["كلية كاي للتربية", "המכללה האקדמית לחינוך ע\"ש קיי", "c", "الجنوب", "kaye.ac.il"],
-  ["كلية أحفا", "המכללה האקדמית אחוה", "c", "الجنوب", "achva.ac.il"],
-  ["كلية أشكلون", "המכללה האקדמית אשקלון", "c", "الجنوب", "aac.ac.il"],
-  ["كلية سامي شمعون للهندسة SCE", "המכללה האקדמית להנדסה סמי שמעון", "c", "الجنوب", "sce.ac.il"],
-  ["كلية أفيكا للهندسة", "אפקה – המכללה האקדמית להנדסה", "c", "المركز", "afeka.ac.il"],
-  ["معهد حولون للتكنولوجيا HIT", "מכון טכנולוגי חולון", "c", "المركز", "hit.ac.il"],
-  ["شنكار للهندسة والتصميم", "שנקר – הנדסה. עיצוב. אמנות", "c", "المركز", "shenkar.ac.il"],
-  ["كلية أونو", "הקריה האקדמית אונו", "c", "المركز", "ono.ac.il"],
-  ["كلية الإدارة", "המסלול האקדמי המכללה למינהל", "c", "المركز", "colman.ac.il"],
-  ["كلية روبين", "המרכז האקדמי רופין", "c", "المركز", "ruppin.ac.il"],
-  ["كلية نتانيا", "המכללה האקדמית נתניה", "c", "المركز", "netanya.ac.il"],
-  ["كلية بيت بيرل", "בית ברל", "c", "المركز", "beitberl.ac.il"],
-  ["كلية تل أبيب-يافا", "המכללה האקדמית תל אביב-יפו", "c", "المركز", "mta.ac.il"],
-  ["مركز بيرس الأكاديمي", "המרכז האקדמי פרס", "c", "المركز", "pac.ac.il"],
-  ["سمينار هكيبوتسيم", "סמינר הקיבוצים", "c", "المركز", "smkb.ac.il"],
-  ["مركز ليفنسكي-فينغيت", "המרכז האקדמי לוינסקי-וינגייט", "c", "المركز", ""],
-  ["كلية القاسمي", "אל-קאסמי – מכללה אקדמית לחינוך", "c", "المثلث", "qsm.ac.il"],
-  ["بتسلئيل للفنون والتصميم", "בצלאל אקדמיה לאמנות ועיצוב", "c", "القدس", "bezalel.ac.il"],
-  ["كلية عزرئيلي للهندسة", "עזריאלי – המכללה האקדמית להנדסה ירושלים", "c", "القدس", "jce.ac.il"],
-  ["المركز الأكاديمي لِف JCT", "המרכז האקדמי לב", "c", "القدس", "jct.ac.il"],
-  ["كلية هداسا", "הדסה האקדמית", "c", "القدس", "hac.ac.il"],
-  ["كلية دافيد يلين", "המכללה האקדמית לחינוך דוד ילין", "c", "القدس", "dyellin.ac.il"],
-  ["كلية شاليم", "המרכז האקדמי שלם", "c", "القدس", "shalem.ac.il"],
-  ["كلية كنيرت", "המכללה האקדמית כנרת", "c", "الشمال", "kinneret.ac.il"],
-  ["كلية تل حاي", "המכללה האקדמית תל-חי", "c", "الشمال", "telhai.ac.il"],
-  ["كلية الجليل الغربي", "המכללה האקדמית גליל מערבי", "c", "الشمال", "wgalil.ac.il"],
-  ["كلية عيمك يزراعيل", "המכללה האקדמית עמק יזרעאל", "c", "الشمال", "yvc.ac.il"],
-  ["كلية أورط براودة للهندسة", "המכללה האקדמית להנדסה אורט בראודה", "c", "الشمال", "braude.ac.il"],
-  ["كلية أورانيم", "אורנים – המכללה האקדמית לחינוך", "c", "الشمال", "oranim.ac.il"],
-  ["كلية صفد", "המכללה האקדמית צפת", "c", "الشمال", "zefat.ac.il"],
-  ["كلية أوهالو", "אוהלו – מכללה אקדמית", "c", "الشمال", "ohalo.ac.il"],
-  ["كلية غوردون", "גורדון – המכללה האקדמית לחינוך", "c", "الشمال", "gordon.ac.il"],
-  ["الكلية الأكاديمية العربية للتربية", "המכללה האקדמית הערבית לחינוך בישראל – חיפה", "c", "الشمال", "arabcol.ac.il"],
-  ["كلية سخنين", "המכללה האקדמית לחינוך סכנין", "c", "الشمال", "sakhnin.ac.il"],
-  ["كلية شأنان", "שאנן – המכללה האקדמית הדתית לחינוך", "c", "الشمال", "shaanan.ac.il"],
-
-  ["قسم الهندسائيين – كلية سبير", "בית הספר להנדסאים – ספיר", "e", "الجنوب", ""],
-  ["الكلية التكنولوجية بئر السبع", "המכללה הטכנולוגית באר שבע", "e", "الجنوب", ""],
-  ["أورط براودة – هندسائيين", "אורט בראודה – הנדסאים", "e", "الشمال", ""],
-  ["أورط هرملين نتانيا", "אורט הרמלין נתניה", "e", "المركز", ""],
-  ["أورط سينغالوفسكي تل أبيب", "אורט סינגאלובסקי", "e", "المركز", ""],
-  ["الكلية التكنولوجية لسلاح الجو", "המכללה הטכנולוגית של חיל האוויר", "e", "الشمال", ""],
-  ["المعهد الحكومي للهندسائيين (ماهط)", "מה\"ט – המכון הממשלתי להכשרה בטכנולוגיה ובמדע", "e", "عن بُعد", ""],
-];
-const LINK_KINDS = [
-  ["الموقع الرسمي", ""],
-  ["التسجيل والقبول", "הרשמה וקבלה"],
-  ["معلومات للطلاب", "מידע לסטודנטים"],
-  ["المنح والمساعدة الماليّة", "מלגות וסיוע כלכלי"],
-  ["مواعيد وتقويم أكاديمي", "לוח שנה אקדמי"],
-  ["السكن الجامعي", "מעונות סטודנטים"],
-];
+/*INSTITUTIONS*/
 const SUBJECTS = ["رياضيات", "إنجليزي", "عبري", "عربي", "فيزياء", "كيمياء", "بيولوجيا", "حاسوب", "تاريخ", "مدنيات", "دين", "بسيخومتري", "مساقات جامعية", "أخرى"];
 const KINDS = ["ملخص", "امتحان سابق", "حلول", "فيديو شرح", "أسئلة تدريب", "أخرى"];
 const POST_CATS = ["سؤال", "طلب مساعدة", "فرصة عمل/تدريب", "منحة", "إعلان", "تجربة ونصيحة"];
@@ -416,12 +361,8 @@ function lsSet(k, v) { try { localStorage.setItem("gp:" + k, JSON.stringify(v));
 let toastTimer;
 function toast(t) { const el = $("#toast"); el.textContent = t; el.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => (el.hidden = true), 2600); }
 function opt(v, label, sel) { return h("option", { value: v, selected: sel ? true : null, text: label ?? v }); }
-const instUrl = (i, k) => {
-  const [ar, he, , , dom] = i;
-  if (k === 0) return dom ? "https://www." + dom : "https://www.google.com/search?q=" + encodeURIComponent(he);
-  const q = (dom ? "site:" + dom + " " : he + " ") + LINK_KINDS[k][1];
-  return "https://www.google.com/search?q=" + encodeURIComponent(q);
-};
+const regUrl = (i) => i.reg || "https://www.google.com/search?q=" + encodeURIComponent((i.dom ? "site:" + i.dom + " " : i.he + " ") + "הרשמה");
+const instMatches = (i, q) => !q || i.ar.includes(q) || i.he.includes(q) || Object.values(i.majors).some((list) => list.some((m) => m.includes(q)));
 
 // ---------- data layer: shared db when the viewer grants it, this browser otherwise ----------
 const S = {
@@ -571,7 +512,7 @@ function openProfile() {
     h("label", { class: "check full" }, h("input", { type: "checkbox", id: "pf-mentor", checked: p.mentor ? true : null }), "متاح/ة أساعد وأرشد طلاب المدرسة"),
     h("div", { class: "full row" }, h("button", { class: "btn blue", type: "submit", text: "احفظ ملفي" }), h("span", { class: "muted small", text: "لا تكتب رقم هاتف إذا ما بدك يظهر لكل الأعضاء." })),
   );
-  f.append(h("datalist", { id: "inst-names" }, INST.map((i) => opt(i[0]))));
+  f.append(h("datalist", { id: "inst-names" }, INST.map((i) => opt(i.ar))));
   f.addEventListener("submit", async (e) => {
     e.preventDefault();
     const data = {
@@ -591,7 +532,7 @@ $("#me-btn").addEventListener("click", openProfile);
 const views = {};
 
 views.home = () => {
-  const counts = { u: 0, c: 0, e: 0 }; INST.forEach((i) => counts[i[2]]++);
+  const counts = { u: 0, c: 0, e: 0 }; INST.forEach((i) => counts[i.t]++);
   const sections = [
     ["uni", "قسم جامعة", "كل الجامعات والكليات ومعاهد الهندسائيين، مع الروابط اللي بتحتاجها."],
     ["tools", "4 أدوات للجامعة", "حاسبة التكلفة، معدّل البجروت، اختبار الميول، والقاموس."],
@@ -628,26 +569,29 @@ views.home = () => {
 };
 
 // universities
-const uniState = { type: "all", region: "all", q: "" };
+const uniState = { type: "all", region: "all", q: "", layout: "discs" };
 views.uni = () => {
   const typeChips = [["all", "الكل"], ["u", "جامعات"], ["c", "كليات"], ["e", "هندسائيين"]];
   const v = h("div", { class: "view" },
-    head("قسم «جامعة»", "اكبس على المؤسسة وفوت عالمعلومات", "كل الجامعات والكليات ومعاهد الهندسائيين بمكان واحد، بالعربي، ومع الروابط الرسمية اللي بتدوّر عليها."),
+    head("قسم «جامعة»", "اكبس على المؤسسة وفوت عالمعلومات", "كل جامعة وكلية ومعهد هندسائيين: نبذة، شروط القبول، التخصصات، ورابط التسجيل. ابحث باسم المؤسسة أو باسم التخصص."),
     h("div", { class: "section" },
-      h("div", { class: "chips", id: "uni-type" }, typeChips.map(([k, l]) => h("button", { class: "chip", type: "button", "aria-pressed": String(uniState.type === k), onclick: () => { uniState.type = k; go("uni"); }, text: l }))),
+      h("div", { class: "spread" },
+        h("div", { class: "chips" }, typeChips.map(([k, l]) => h("button", { class: "chip", type: "button", "aria-pressed": String(uniState.type === k), onclick: () => { uniState.type = k; go("uni"); }, text: l }))),
+        h("div", { class: "chips" }, [["discs", "شعارات"], ["full", "كل التفاصيل"]].map(([k, l]) => h("button", { class: "chip", type: "button", "aria-pressed": String(uniState.layout === k), onclick: () => { uniState.layout = k; go("uni"); }, text: l })))),
       h("div", { class: "form" },
-        h("label", { class: "field" }, h("span", { text: "بحث بالعربي أو العبري" }), h("input", { type: "search", id: "uni-q", value: uniState.q, placeholder: "مثال: سبير، בן גוריון" })),
+        h("label", { class: "field" }, h("span", { text: "بحث بالمؤسسة أو التخصص" }), h("input", { type: "search", id: "uni-q", value: uniState.q, placeholder: "مثال: تمريض، سبير، בן גוריון" })),
         h("label", { class: "field" }, h("span", { text: "المنطقة" }), h("select", { id: "uni-region" }, opt("all", "كل المناطق", uniState.region === "all"), REGIONS.map((r) => opt(r, r, uniState.region === r))))),
-      h("div", { class: "inst-grid", id: "uni-grid" }),
+      h("p", { class: "muted small", id: "uni-count" }),
+      h("div", { id: "uni-grid" }),
     ),
     h("section", { class: "section" },
-      eyebrow("جوّا كلّ مؤسسة"),
-      h("h2", { text: "الروابط اللي بتدوّر عليها" }),
-      h("ol", { class: "links", style: "list-style:none;margin:0;padding:0", id: "link-preview" }, LINK_KINDS.map(([k]) => h("li", null, h("a", { href: "#uni", onclick: (e) => { e.preventDefault(); toast("اختر مؤسسة من الأعلى"); }, text: k })))),
-      h("p", { class: "muted small", text: "الموقع الرسمي بيفتح مباشرة. باقي الروابط بتفتح بحث داخل موقع المؤسسة نفسه، عشان توصل للصفحة المحدّثة حتى لو غيّروا عنوانها." }),
+      eyebrow("قبل ما تسجّل"),
+      h("h2", { text: "شروط القبول العامة" }),
+      h("div", { class: "grid" }, Object.entries(GENERAL_REQ).map(([t, list]) => h("div", { class: "card stack" }, h("h3", { text: { u: "الجامعات", c: "الكليات", e: "معاهد الهندسائيين" }[t] }), reqList(list)))),
+      h("p", { class: "muted small", text: "الحدود الدنيا (سيخم، معدّل، علامات) بتتغير كل سنة. الأرقام هون مأخوذة من مواقع المؤسسات بتشرين الأول 2026، وبعضها من صفحات أقدم. الرقم الرسمي دايمًا بصفحة التخصص بموقع المؤسسة." }),
     ),
     h("section", { class: "section" },
-      h("h2", { text: "مؤسسة ناقصة؟" }),
+      h("h2", { text: "مؤسسة ناقصة أو معلومة غلط؟" }),
       suggestForm(),
     ),
   );
@@ -658,29 +602,41 @@ views.uni = () => {
   });
   return v;
 };
+function reqList(list) { return h("ul", { class: "req" }, list.map((x) => h("li", { text: x }))); }
 function drawUni() {
   const g = $("#uni-grid"); if (!g) return;
   const q = uniState.q.trim();
-  const list = INST.filter((i) => (uniState.type === "all" || i[2] === uniState.type) && (uniState.region === "all" || i[3] === uniState.region) && (!q || i[0].includes(q) || i[1].includes(q)));
-  if (!list.length) { g.replaceChildren(empty("ما في نتائج", "جرّب كلمة ثانية أو منطقة ثانية.")); return; }
+  const list = INST.filter((i) => (uniState.type === "all" || i.t === uniState.type) && (uniState.region === "all" || i.r === uniState.region) && instMatches(i, q));
+  $("#uni-count").textContent = `${list.length} مؤسسة` + (q ? ` فيها «${q}»` : "");
+  if (!list.length) { g.className = ""; g.replaceChildren(empty("ما في نتائج", "جرّب كلمة ثانية أو منطقة ثانية.")); return; }
+  if (uniState.layout === "full") { g.className = "stack"; g.replaceChildren(...list.map((i) => h("article", { class: "card stack" }, instDetails(i, q)))); return; }
+  g.className = "inst-grid";
   g.replaceChildren(...list.map((i) => {
-    const short = i[0].replace(/^(جامعة|كلية|الجامعة|معهد|المركز الأكاديمي|مركز|الكلية)\s+/, "").split(" ").slice(0, 2).join(" ");
+    const short = i.ar.replace(/^(جامعة|كلية|الجامعة|معهد|المركز الأكاديمي|مركز|الكلية|أكاديمية|هندسائيين –|مدرسة الهندسائيين في)\s+/, "").split(" ").slice(0, 2).join(" ");
     return h("button", { class: "inst", type: "button", onclick: () => openInst(i) },
-      h("span", { class: "disc", style: `color:hsl(${hue(i[1])} 55% 40%)` }, short),
-      h("small", { text: i[0] }));
+      h("span", { class: "disc", style: `color:hsl(${hue(i.he)} 55% 40%)` }, short),
+      h("small", { text: i.ar }));
   }));
 }
-function openInst(i) {
-  const here = Object.values(S.alumni).filter((a) => a.place && (a.place.includes(i[0]) || i[0].includes(a.place) || a.place.includes(i[1])));
-  modal(i[0], h("div", { class: "stack" },
-    h("div", { class: "row" }, h("span", { class: "pill", text: TYPES[i[2]] }), h("span", { class: "pill grey", text: i[3] }), h("span", { class: "he muted", text: i[1] })),
-    h("ol", { class: "links", style: "list-style:none;margin:0;padding:0" }, LINK_KINDS.map(([k], idx) => h("li", null, h("a", { href: instUrl(i, idx), target: "_blank", rel: "noopener", text: k })))),
-    !i[4] ? h("p", { class: "muted small", text: "ما أضفنا عنوان الموقع لهذه المؤسسة بعد، فالرابط الأول بيفتح بحث باسمها." }) : null,
-    h("h3", { text: `خريجونا هناك (${here.length})` }),
-    here.length ? h("div", { class: "stack" }, here.map((a) => h("div", { class: "row" }, avatar(a.name, a.uid), h("span", { class: "who", text: a.name }), h("span", { class: "muted small", text: `فوج ${a.year}${a.field ? " · " + a.field : ""}` }), a.mentor ? h("span", { class: "pill good", text: "متاح للمساعدة" }) : null)))
-      : h("p", { class: "muted", text: "ما حدا من الخريجين كتب هالمؤسسة بملفه لسا. إذا بتدرس هون، أضفها لملفك." }),
-  ));
+function instDetails(i, q) {
+  const here = Object.values(S.alumni).filter((a) => a.place && (a.place.includes(i.ar) || i.ar.includes(a.place) || a.place.includes(i.he)));
+  const majorCount = Object.values(i.majors).reduce((n, l) => n + l.length, 0);
+  return [
+    h("div", { class: "spread" }, h("h3", { class: "inst-title", text: i.ar }),
+      h("a", { class: "btn blue sm", href: regUrl(i), target: "_blank", rel: "noopener", text: i.reg ? (i.regLabel || "رابط التسجيل") : "ابحث عن صفحة التسجيل" })),
+    h("div", { class: "row" }, h("span", { class: "pill", text: TYPES[i.t] }), h("span", { class: "pill grey", text: i.r }), h("span", { class: "he muted small", text: i.he })),
+    h("p", { class: "about", text: i.about }),
+    h("div", { class: "stack", style: "gap:6px" }, h("h4", { text: "شروط القبول" }),
+      i.req.length ? reqList(i.req) : h("p", { class: "muted small", text: "ما لقينا شروط خاصة منشورة. الشروط العامة للهندسائيين تحت الصفحة بتنطبق." })),
+    h("div", { class: "stack", style: "gap:6px" }, h("h4", { text: `التخصصات (${majorCount})` }),
+      ...Object.entries(i.majors).map(([fac, list]) => h("div", { class: "fac" }, h("span", { class: "fac-name", text: fac }),
+        h("div", { class: "chips" }, list.map((m) => h("span", { class: "tag" + (q && m.includes(q) ? " hit" : ""), text: m })))))),
+    !i.reg ? h("p", { class: "muted small", text: "ما لقينا صفحة تسجيل رسمية مؤكدة، فالزر بيفتح بحث Google عن صفحة التسجيل." }) : null,
+    here.length ? h("div", { class: "stack", style: "gap:6px" }, h("h4", { text: `خريجونا هناك (${here.length})` }),
+      here.map((a) => h("div", { class: "row" }, avatar(a.name, a.uid), h("span", { class: "who", text: a.name }), h("span", { class: "muted small", text: `فوج ${a.year}${a.field ? " · " + a.field : ""}` }), a.mentor ? h("span", { class: "pill good", text: "متاح للمساعدة" }) : null))) : null,
+  ];
 }
+function openInst(i) { modal(TYPES[i.t], h("div", { class: "stack" }, instDetails(i, uniState.q.trim()))); }
 function suggestForm() {
   const f = h("form", { class: "form" },
     h("label", { class: "field" }, h("span", { text: "اسم المؤسسة" }), h("input", { type: "text", id: "sg-name", required: true, maxlength: 80 })),
