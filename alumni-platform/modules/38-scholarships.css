@@ -1,0 +1,26 @@
+/* ===== 38: scholarships ===== */
+.sch-sources { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); }
+.sch-source { align-content: start; border-top: 3px solid var(--accent); }
+.sch-source p { white-space: normal; }
+.sch-card { align-content: start; }
+.sch-hot { border-color: color-mix(in srgb, var(--warn) 55%, var(--line)); }
+.sch-soon { font-variant-numeric: tabular-nums; }
+.sch-dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 12px; margin: 0; font-size: 14px; }
+.sch-dl dt { color: var(--muted); font-weight: 600; }
+.sch-dl dd { margin: 0; overflow-wrap: anywhere; }
+.sch-workshop h3 { margin-bottom: 2px; }
+.sch-workshop p { margin: 0; }
+.sch-home { flex-wrap: nowrap; }
+.sch-home b { display: block; overflow-wrap: anywhere; }
+.sch-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; counter-reset: st; max-width: 72ch; }
+.sch-steps > li { position: relative; padding-inline-start: 58px; counter-increment: st; }
+.sch-steps > li::before { content: counter(st); position: absolute; inset-inline-start: 14px; top: 14px; width: 32px; height: 32px; border-radius: 50%;
+  background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font: 800 16px/1 var(--f-display); }
+.sch-steps p { margin: 0; }
+.sch-letter summary { cursor: pointer; }
+.sch-pre { white-space: pre-wrap; overflow-wrap: anywhere; font: 15px/1.85 var(--f-body); background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; margin: 12px 0; max-width: 70ch; }
+.sch-cohorts { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+.sch-cohorts .stat b { font-size: 34px; }
+.sch-docs { display: grid; gap: 6px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); margin-top: 8px; }
+.sch-docs .check { font-weight: 500; font-size: 14px; }
+input[type="date"] { width: 100%; border: 1px solid var(--line); background: var(--surface-2); border-radius: var(--r); padding: 8px 11px; min-width: 0; }

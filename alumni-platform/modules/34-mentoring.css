@@ -1,0 +1,14 @@
+/* mentoring */
+.mt-pair { border-top: 4px solid var(--good); }
+.mt-stars { color: var(--warn); font-weight: 700; letter-spacing: 1px; }
+.mt-stars .num { color: var(--muted); letter-spacing: 0; }
+.mt-slots { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 112px), 1fr)); }
+.mt-slots-wide { grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); }
+.mt-slots > .empty { grid-column: 1 / -1; }
+.mt-slot { appearance: none; display: grid; gap: 2px; text-align: center; padding: 8px 6px; border-radius: var(--r); border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--line)); background: var(--accent-soft); color: var(--ink); cursor: pointer; min-width: 0; }
+.mt-slot:hover { border-color: var(--accent); }
+.mt-slot b { font: 700 13px/1.3 var(--f-display); }
+.mt-slot span { color: var(--accent); font-weight: 800; }
+.mt-slot small { color: var(--muted); font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mt-table td { overflow-wrap: anywhere; }
+.mt-cell { gap: 0; }

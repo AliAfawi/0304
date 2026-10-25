@@ -1,0 +1,17 @@
+/* ===== platform team: header bell, «مساحتي» ===== */
+.pl-bell { position: relative; }
+.pl-bell[hidden] { display: none; }
+.pl-badge { position: absolute; top: -4px; inset-inline-end: -4px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 999px; background: var(--bad); color: #fff; font: 800 11px/18px var(--f-display); text-align: center; border: 2px solid var(--surface); }
+.pl-badge[hidden] { display: none; }
+.me-note { display: grid; gap: 6px; }
+.me-note.new { border-inline-start: 3px solid var(--accent); background: color-mix(in srgb, var(--accent-soft) 60%, var(--surface)); }
+.me-note > .row { flex-wrap: nowrap; align-items: flex-start; }
+.me-note-body { flex: 1; min-width: 0; display: grid; gap: 4px; }
+.me-note-body p, .me-line { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.me-clip { margin: 0; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.me-contrib { display: grid; gap: 6px; }
+.me-profile h3 { overflow-wrap: anywhere; }
+.me-cell { overflow-wrap: anywhere; max-width: 22ch; }
+.me-danger { border: 1px solid color-mix(in srgb, var(--bad) 40%, var(--line)); border-radius: var(--r); padding: 16px; background: color-mix(in srgb, var(--bad) 5%, var(--surface)); }
+.btn.me-del { background: var(--bad); border-color: var(--bad); color: #fff; }
+.pl-ann { border-top: 3px solid var(--warn); }

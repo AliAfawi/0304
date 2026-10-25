@@ -1,0 +1,20 @@
+/* ===== platform team: admin ===== */
+.ad-tiles { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); }
+.ad-tiles .stat b { font-size: clamp(28px, 6vw, 42px); }
+.ad-tiles .stat span { font-size: 14px; }
+.ad-bars { display: grid; gap: 8px; }
+.ad-bar-row { display: grid; grid-template-columns: minmax(70px, 34%) 1fr auto; gap: 8px; align-items: center; font-size: 13px; }
+.ad-bar-row:not(:has(.ad-bar-k)) { grid-template-columns: 1fr auto; }
+.ad-bar-k { overflow-wrap: anywhere; font-weight: 600; }
+.ad-bar-track { height: 12px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 99px; overflow: hidden; }
+.ad-bar-track i { display: block; height: 100%; background: var(--accent); border-radius: 0 4px 4px 0; }
+.ad-bar-v { min-width: 2.5em; text-align: end; font-weight: 700; }
+.ad-chart { width: 100%; height: auto; display: block; }
+.ad-chart .ad-col { fill: var(--accent); }
+.ad-chart .ad-col:hover { opacity: .8; }
+.ad-chart .ad-axis { stroke: var(--line); stroke-width: 1; }
+.ad-chart .ad-val { fill: var(--ink); font: 700 11px var(--f-display); }
+.ad-chart .ad-lbl { fill: var(--muted); font: 600 10px var(--f-body); }
+.ad-mem { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.ad-mem-t { display: grid; flex: 1; min-width: 140px; }
+.ad-mem-t b, .ad-mem-t span { overflow-wrap: anywhere; }

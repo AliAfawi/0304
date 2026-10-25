@@ -40,8 +40,7 @@
 .cr-bars li { display: grid; grid-template-columns: minmax(0, 9em) minmax(0, 1fr) auto; gap: 8px; align-items: center; font-size: 13px; }
 .cr-bar-l { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
 .cr-bar-t { height: 12px; display: block; }
-.cr-bar-t i { display: block; height: 100%; background: var(--accent); border-radius: 0 4px 4px 0; }
-html[dir="rtl"] .cr-bar-t i, .cr-bar-t i { border-radius: 4px 0 0 4px; }
+.cr-bar-t i { display: block; height: 100%; background: var(--accent); border-radius: 4px 0 0 4px; }
 .cr-bars li:hover .cr-bar-t i { filter: brightness(1.15); }
 .cr-bar-v { color: var(--muted); font-size: 12px; white-space: nowrap; }
 @media (max-width: 420px) { .cr-bars li { grid-template-columns: minmax(0, 7em) minmax(0, 1fr) auto; } }

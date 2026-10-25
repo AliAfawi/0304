@@ -1,0 +1,26 @@
+/* ===== platform team: points, badges, leaderboard ===== */
+.pt-badges { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 160px), 1fr)); }
+.pt-badge { display: grid; gap: 4px; padding: 12px; border: 1.5px dashed var(--line); border-radius: var(--r); background: var(--surface-2); color: var(--muted); }
+.pt-badge b { color: var(--ink); font-family: var(--f-display); }
+.pt-badge.on { border-style: solid; border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); background: var(--surface); box-shadow: var(--shadow); }
+.pt-badge-ic { font-size: 22px; line-height: 1; color: var(--muted); }
+.pt-badge.on .pt-badge-ic { color: var(--warn); }
+.pt-row { display: flex; align-items: center; gap: 10px; width: 100%; text-align: start; color: var(--ink); font: inherit; }
+button.pt-row { cursor: pointer; }
+button.pt-row:hover { border-color: var(--accent); }
+.pt-row-t { flex: 1; min-width: 0; display: grid; }
+.pt-row-t b { overflow-wrap: anywhere; }
+.pt-row-v { font-weight: 800; white-space: nowrap; }
+.pt-rank { width: 26px; text-align: center; color: var(--muted); font-weight: 700; flex: none; }
+.pt-medal { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font: 900 13px/1 var(--f-display); color: #1b1b1b; flex: none; }
+.pt-medal.m0 { background: #E8C150; } .pt-medal.m1 { background: #C9CDD4; } .pt-medal.m2 { background: #D69A64; }
+.pt-top { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 104px), 1fr)); }
+.pt-top-i { appearance: none; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); border-radius: var(--r); padding: 12px 8px; display: grid; justify-items: center; gap: 4px; cursor: pointer; color: var(--ink); text-align: center; min-width: 0; }
+.pt-top-i:hover { border-color: var(--accent); }
+.pt-top-i b { font-size: 14px; overflow-wrap: anywhere; }
+.pt-top-av { position: relative; }
+.pt-top-av .pt-medal { position: absolute; bottom: -4px; inset-inline-end: -8px; width: 20px; height: 20px; font-size: 11px; border: 2px solid var(--surface); }
+.pt-thx { display: grid; gap: 6px; border-inline-start: 3px solid var(--good); }
+.pt-thx p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.pt-thx .avatar { width: 26px; height: 26px; font-size: 12px; }
+.pt-cert { width: 100%; max-width: 620px; height: auto; border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); background: #FBFAF6; }

@@ -122,6 +122,13 @@ function cmMentionInput(el) {
   return h("div", { class: "cm-mwrap" }, el, list);
 }
 
+// match a free-text place to the institutions list (so «بن غوريون» and the full name land together)
+function cmInst(place) {
+  const p = norm(place).trim(); if (p.length < 3 || /^(ال)?(جامعه|كليه|معهد)$/.test(p)) return null;
+  const strip = (x) => x.replace(/^(جامعه|كليه|معهد|الجامعه|الكليه)\s+/, "").replace(/\s+(في|ب)\s+.*$/, "");
+  return INST.find((i) => { const a = norm(i.ar), he = norm(i.he); return p === a || p.includes(a) || a.includes(p) || p.includes(he) || (strip(p).length > 3 && strip(a).includes(strip(p))); }) || null;
+}
+const cmPlaceLabel = (place) => cmInst(place)?.ar || (place || "").trim();
 // ---------- chat rooms: general, per cohort, per major, per institution (derived from profiles) ----------
 function cmRooms() {
   const al = Object.values(S.alumni);
@@ -129,7 +136,7 @@ function cmRooms() {
   const group = (key, prefix) => {
     const m = new Map();
     for (const a of al) {
-      const raw = (a[key] || "").trim(); if (!raw) continue;
+      const raw = key === "place" ? cmPlaceLabel(a.place) : (a[key] || "").trim(); if (!raw) continue;
       const id = prefix + cmHash(raw);
       const g = m.get(id) || { id, label: raw, n: 0, uids: new Set() };
       g.n++; g.uids.add(a.uid); m.set(id, g);
@@ -149,7 +156,7 @@ function cmMyRooms(R) {
   if (!me) return out;
   const y = R.years.find((r) => r.y === me.year); if (y) out.push({ ...y, label: "فوجك " + me.year });
   const f = me.field && R.fields.find((r) => r.id === "f-" + cmHash(me.field)); if (f) out.push({ ...f, label: "تخصصك: " + f.label });
-  const p = me.place && R.places.find((r) => r.id === "p-" + cmHash(me.place)); if (p) out.push({ ...p, label: "مؤسستك: " + p.label });
+  const p = me.place && R.places.find((r) => r.id === "p-" + cmHash(cmPlaceLabel(me.place))); if (p) out.push({ ...p, label: "مؤسستك: " + p.label });
   return out;
 }
 

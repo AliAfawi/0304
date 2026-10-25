@@ -1,9 +1,6 @@
 // community: «وين خريجينا؟» counts by region / institution / field / status, drawn as accessible bars from S.alumni
 const whState = { year: "all" };
-function whInst(place) {
-  const p = norm(place).trim(); if (!p) return null;
-  return INST.find((i) => { const a = norm(i.ar), he = norm(i.he); return p === a || p.includes(a) || a.includes(p) || p.includes(he); }) || null;
-}
+const whInst = (place) => cmInst(place);
 function whCount(list, keyFn, top, qFn) {
   const m = new Map();
   for (const a of list) {

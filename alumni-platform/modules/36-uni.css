@@ -1,0 +1,21 @@
+/* 36 · «جامعة» add-ons */
+.u36-stars { letter-spacing: 1px; font-size: 16px; line-height: 1; white-space: nowrap; }
+.u36-on { color: var(--warn); }
+.u36-off { color: var(--line); }
+.u36-avg { gap: 6px; }
+.u36-report { color: var(--muted); }
+.u36-star-btn { appearance: none; border: 0; background: none; cursor: pointer; font-size: 30px; line-height: 1; padding: 2px; color: var(--line); }
+.u36-star-btn[aria-pressed="true"] { color: var(--warn); }
+.u36-sum { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); }
+.u36-sum:empty { display: none; }
+.u36-sum-item { appearance: none; text-align: start; cursor: pointer; display: grid; gap: 4px; color: var(--ink); }
+.u36-sum-item[aria-pressed="true"] { outline: 2px solid var(--accent); }
+.u36-cmp { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 10px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); padding: 4px 12px 12px; }
+.u36-cmp-label { grid-column: 1 / -1; padding-top: 12px; margin-top: 4px; border-top: 1px solid var(--line); font-size: 13px; }
+.u36-cell { min-width: 0; padding-top: 6px; overflow-wrap: anywhere; }
+.u36-cell .req { font-size: 14px; }
+.u36-cell .tag { font-size: 12px; padding: 2px 8px; }
+.u36-name { position: sticky; top: 92px; background: var(--surface); padding-block: 10px 8px; z-index: 1; border-bottom: 2px solid var(--accent); }
+.u36-name h3 { font-size: 16px; }
+.u36-dl.past { opacity: .62; }
+.u36-dl-top { align-items: flex-start; flex-wrap: nowrap; gap: 12px; }

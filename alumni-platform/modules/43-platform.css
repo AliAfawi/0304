@@ -1,0 +1,9 @@
+/* ===== platform team: about-the-platform pages ===== */
+.pf-det summary { display: flex; justify-content: space-between; align-items: center; gap: 8px; cursor: pointer; }
+.pf-det[open] summary { margin-bottom: 10px; }
+.pf-roles { border: 0; padding: 0; margin: 0; display: grid; gap: 6px; min-width: 0; }
+.pf-roles .check { font-weight: 600; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-2); }
+.pf-note { flex-basis: 100%; overflow-wrap: anywhere; }
+.pf-stat small { display: block; margin-top: 4px; font-size: 12px; }
+.pf-q { border: 0; margin: 0; padding-inline: 0; min-width: 0; }
+.pf-q legend { font-weight: 700; padding: 0; margin-bottom: 6px; }
