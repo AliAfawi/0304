@@ -32,6 +32,9 @@ function hue(str) { let x = 0; for (const c of String(str)) x = (x * 31 + c.char
 function avatar(name, key) { return h("span", { class: "avatar", style: `background:hsl(${hue(key || name)} 45% 42%)`, text: (name || "؟").trim().charAt(0) }); }
 function lsGet(k, d) { try { const v = localStorage.getItem("gp:" + k); return v == null ? d : JSON.parse(v); } catch { return d; } }
 function lsSet(k, v) { try { localStorage.setItem("gp:" + k, JSON.stringify(v)); } catch {} }
+// Interface language: "ar" (default) or "he". L(ar, he) picks the right string for data that carries both.
+let LANG = lsGet("lang", "ar") === "he" ? "he" : "ar";
+const L = (ar, he) => (LANG === "he" && he ? he : ar);
 let toastTimer;
 function toast(t) { const el = $("#toast"); el.textContent = t; el.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => (el.hidden = true), 2600); }
 function opt(v, label, sel) { return h("option", { value: v, selected: sel ? true : null, text: label ?? v }); }
@@ -137,7 +140,7 @@ async function resolveNames(uids) {
 const views = {};
 const SECTIONS = [
   ["home", "الرئيسية"], ["uni", "جامعة"], ["tools", "أدوات"], ["community", "المجتمع"], ["learn", "التعلّم"],
-  ["career", "المسار المهني"], ["events", "الفعاليات"], ["guides", "الأدلة"], ["me", "مساحتي"], ["admin", "الإدارة"], ["ideas", "الأفكار"],
+  ["grants", "المنح"], ["career", "المسار المهني"], ["events", "الفعاليات"], ["guides", "الأدلة"], ["me", "مساحتي"], ["admin", "الإدارة"], ["ideas", "الأفكار"],
 ];
 const VIEW_META = [];
 // registerView(id, section, label, render?, {order, admin})

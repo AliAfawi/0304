@@ -4,6 +4,7 @@ const fs = require("fs");
 (function main() {
 const dir = __dirname;
 const read = (f) => fs.readFileSync(dir + "/" + f, "utf8");
+const readOr = (f, fallback) => (fs.existsSync(dir + "/" + f) ? read(f) : fallback);
 // GP_ONLY="30,31" limits the build to the core files (00-29, 99) plus modules starting with those prefixes.
 // GP_OUT sets the output file (default index.html) so parallel checks don't overwrite each other.
 const only = (process.env.GP_ONLY || "").split(",").map((s) => s.trim()).filter(Boolean);
@@ -11,7 +12,9 @@ const keep = (f) => !only.length || /^(0|1|2|99)/.test(f) || only.some((p) => f.
 const files = fs.readdirSync(dir + "/modules").sort().filter(keep);
 const js = files.filter((f) => f.endsWith(".js")).map((f) => `// ===== ${f} =====\n` + read("modules/" + f)).join("\n")
   .split("/*IDEAS*/").join(read("ideas.js"))
-  .split("/*INSTITUTIONS*/").join(read("institutions.js"));
+  .split("/*INSTITUTIONS*/").join(read("institutions.js"))
+  .split("/*MAJORS*/").join(readOr("majors.js", "const MAJOR_HE = {};\nconst MAJOR_REQ = {};"))
+  .split("/*HE_DICT*/").join(readOr("he-dict.js", "const HE = {};"));
 const css = files.filter((f) => f.endsWith(".css")).map((f) => read("modules/" + f)).join("\n");
 const page = read("page.html").split("/*MODULES*/").join(js).split("/*MODULE_CSS*/").join(css);
 const out = process.env.GP_OUT || dir + "/index.html";

@@ -1,0 +1,47 @@
+/* shared by career / events / mentoring */
+.cr-form input[type="date"], .cr-form input[type="datetime-local"], .cr-form input[type="time"] {
+  width: 100%; border: 1px solid var(--line); background: var(--surface-2); border-radius: var(--r); padding: 8px 11px; min-width: 0; min-height: 42px;
+}
+.cr-form h3 { margin: 0; }
+.cr-who { flex-wrap: nowrap; min-width: 0; }
+.cr-who-t { min-width: 0; display: grid; gap: 0; }
+.cr-name { gap: 6px; }
+.cr-name .who { overflow-wrap: anywhere; }
+.cr-report { color: var(--muted); font-weight: 500; }
+.cr-report:disabled { cursor: default; opacity: .7; }
+.cr-push { margin-inline-start: auto; }
+.cr-kv { display: grid; gap: 2px; }
+.cr-kv p { margin: 0; }
+
+/* career */
+.cr-job h3, .cr-idea h3 { overflow-wrap: anywhere; }
+.cr-closed { opacity: .65; }
+.cr-co { color: var(--ink); }
+.cr-how { display: grid; gap: 4px; padding: 10px 12px; border-radius: var(--r); background: var(--surface-2); border: 1px solid var(--line); }
+.cr-tip { display: grid; gap: 4px; border-inline-start: 3px solid var(--accent); padding-inline-start: 10px; }
+.cr-rate { font-weight: 800; color: var(--accent); }
+.cr-rank { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: var(--on-accent); font-weight: 900; flex: none; }
+.cr-rec { margin: 0; padding: 10px 12px; border-radius: var(--r); background: var(--surface-2); border-inline-start: 3px solid var(--good); display: grid; gap: 6px; }
+.cr-rec p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* mock interview */
+.cr-iv { display: grid; grid-template-rows: auto minmax(220px, 1fr) auto; padding: 0; overflow: hidden; }
+.cr-iv-head { padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.cr-iv-log { max-height: min(520px, 62vh); overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; background: var(--surface-2); }
+.cr-iv-sys { align-self: center; text-align: center; }
+.cr-iv-msg { max-width: 88%; }
+.cr-iv-fb { max-width: 100%; border-color: color-mix(in srgb, var(--good) 45%, transparent); background: color-mix(in srgb, var(--good) 8%, var(--surface)); }
+.cr-iv-compose { padding: 12px; border-top: 1px solid var(--line); }
+.cr-iv-compose textarea { min-height: 72px; }
+
+/* statistics: single-series horizontal bars, text in ink tokens */
+.cr-chart h3 { font-size: 16px; }
+.cr-bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.cr-bars li { display: grid; grid-template-columns: minmax(0, 9em) minmax(0, 1fr) auto; gap: 8px; align-items: center; font-size: 13px; }
+.cr-bar-l { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.cr-bar-t { height: 12px; display: block; }
+.cr-bar-t i { display: block; height: 100%; background: var(--accent); border-radius: 0 4px 4px 0; }
+html[dir="rtl"] .cr-bar-t i, .cr-bar-t i { border-radius: 4px 0 0 4px; }
+.cr-bars li:hover .cr-bar-t i { filter: brightness(1.15); }
+.cr-bar-v { color: var(--muted); font-size: 12px; white-space: nowrap; }
+@media (max-width: 420px) { .cr-bars li { grid-template-columns: minmax(0, 7em) minmax(0, 1fr) auto; } }

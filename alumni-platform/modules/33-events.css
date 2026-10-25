@@ -1,0 +1,25 @@
+/* events */
+.ev-card { display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 12px; align-items: start; }
+.ev-card.ev-off h3 { text-decoration: line-through; color: var(--muted); }
+.ev-date { display: grid; justify-items: center; align-content: start; gap: 2px; padding: 8px 4px; border-radius: var(--r); background: var(--accent-soft); color: var(--accent); }
+.ev-date b { font: 900 24px/1 var(--f-display); }
+.ev-date span { font: 700 12px/1.2 var(--f-display); text-align: center; }
+.ev-body { display: grid; gap: 6px; min-width: 0; }
+.ev-body h3 { overflow-wrap: anywhere; }
+.ev-desc { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.ev-cap { display: grid; gap: 4px; max-width: 320px; }
+.ev-manage { padding-top: 8px; border-top: 1px dashed var(--line); }
+.ev-compact { padding: 12px; }
+.ev-month { display: grid; gap: 12px; }
+.ev-month-t { font-size: 18px; }
+.ev-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.ev-wd { text-align: center; font-size: 11px; font-weight: 700; color: var(--muted); padding-bottom: 2px; }
+.ev-cell { appearance: none; position: relative; min-width: 0; aspect-ratio: 1 / 1; max-height: 64px; border: 1px solid var(--line); background: var(--surface-2); border-radius: var(--r); color: var(--ink); cursor: pointer; display: grid; place-items: center; padding: 0; font-weight: 600; font-size: 14px; }
+.ev-cell.ev-blank { border-color: transparent; background: none; cursor: default; }
+.ev-cell.has { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 40%, transparent); color: var(--accent); font-weight: 800; }
+.ev-cell.today { outline: 2px solid var(--ink); outline-offset: -2px; }
+.ev-cell[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.ev-dots { position: absolute; bottom: 3px; inset-inline: 0; margin: 0 auto; min-width: 6px; height: 6px; width: max-content; border-radius: 99px; background: currentColor; font: 800 9px/1 var(--f-display); font-style: normal; }
+.ev-dots:not(:empty) { height: auto; padding: 1px 4px; color: var(--on-accent); background: var(--accent); }
+.ev-cell[aria-pressed="true"] .ev-dots:not(:empty) { background: var(--on-accent); color: var(--accent); }
+@media (max-width: 420px) { .ev-card { grid-template-columns: 46px minmax(0, 1fr); gap: 10px; } .ev-date b { font-size: 20px; } }

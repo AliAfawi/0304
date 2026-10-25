@@ -50,7 +50,7 @@ name (`.ev-…`) to avoid collisions. Reuse the shared classes below before inve
   - The store caps at 25,000 docs per artifact. Don't create one doc per keystroke/event.
 - Navigation:
   - `registerView(id, section, label, renderFn, {order, admin})` — `renderFn()` returns an element.
-    Sections: `home, uni, tools, community, learn, career, events, guides, me, admin, ideas`.
+    Sections: `home, uni, tools, community, learn, grants, career, events, guides, me, admin, ideas`.
     A section with 2+ views gets a sub-navigation automatically. `admin: true` hides the view from non-editors.
   - `go(viewIdOrSectionId)`; any element with `data-go="id"` navigates on click.
   - `registerTool(id, title, desc, renderFn(el), order)` adds a card to the «أدوات» section; renderFn fills `el`.
