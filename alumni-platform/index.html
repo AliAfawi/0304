@@ -202,6 +202,8 @@ td input, td select { padding: 6px 8px; }
 .modal-box { width: min(640px, 100%); max-height: 100%; overflow-y: auto; background: var(--bg); border-radius: 10px; border: 1px solid var(--line); padding: 18px; display: grid; gap: 14px; }
 .toast { position: fixed; z-index: 60; inset-inline: 0; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); margin: 0 auto; width: max-content; max-width: calc(100% - 32px); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 999px; font-weight: 600; font-size: 14px; }
 footer { border-top: 1px solid var(--line); padding-block: 18px; color: var(--muted); font-size: 13px; background: var(--surface); }
+
+.subnav { margin-bottom: 18px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 
@@ -224,6 +226,7 @@ footer { border-top: 1px solid var(--line); padding-block: 18px; color: var(--mu
 <div class="toast" id="toast" hidden></div>
 
 <script>
+// ===== 00-data.js =====
 // "*" at the start of an idea marks it as built in the current version of the platform.
 const IDEAS = [
   { c: "التواصل والمجتمع", items: [
@@ -1221,6 +1224,8 @@ const RIASEC = {
   C: ["تنظيمي-دقيق", "محاسبة، نظم معلومات، إحصاء، لوجستيكا، إدارة موارد بشرية"],
 };
 
+
+// ===== 01-core.js =====
 // ---------- utilities ----------
 function h(tag, props, ...kids) {
   const el = document.createElement(tag);
@@ -1264,7 +1269,7 @@ const instMatches = (i, q) => !q || i.ar.includes(q) || i.he.includes(q) || Obje
 // ---------- data layer: shared db when the viewer grants it, this browser otherwise ----------
 const S = {
   view: "home", mode: "loading", uid: null, canWrite: true, isAdmin: false,
-  alumni: {}, posts: [], materials: [], tutors: [], names: {},
+  alumni: {}, posts: [], materials: [], tutors: [], names: {}, mod: {},
 };
 let db = null, userCap = null;
 const localSubs = {};
@@ -1311,6 +1316,21 @@ async function setDoc(col, id, data) {
     return true;
   } catch (e) { return writeFailed(e); }
 }
+async function getDoc(col, id) {
+  try {
+    if (db) { const s = await db.collection(col).doc(id).get(); return s.exists ? { id: s.id, ...s.data() } : null; }
+    return localRead(col).find((x) => x.id === id) || null;
+  } catch (e) { console.warn(e); return null; }
+}
+function subscribeDoc(col, id, cb) {
+  if (db) {
+    try { return db.collection(col).doc(id).onSnapshot((s) => cb(s.exists ? { id: s.id, ...s.data() } : null), (e) => console.warn(col, e)); }
+    catch (e) { console.warn(e); return () => {}; }
+  }
+  const emit = () => cb(localRead(col).find((x) => x.id === id) || null);
+  (localSubs[col] ||= new Set()).add(emit); emit();
+  return () => localSubs[col].delete(emit);
+}
 async function delDoc(col, id) {
   try {
     if (db) await db.collection(col).doc(id).delete();
@@ -1341,28 +1361,99 @@ async function resolveNames(uids) {
   if (changed) renderLists();
 }
 
-// ---------- navigation ----------
-const VIEWS = [
-  ["home", "الرئيسية"], ["uni", "جامعة"], ["tools", "أدوات"], ["feed", "المجتمع"],
-  ["library", "المواد والامتحانات"], ["tutors", "دروس ومساعدة"], ["alumni", "الأفواج"], ["ideas", "أفكار التطوير"],
+// ---------- navigation: sections in the top bar, views inside each section ----------
+const views = {};
+const SECTIONS = [
+  ["home", "الرئيسية"], ["uni", "جامعة"], ["tools", "أدوات"], ["community", "المجتمع"], ["learn", "التعلّم"],
+  ["career", "المسار المهني"], ["events", "الفعاليات"], ["guides", "الأدلة"], ["me", "مساحتي"], ["admin", "الإدارة"], ["ideas", "الأفكار"],
 ];
+const VIEW_META = [];
+// registerView(id, section, label, render?, {order, admin})
+function registerView(id, section, label, render, opts = {}) {
+  if (render) views[id] = render;
+  VIEW_META.push({ id, section, label, order: opts.order ?? 50, admin: !!opts.admin });
+}
+const visibleViews = () => VIEW_META.filter((v) => !v.admin || S.isAdmin);
+const sectionViews = (sec) => visibleViews().filter((v) => v.section === sec).sort((a, b) => a.order - b.order);
+const sectionOf = (id) => VIEW_META.find((v) => v.id === id)?.section || "home";
+function resolveView(v) {
+  if (visibleViews().some((m) => m.id === v)) return v;
+  const first = sectionViews(v)[0];
+  return first ? first.id : "home";
+}
 function buildTabs() {
-  const t = $("#tabs");
-  t.replaceChildren(...VIEWS.map(([id, label]) => h("button", { class: "tab", type: "button", "data-go": id, "aria-current": S.view === id ? "page" : null, text: label })));
+  const cur = sectionOf(S.view);
+  $("#tabs").replaceChildren(...SECTIONS.filter(([id]) => sectionViews(id).length).map(([id, label]) =>
+    h("button", { class: "tab", type: "button", "data-go": id, "aria-current": cur === id ? "page" : null, text: label })));
+}
+function subNav() {
+  const list = sectionViews(sectionOf(S.view));
+  if (list.length < 2) return null;
+  return h("nav", { class: "subnav chips", "aria-label": "أقسام فرعية" }, list.map((m) =>
+    h("button", { class: "chip", type: "button", "data-go": m.id, "aria-pressed": String(m.id === S.view), text: m.label })));
 }
 function go(v) {
-  if (!VIEWS.some(([id]) => id === v)) v = "home";
-  S.view = v;
+  S.view = resolveView(v);
   buildTabs();
   renderView();
   window.scrollTo({ top: 0 });
-  try { history.replaceState(null, "", "#" + v); } catch {}
-  const cur = $(`.tab[data-go="${v}"]`); cur && cur.scrollIntoView({ inline: "center", block: "nearest" });
+  try { history.replaceState(null, "", "#" + S.view); } catch {}
+  const cur = $(`.tab[aria-current="page"]`); cur && cur.scrollIntoView({ inline: "center", block: "nearest" });
 }
 document.addEventListener("click", (e) => {
   const g = e.target.closest("[data-go]");
   if (g) { e.preventDefault(); go(g.getAttribute("data-go")); }
 });
+
+// ---------- extension points for feature modules ----------
+// HOOKS.lists: run after shared data changes. HOOKS.boot: run once the data layer is ready (start subscriptions here).
+// HOOKS.home: functions returning a home-page widget element (or null); sorted by .order.
+const HOOKS = { lists: [], boot: [], home: [] };
+function registerHome(fn, order = 50) { fn.order = order; HOOKS.home.push(fn); }
+// Cleanup functions for the current view (unsubscribe, timers); run when the view changes.
+let leaveFns = [];
+function onLeave(fn) { leaveFns.push(fn); }
+// Global search providers: fn(q) returns [{title, sub, go: viewId, onOpen?: fn}] (max ~8 each).
+const SEARCH = [];
+function registerSearch(label, fn) { SEARCH.push({ label, fn }); }
+// Tools shown in the «أدوات» section.
+const TOOLS = [];
+function registerTool(id, title, desc, render, order = 50) { TOOLS.push({ id, title, desc, render, order }); }
+// Optional runtime capabilities; each stays null when the viewer cannot use it.
+const CAP = { sample: null, assets: null, downloads: null, room: null };
+// Ask Claude. Resolves the answer text; rejects with {code} ("not_granted" when unavailable).
+async function ai(input, opts = {}) {
+  if (!CAP.sample) throw { code: "not_granted", message: "المساعد الذكي غير متاح هنا" };
+  const r = await CAP.sample(input, { cache: false, ...opts });
+  return r.text;
+}
+async function aiJson(input, opts = {}) {
+  if (!CAP.sample) throw { code: "not_granted", message: "المساعد الذكي غير متاح هنا" };
+  return CAP.sample.json(input, opts);
+}
+function aiError(e) {
+  if (e && e.code === "rate_limited") return "المساعد مشغول، جرّب بعد شوي.";
+  if (e && e.code === "not_granted") return "المساعد الذكي غير متاح بهذا العرض. افتح المنصة من claude.ai واسمح له.";
+  return "ما قدر المساعد يجاوب هلّق.";
+}
+// Offer a generated file to the viewer. Returns true when saved.
+async function saveFile(filename, data) {
+  if (!CAP.downloads) { toast("التنزيل غير متاح بهذا العرض"); return false; }
+  try { await CAP.downloads.save({ filename, data }); return true; }
+  catch (e) { if (e?.code !== "declined") toast("ما انحفظ الملف"); return false; }
+}
+// Upload an image or PDF; resolves {id, url} or null.
+async function uploadFile(file) {
+  if (!CAP.assets) { toast("رفع الملفات غير متاح لك هنا، استخدم رابط بدلًا منه"); return null; }
+  try { const r = await CAP.assets.upload(file); return { id: r.id, url: r.url }; }
+  catch (e) { toast(e?.code === "too_large" ? "الملف كبير كثير" : "ما انرفع الملف"); return null; }
+}
+// The viewer's private collection (only they can read it): "data/users/<uid>".
+const myCol = () => "data/users/" + S.uid;
+const isMod = (key, id) => !!(S.mod[key] && S.mod[key][id]);
+// Arabic-insensitive search: folds alef/ya/ta-marbuta forms and diacritics.
+function norm(s) { return String(s || "").replace(/[ً-ْـ]/g, "").replace(/[إأآا]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه").toLowerCase(); }
+const matches = (hay, q) => !q || norm(hay).includes(norm(q));
 
 // ---------- shared pieces ----------
 function eyebrow(t) { return h("p", { class: "eyebrow", text: t }); }
@@ -1425,14 +1516,15 @@ function openProfile() {
 }
 $("#me-btn").addEventListener("click", openProfile);
 
+
+// ===== 20-home-uni.js =====
 // ---------- views ----------
-const views = {};
 
 views.home = () => {
   const counts = { u: 0, c: 0, e: 0 }; INST.forEach((i) => counts[i.t]++);
   const sections = [
     ["uni", "قسم جامعة", "كل الجامعات والكليات ومعاهد الهندسائيين، مع الروابط اللي بتحتاجها."],
-    ["tools", "4 أدوات للجامعة", "حاسبة التكلفة، معدّل البجروت، اختبار الميول، والقاموس."],
+    ["tools", "أدوات للجامعة", "حاسبات، اختبار الميول، القاموس، المساعد الذكي وأكثر."],
     ["feed", "المجتمع", "اسأل، ساعد، وشارك فرص. ودردشة لكل فوج."],
     ["library", "المواد والامتحانات", "ملخصات وامتحانات وحلول من الخريجين."],
     ["tutors", "دروس ومساعدة", "خريجون بيعلّموا، وطلاب بيطلبوا مساعدة."],
@@ -1454,6 +1546,7 @@ views.home = () => {
       h("div", { class: "stat" }, h("b", { text: counts.e }), h("span", { text: "معهد هندسائيين" })),
     ),
     h("section", { class: "grid-3", id: "live-stats" }),
+    ...HOOKS.home.slice().sort((a, b) => a.order - b.order).map((f) => { try { return f(); } catch (e) { console.warn(e); return null; } }),
     h("section", { class: "section" },
       h("h2", { text: "شو في بالمنصة" }),
       h("div", { class: "tool-cards" }, sections.map(([id, t, d]) => h("button", { class: "tool-card", type: "button", "data-go": id }, h("b", { text: t }), h("span", { text: d })))),
@@ -1548,25 +1641,30 @@ function suggestForm() {
   return f;
 }
 
+registerView("home", "home", "الرئيسية", null, { order: 0 });
+registerView("uni", "uni", "دليل المؤسسات", null, { order: 0 });
+
+// ===== 21-tools.js =====
 // tools
 let toolTab = "cost";
 views.tools = () => {
-  const tools = [
-    ["cost", "حاسبة تكلفة التعليم", "قدّيش رح تكلّفك سنين التعليم"],
-    ["bagrut", "معدّل البجروت", "المعدّل الموزون مع البونوس"],
-    ["quiz", "اختبار الميول المهني", "اكتشف أي تخصّص بيناسبك"],
-    ["dict", "قاموس الجامعة", "مصطلحات الجامعة بالعبري، وشو معناها بالعربي"],
-    ["grants", "المنح", "منح ومساعدات للطلاب بمكان واحد"],
-  ];
+  const list = TOOLS.slice().sort((a, b) => a.order - b.order);
+  if (!list.some((x) => x.id === toolTab)) toolTab = list[0].id;
   const body = h("div", { class: "card", id: "tool-body" });
   const v = h("div", { class: "view" },
-    head("وكمان بنفس القسم", "أدوات للجامعة"),
-    h("div", { class: "tool-cards" }, tools.map(([id, t, d]) => h("button", { class: "tool-card", type: "button", "aria-pressed": String(toolTab === id), onclick: () => { toolTab = id; go("tools"); }, }, h("b", { text: t }), h("span", { text: d })))),
+    head("وكمان بنفس القسم", `${list.length} أداة للجامعة`),
+    h("div", { class: "tool-cards" }, list.map((x) => h("button", { class: "tool-card", type: "button", "aria-pressed": String(toolTab === x.id), onclick: () => { toolTab = x.id; go("tools"); } }, h("b", { text: x.title }), h("span", { text: x.desc })))),
     body,
   );
-  queueMicrotask(() => ({ cost: toolCost, bagrut: toolBagrut, quiz: toolQuiz, dict: toolDict, grants: toolGrants })[toolTab](body));
+  queueMicrotask(() => list.find((x) => x.id === toolTab).render(body));
   return v;
 };
+registerView("tools", "tools", "الأدوات", null, { order: 0 });
+registerTool("cost", "حاسبة تكلفة التعليم", "قدّيش رح تكلّفك سنين التعليم", (el) => toolCost(el), 10);
+registerTool("bagrut", "معدّل البجروت", "المعدّل الموزون مع البونوس", (el) => toolBagrut(el), 20);
+registerTool("quiz", "اختبار الميول المهني", "اكتشف أي تخصّص بيناسبك", (el) => toolQuiz(el), 30);
+registerTool("dict", "قاموس الجامعة", "مصطلحات الجامعة بالعبري، وشو معناها بالعربي", (el) => toolDict(el), 40);
+registerTool("grants", "المنح", "منح ومساعدات للطلاب بمكان واحد", (el) => toolGrants(el), 50);
 function toolCost(el) {
   const saved = lsGet("cost", { years: 3, tuition: 10900, rent: 1600, months: 10, travel: 350, books: 1500, grant: 0, live: "dorm" });
   const fields = [
@@ -1676,6 +1774,8 @@ function toolGrants(el) {
       u.startsWith("#") ? h("button", { class: "link", type: "button", "data-go": u.slice(1), text: "افتح قسم جامعة" }) : h("a", { href: u, target: "_blank", rel: "noopener", text: "افتح" })))));
 }
 
+
+// ===== 22-community.js =====
 // community
 let feedTab = "posts", feedCat = "all", chatRoom = "general", chatUnsub = null;
 const openReplies = new Map();
@@ -1771,6 +1871,9 @@ function fillReplies(p, box) {
     f);
 }
 
+registerView("feed", "community", "النقاشات والدردشة", null, { order: 10 });
+
+// ===== 23-learn.js =====
 // library
 const libState = { subject: "all", kind: "all", q: "" };
 views.library = () => {
@@ -1837,6 +1940,10 @@ views.tutors = () => {
   );
 };
 
+registerView("library", "learn", "المواد والامتحانات", null, { order: 10 });
+registerView("tutors", "learn", "دروس ومساعدة", null, { order: 20 });
+
+// ===== 24-alumni-ideas.js =====
 // alumni
 const alState = { q: "", year: "all", mentor: false };
 views.alumni = () => {
@@ -1892,10 +1999,17 @@ views.ideas = () => {
   return v;
 };
 
+registerView("alumni", "community", "دليل الأفواج", null, { order: 20 });
+registerView("ideas", "ideas", "أفكار التطوير", null, { order: 0 });
+
+// ===== 99-boot.js =====
 // ---------- rendering ----------
 function renderView() {
   if (S.view !== "feed" && chatUnsub) { chatUnsub(); chatUnsub = null; }
-  $("#main").replaceChildren(views[S.view]());
+  leaveFns.forEach((f) => { try { f(); } catch {} }); leaveFns = [];
+  let content;
+  try { content = views[S.view](); } catch (e) { console.error(e); content = empty("صار خطأ بهذا القسم", "حدّث الصفحة أو جرّب قسم ثاني."); }
+  $("#main").replaceChildren(...[subNav(), content].filter(Boolean));
   $("#me-btn").textContent = S.alumni[S.uid] ? S.alumni[S.uid].name.split(" ")[0] + " · ملفّي" : "ملفّي";
   $("#mode-note").textContent = S.mode === "db" ? "المشاركات مشتركة بين كل الأعضاء" : S.mode === "local" ? "وضع تجريبي على هذا الجهاز" : "جارِ الاتصال…";
   renderLists();
@@ -1950,6 +2064,7 @@ function renderLists() {
       a.uid === S.uid ? h("button", { class: "link small", type: "button", onclick: openProfile, text: "عدّل ملفي" }) : null))
       : [empty("الدليل فاضي هون", "أضف حالك للدليل، وابعث الرابط لفوجك.")]));
   }
+  HOOKS.lists.forEach((f) => { try { f(); } catch (e) { console.warn(e); } });
 }
 
 // ---------- boot ----------
@@ -1964,6 +2079,11 @@ function startSubs() {
   subscribe("posts", { limit: 200 }, (rows) => { S.posts = rows; renderLists(); });
   subscribe("materials", { limit: 500 }, (rows) => { S.materials = rows; renderLists(); });
   subscribe("tutors", { limit: 300 }, (rows) => { S.tutors = rows; renderLists(); });
+  subscribe("mod", { order: "updatedAt", limit: 100 }, (rows) => {
+    S.mod = Object.fromEntries(rows.map((r) => [r.id, r.map || {}]));
+    renderLists();
+  });
+  HOOKS.boot.forEach((f) => { try { f(); } catch (e) { console.warn(e); } });
 }
 function goLocal() {
   db = null; S.mode = "local"; S.canWrite = true;
@@ -1971,10 +2091,11 @@ function goLocal() {
 }
 async function boot() {
   const start = location.hash.slice(1);
-  S.view = VIEWS.some(([id]) => id === start) ? start : "home";
+  S.view = resolveView(start || "home");
   buildTabs(); renderView();
   const c = window.claude;
   if (!c || typeof c.use !== "function") { goLocal(); startSubs(); renderView(); return; }
+  ["sample", "assets", "downloads", "room"].forEach((name) => c.use(name).then((x) => { CAP[name] = x; if (x) renderLists(); }, () => {}));
   const [d, u] = await Promise.all([c.use("db"), c.use("user")]);
   userCap = u;
   if (d) {
@@ -1984,7 +2105,8 @@ async function boot() {
     const cw = u ? await u.can("data.write") : null;
     S.canWrite = !!S.uid && cw !== false;
   } else goLocal();
-  startSubs(); renderView();
+  startSubs(); buildTabs(); S.view = resolveView(start || S.view); renderView();
 }
 boot();
+
 </script>
