@@ -1,0 +1,2 @@
+.sal-row { display: grid; grid-template-columns: 8.5em 1fr 2em; gap: 8px; align-items: center; }
+.dg-pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; margin: 0; line-height: 1.8; }

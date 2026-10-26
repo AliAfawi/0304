@@ -41,7 +41,8 @@ function plCopy(text, okMsg) {
     navigator.clipboard.writeText(text).then(() => toast(okMsg || "انسخ"), fallback);
   } catch { fallback(); }
 }
-const plKinds = { reply: "رد", mention: "إشارة", thanks: "شكر", booking: "حجز", event: "فعالية", announcement: "إعلان", mentor: "إرشاد", report: "بلاغ" };
+const plKinds = { reply: "رد", mention: "إشارة", thanks: "شكر", booking: "حجز", event: "فعالية", announcement: "إعلان", mentor: "إرشاد", report: "بلاغ",
+  rating: "تقييم", referral: "توصية", join: "انضمام", recommendation: "ترشيح", visit: "زيارة", review: "مراجعة", approved: "موافقة" };
 
 // ---------- notifications (notes for me + announcements) ----------
 function plMyNotes() {
@@ -253,10 +254,11 @@ registerView("me-settings", "me", "الخصوصية والحساب", () => {
     h("section", { class: "section me-danger" },
       h("h2", { text: "حذف حسابي" }),
       h("p", { text: "بنحذف من المنصة:" }),
-      reqList(["ملفك بدليل الأفواج.", "كل منشوراتك بالنقاشات.", "كل المواد اللي شاركتها بالمكتبة.", "عروض الدروس وطلبات المساعدة تبعك.", "رسائل الشكر اللي بعثتها، وتسجيلك كسفير.", "الإعدادات الخاصة فيك (الإشعارات المقروءة، طريقة التواصل المخفية)."]),
+      reqList(["ملفك بدليل الأفواج.", "منشوراتك، قصصك، استطلاعاتك وصورك بالمجتمع.", "المواد، البطاقات، مجموعات الدراسة والكتب اللي شاركتها.", "عروض الدروس وطلبات المساعدة والتقييمات تبعك.", "الوظائف، المصالح، الفعاليات، المقالات والاقتراحات اللي نشرتها.", "رسائل الشكر والبلاغات اللي بعثتها، وتسجيلك كسفير.", "الإعدادات الخاصة فيك (الإشعارات المقروءة، طريقة التواصل المخفية)."]),
       h("p", { text: "ما بننحذف تلقائيًا:" }),
-      reqList(["ردودك على منشورات غيرك ورسائلك بدردشة الأفواج (احذفها من مكانها).", "رسائل الشكر والإشعارات اللي وصلت لغيرك منك.", "مشاركاتك بأقسام ثانية مثل الفعاليات أو الإرشاد، احذفها من كل قسم.", "النسخ الاحتياطية اللي حمّلتها الإدارة قبل الحذف."]),
-      h("div", null, h("button", { class: "btn me-del", type: "button", id: "me-del-btn", onclick: meDeleteAccount, text: "احذف حسابي ومساهماتي" }))));
+      reqList(["ردودك على منشورات غيرك، رسائلك بدردشة الأفواج، وتسجيلاتك بالفعاليات: احذفها من مكانها.", "الإشعارات اللي وصلت لغيرك منك.", "عناصر ببعض الأقسام الثانية (مثل الإرشاد والحجوزات وبياناتك الخاصة فيها): احذفها من كل قسم.", "النسخ الاحتياطية اللي حمّلتها الإدارة قبل الحذف."]),
+      h("div", null, h("button", { class: "btn me-del", type: "button", id: "me-del-btn", onclick: meDeleteAccount, text: "احذف حسابي ومساهماتي" })),
+      h("p", { class: "muted small", id: "me-del-status", "aria-live": "polite" })));
   queueMicrotask(() => meDrawContact());
   return v;
 }, { order: 80 });
@@ -290,16 +292,26 @@ async function meRestoreContact() {
   }
   meDrawContact();
 }
+// Collections where a member's own docs (uid == S.uid) are deleted with the account.
+const ME_DEL_COLS = ["posts", "materials", "tutors", "thanks", "stories", "polls", "photos", "contests", "studygroups", "decks", "vocab", "challenges", "chsubs",
+  "tutorreviews", "books", "clubs", "sciprojects", "jobs", "businesses", "freelancers", "careerstories", "startups", "incubator", "events", "reviews",
+  "deadlines", "guides", "articles", "media", "exchange", "pledges", "scholarship_suggestions", "suggestions", "reports"];
 function meDeleteAccount() {
   if (!guardWrite()) return;
-  const mine = meContribs().filter((c) => c.col !== "thanks" || c.row.uid === S.uid);
-  confirmBox(`متأكد؟ رح ننحذف ملفك و${mine.length} مساهمة، وما في رجعة.`, async () => {
-    const btn = $("#me-del-btn"); if (btn) { btn.disabled = true; btn.textContent = "جارِ الحذف…"; }
-    for (const c of mine) await delDoc(c.col, c.row.id);
-    const amb = await getDoc("ambassadors", S.uid); if (amb) await delDoc("ambassadors", S.uid);
+  confirmBox("متأكد؟ رح ينحذف ملفك وكل مساهماتك بالأقسام الرئيسية، وما في رجعة.", async () => {
+    const btn = $("#me-del-btn"); const st = $("#me-del-status");
+    if (btn) { btn.disabled = true; btn.textContent = "جارِ الحذف…"; }
+    let n = 0;
+    for (const col of ME_DEL_COLS) {
+      if (st) st.textContent = `جارِ الفحص: ${col}`;
+      const rows = typeof adReadOnce === "function" ? (await adReadOnce(col)) || [] : [];
+      for (const r of rows) if (r.uid === S.uid) { await delDoc(col, r.id); n++; }
+    }
+    const amb = await getDoc("ambassadors", S.uid); if (amb) { await delDoc("ambassadors", S.uid); n++; }
     for (const id of ["notes-read", "contact-hidden"]) if (await getDoc(myCol(), id)) await delDoc(myCol(), id);
     if (S.alumni[S.uid]) await delDoc("alumni", S.uid);
     lsSet("pl-seen:" + S.uid, 0); lsSet("pt-days", []);
+    if (st) st.textContent = `انحذف ملفك و${n} عنصر.`;
     toast("انحذف حسابك ومساهماتك. بنتمنّالك التوفيق");
     go("home");
   });

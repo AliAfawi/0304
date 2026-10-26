@@ -17,7 +17,7 @@ function renderLists() {
     h("div", { class: "stat" }, h("b", { text: S.materials.length }), h("span", { text: "مادة وامتحان" })),
     h("div", { class: "stat" }, h("b", { text: S.tutors.length }), h("span", { text: "درس وطلب مساعدة" })));
   const hp = $("#home-posts");
-  if (hp) hp.replaceChildren(...(S.posts.length ? S.posts.slice(0, 3).map((p) => postCard(p, true)) : [empty("لسا ما في نقاشات", "افتح «المجتمع» واكتب أول سؤال أو نصيحة لفوجك.")]));
+  if (hp) hp.replaceChildren(...(S.posts.length ? S.posts.filter((p) => !isMod("hidden", "posts:" + p.id)).sort((a, b) => isMod("pinned", b.id) - isMod("pinned", a.id)).slice(0, 3).map((p) => postCard(p, true)) : [empty("لسا ما في نقاشات", "افتح «المجتمع» واكتب أول سؤال أو نصيحة لفوجك.")]));
   const fl = $("#feed-list");
   if (fl) {
     const rows = S.posts.filter((p) => feedCat === "all" || p.cat === feedCat);

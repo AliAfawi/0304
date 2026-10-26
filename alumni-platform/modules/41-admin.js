@@ -10,14 +10,23 @@ function adToggleBtn(on, onLabel, offLabel, fn) {
 }
 function adHead(title, lede) { return head("الإدارة", title, lede); }
 function adWeekStart(ts) { const d = new Date(ts); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - d.getDay()); return d.getTime(); }
-const adCols = { posts: "منشور", materials: "مادة", tutors: "درس/طلب", alumni: "ملف", thanks: "شكر" };
+const adCols = { posts: "منشور", replies: "رد", materials: "مادة", tutors: "درس/طلب", alumni: "ملف", thanks: "شكر", stories: "قصة", polls: "استطلاع", photos: "صورة",
+  contests: "مسابقة", studygroups: "مجموعة دراسة", decks: "بطاقات حفظ", vocab: "مفردات", psyq: "سؤال بسيخومتري", qotd: "سؤال اليوم", challenges: "تحدّي", chsubs: "حل تحدّي",
+  tutorreviews: "تقييم درس", books: "كتاب", clubs: "نادي", sciprojects: "مشروع علمي", jobs: "وظيفة", businesses: "مصلحة", freelancers: "مستقل", careerstories: "قصة مهنية",
+  startups: "مشروع ناشئ", incubator: "حاضنة", events: "فعالية", reviews: "مراجعة", deadlines: "موعد", guides: "دليل", articles: "مقال", media: "ميديا", exchange: "تبادل",
+  pledges: "تعهّد", scholarship_suggestions: "اقتراح منحة" };
+const adColLabel = (col) => adCols[col] || adCols[String(col).split("/").pop()] || "محتوى";
+const adPeek = {};
 function adFind(target) {
-  const [col, id] = String(target || "").split(":");
+  const t = String(target || ""); const i = t.lastIndexOf(":");
+  const col = i > 0 ? t.slice(0, i) : t, id = i > 0 ? t.slice(i + 1) : "";
   const list = { posts: S.posts, materials: S.materials, tutors: S.tutors, thanks: PL.thanks }[col];
   if (col === "alumni") return { col, id, row: S.alumni[id] || null };
-  return { col, id, row: list ? list.find((r) => r.id === id) || null : null };
+  if (list) return { col, id, row: list.find((r) => r.id === id) || null };
+  if (!(t in adPeek) && id && /^[\w/-]+$/.test(col)) { adPeek[t] = null; getDoc(col, id).then((r) => { adPeek[t] = r; if (r) renderLists(); }); }
+  return { col, id, row: adPeek[t] || null };
 }
-const adRowText = (col, r) => !r ? "" : col === "posts" ? r.text : col === "materials" ? r.title : col === "tutors" ? `${r.subject} — ${r.note || ""}` : col === "alumni" ? r.name : r.text || r.title || "";
+const adRowText = (col, r) => !r ? "" : col === "materials" ? r.title : col === "tutors" ? `${r.subject} — ${r.note || ""}` : col === "alumni" ? r.name : r.title || r.name || r.text || r.question || r.note || "";
 
 // ---------- 195 dashboard + 205 monthly report ----------
 function adBars(rows, label) {
@@ -115,20 +124,20 @@ HOOKS.lists.push(() => {
   el.replaceChildren(...(list.length ? list.map(([target, reps]) => {
     const f = adFind(target);
     return h("article", { class: "card item" },
-      h("div", { class: "row" }, h("span", { class: "pill warn", text: `${reps.length} بلاغ` }), h("span", { class: "pill grey", text: adCols[f.col] || f.col }),
+      h("div", { class: "row" }, h("span", { class: "pill warn", text: `${reps.length} بلاغ` }), h("span", { class: "pill grey", text: adColLabel(f.col) }),
         f.row ? h("span", { class: "muted small", text: `من ${nameOf(f.row.uid)}` }) : h("span", { class: "muted small", text: "المحتوى مش محمّل هون أو انحذف" })),
       f.row ? h("p", { class: "me-clip", text: adRowText(f.col, f.row) }) : h("p", { class: "muted small", text: target }),
       h("ul", { class: "req" }, reps.slice(0, 5).map((r) => h("li", null, h("b", { text: nameOf(r.uid) }), ": ", r.reason || "بدون سبب", h("span", { class: "muted small", text: ` · ${rel(r.createdAt)}` })))),
       h("div", { class: "row" },
         h("button", { class: "btn sm blue", type: "button", onclick: async () => { if (await adModSet("hidden", target, true)) { for (const r of reps) await delDoc("reports", r.id); toast("انخفى المحتوى"); } }, text: "إخفاء المحتوى" }),
         h("button", { class: "btn sm ghost", type: "button", onclick: async () => { for (const r of reps) await delDoc("reports", r.id); toast("انتجاهل البلاغ"); }, text: "تجاهل" }),
-        f.row && adCols[f.col] && f.col !== "alumni" ? h("button", { class: "link danger small", type: "button", onclick: () => confirmBox("تحذف المحتوى نهائيًا؟", async () => { await delDoc(f.col, f.id); for (const r of reps) await delDoc("reports", r.id); }), text: "حذف نهائي" }) : null));
+        f.row && f.col !== "alumni" ? h("button", { class: "link danger small", type: "button", onclick: () => confirmBox("تحذف المحتوى نهائيًا؟", async () => { await delDoc(f.col, f.id); for (const r of reps) await delDoc("reports", r.id); }), text: "حذف نهائي" }) : null));
   }) : [empty("ما في بلاغات مفتوحة", "لما حدا يبلّغ عن منشور أو مادة، بيظهر البلاغ هون.")]));
   const hl = $("#ad-hidden-list");
   if (hl) {
     const keys = Object.keys(S.mod.hidden || {});
     hl.replaceChildren(...(keys.length ? keys.map((k) => { const f = adFind(k); return h("div", { class: "plain spread" },
-      h("span", { class: "me-clip small", text: f.row ? `${adCols[f.col] || f.col}: ${adRowText(f.col, f.row)}` : k }),
+      h("span", { class: "me-clip small", text: f.row ? `${adColLabel(f.col)}: ${adRowText(f.col, f.row)}` : k }),
       h("button", { class: "btn sm ghost", type: "button", onclick: () => adModSet("hidden", k, null).then((ok) => ok && toast("رجع يظهر")), text: "إظهار" })); })
       : [h("p", { class: "muted small", text: "ما في محتوى مخفي." })]));
   }

@@ -129,7 +129,8 @@ function openMajor(i, m) {
     h("h4", { text: "شروط القبول لهالتخصص" }),
     r ? h("div", { class: "stack", style: "gap:8px" },
           reqList(r.req),
-          h("p", { class: "muted small" }, `حسب موقع المؤسسة${r.year ? " لسنة " + r.year : ""}. `, src ? h("a", { href: src, target: "_blank", rel: "noopener", text: "المصدر" }) : null))
+          h("p", { class: "muted small" }, r.year && !/غير/.test(r.year) ? `حسب موقع المؤسسة لسنة ${r.year}.` : "حسب موقع المؤسسة.", " ",
+            "الحدود بتتغير كل سنة، فتأكد من ", src ? h("a", { href: src, target: "_blank", rel: "noopener", text: "صفحة المصدر" }) : "صفحة المؤسسة", " قبل ما تقرر."))
       : h("div", { class: "banner" }, "لسا ما وثّقنا شروط هالتخصص بالذات. الشروط العامة للمؤسسة بتنطبق، والزر تحت بيفتح صفحة الشروط الرسمية."),
     h("div", { class: "row" },
       h("a", { class: "btn ghost sm", href: majorSearchUrl(i, m), target: "_blank", rel: "noopener", text: "صفحة الشروط الرسمية" }),

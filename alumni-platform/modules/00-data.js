@@ -1,4 +1,7 @@
 /*IDEAS*/
+// "!" = not possible inside this platform, "~" = needs work outside it. Strip those markers; keep "*" for built.
+const IDEA_NOTE = {};
+IDEAS.forEach((g) => { g.items = g.items.map((t) => { if (t[0] === "!" || t[0] === "~") { IDEA_NOTE[t.slice(1)] = t[0]; return t.slice(1); } return t; }); });
 
 // ---------- reference data ----------
 const REGIONS = ["الجنوب", "المركز", "الشمال", "القدس", "المثلث", "عن بُعد"];

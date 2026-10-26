@@ -56,7 +56,7 @@ views.ideas = () => {
   const built = IDEAS.reduce((s, g) => s + g.items.filter((x) => x[0] === "*").length, 0);
   const list = h("div", { class: "stack", id: "idea-list" });
   const v = h("div", { class: "view" },
-    head("خطة تطوير المنصة", `${total} فكرة للمنصة`, `أفكار لتطوير بوابة الخريجين، مقسّمة على ${IDEAS.length} محور. ${built} منها موجودة بهذه النسخة ومعلّمة بـ «موجود».`),
+    head("خطة تطوير المنصة", `${total} فكرة للمنصة`, `أفكار لتطوير بوابة الخريجين، مقسّمة على ${IDEAS.length} محور. ${built} منها موجودة بهذه النسخة ومعلّمة بـ «موجود». «غير ممكن هون» يعني الفكرة بدها خادم خاص (مثل رسائل خاصة أو إشعارات للهاتف)، و«عمل ميداني» يعني شراكات وحملات بتصير برّا المنصة.`),
     h("div", { class: "form" },
       h("label", { class: "field" }, h("span", { text: "بحث بالأفكار" }), h("input", { type: "search", id: "id-q", value: ideaState.q })),
       h("label", { class: "field" }, h("span", { text: "المحور" }), h("select", { id: "id-cat" }, opt("all", "كل المحاور", true), IDEAS.map((g, i) => opt(i, `${g.c} (${g.items.length})`)))),
@@ -69,7 +69,8 @@ views.ideas = () => {
         .filter((x) => (ideaState.cat === "all" || +ideaState.cat === gi) && (!ideaState.built || x.done) && (!q || x.t.includes(q)));
       if (!items.length) return;
       out.push(h("section", { class: "section" }, h("h2", { text: g.c }),
-        h("ul", { class: "idea-list" }, items.map((x) => h("li", null, h("span", { class: "n", text: x.n }), h("span", { class: "t", text: x.t }), x.done ? h("span", { class: "pill good", text: "موجود" }) : null)))));
+        h("ul", { class: "idea-list" }, items.map((x) => h("li", null, h("span", { class: "n", text: x.n }), h("span", { class: "t", text: x.t }),
+          x.done ? h("span", { class: "pill good", text: "موجود" }) : IDEA_NOTE[x.t] === "!" ? h("span", { class: "pill grey", title: "بدها خادم أو صلاحيات مش متوفرة بهالمنصة", text: "غير ممكن هون" }) : IDEA_NOTE[x.t] === "~" ? h("span", { class: "pill warn", text: "عمل ميداني" }) : null)))));
     });
     list.replaceChildren(...(out.length ? out : [empty("ما في أفكار مطابقة", "جرّب كلمة ثانية.")]));
   };
