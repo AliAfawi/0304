@@ -2,6 +2,8 @@
 // Private data lives in myCol() with a `kind` field starting with "p35-". Per-browser drafts use lsGet/lsSet("p35:…").
 
 // ---------- shared helpers ----------
+// replaceChildren that skips null/false (plain replaceChildren would print "null").
+function t35Fill(el, ...kids) { el.replaceChildren(...kids.flat().filter((k) => k != null && k !== false)); }
 function t35Key(i) { let x = 5381; for (const c of i.he) x = ((x * 33) ^ c.charCodeAt(0)) >>> 0; return "in" + x.toString(36); }
 const t35Inst = (key) => INST.find((i) => t35Key(i) === key) || null;
 function t35InstSelect(id, val, onchange, allLabel) {
@@ -27,7 +29,7 @@ const t35N = (v) => { const n = parseFloat(v); return isFinite(n) ? n : 0; };
 // Text with clickable official links, without Markdown leftovers.
 function t35Rich(el, text) {
   const clean = String(text || "").replace(/\*\*/g, "").replace(/^#{1,4}\s*/gm, "");
-  el.replaceChildren(...clean.split(/(https?:\/\/[^\s)»"،]+)/g).map((part, k) => {
+  t35Fill(el, ...clean.split(/(https?:\/\/[^\s)»"،]+)/g).map((part, k) => {
     if (k % 2 === 0) return part;
     const u = safeUrl(part.replace(/[.,;:]+$/, ""));
     return u ? h("a", { href: u, target: "_blank", rel: "noopener", text: part }) : part;
@@ -192,12 +194,12 @@ function askBubble(t, live) {
 function askDraw() {
   const body = $("#t35-ask-body"); if (!body) return;
   if (!ASK.turns.length) {
-    body.replaceChildren(h("div", { class: "t35-ask-hello" },
+    t35Fill(body, h("div", { class: "t35-ask-hello" },
       h("b", { text: "أهلا! اسألني عن التسجيل والتخصصات." }),
       h("p", { class: "muted small", text: "بعرف المؤسسات اللي بدليل المنصة وشروطها المكتوبة، والمصطلحات والمنح. ما بخترع أرقام: إذا الحد الأدنى مش مكتوب، بقلّك وين تفحصه." }),
       h("div", { class: "chips" }, ASK_STARTERS.map((s) => h("button", { class: "chip", type: "button", text: s, onclick: () => askSend(s) })))));
   } else {
-    body.replaceChildren(...ASK.turns.map((t) => askBubble(t)), ASK.busy ? askBubble({ role: "assistant" }, true) : null);
+    t35Fill(body, ...ASK.turns.map((t) => askBubble(t)), ASK.busy ? askBubble({ role: "assistant" }, true) : null);
   }
   const send = $("#t35-ask-send"), stop = $("#t35-ask-stop"), clear = $("#t35-ask-clear");
   if (send) send.hidden = ASK.busy;
@@ -253,14 +255,14 @@ function toolSekhem(el) {
     Object.assign(st, { bagrut: bag.value, psy: psy.value, w: +w.value, max: +max.value || 120 }); lsSet("p35:nums", st);
     wLbl.textContent = `${st.w}% بسيخومتري · ${100 - st.w}% بجروت`;
     const b = t35N(st.bagrut), p = t35N(st.psy);
-    if (!b || !p) { out.replaceChildren(h("span", { class: "muted", text: "عبّي معدّل البجروت وعلامة البسيخومتري لتشوف التقدير." })); return; }
+    if (!b || !p) { t35Fill(out, h("span", { class: "muted", text: "عبّي معدّل البجروت وعلامة البسيخومتري لتشوف التقدير." })); return; }
     const bScaled = 200 + (Math.min(b, st.max) / st.max) * 600;
     const sk = (st.w / 100) * p + (1 - st.w / 100) * bScaled;
     st.sekhem = Math.round(sk); lsSet("p35:nums", st);
-    out.replaceChildren(h("span", { class: "muted", text: "سيخم تقريبي على سلّم 200–800" }), h("b", { text: fmt(sk) }),
+    t35Fill(out, h("span", { class: "muted", text: "سيخم تقريبي على سلّم 200–800" }), h("b", { text: fmt(sk) }),
       h("span", { class: "small", text: `البجروت بعد التحويل للسلّم: ${fmt(bScaled)} · البسيخومتري: ${fmt(p)}` }));
   }
-  el.replaceChildren(t35Wrap("حاسبة السيخم التقريبية", "السيخم (סכם) بيجمع معدّل البجروت مع علامة البسيخومتري. هون منحسبه بطريقة تقريبية وشفافة عشان تفهم شو بأثّر أكثر.",
+  t35Fill(el, t35Wrap("حاسبة السيخم التقريبية", "السيخم (סכם) بيجمع معدّل البجروت مع علامة البسيخومتري. هون منحسبه بطريقة تقريبية وشفافة عشان تفهم شو بأثّر أكثر.",
     h("div", { class: "banner warn" }, h("span", null, h("b", { text: "مهم: " }), "كل جامعة إلها معادلة خاصة، وفي جامعات بتحسب على سلّم ثاني (مثلًا لـ1000 أو لـ100). النتيجة هون للتقدير الشخصي بس، ما بتنفع تقارنها مباشرة مع حد قبول منشور. حاسبة الجامعة الرسمية موجودة بموقع كل جامعة.")),
     h("div", { class: "form" },
       t35Field("معدّل البجروت الموزون (مع البونوس)", bag),
@@ -293,7 +295,7 @@ function toolAdmit(el) {
   function draw() {
     const i = t35Inst(my.inst) || INST[0];
     const majors = Object.values(i.majors).flat();
-    card.replaceChildren(
+    t35Fill(card, 
       h("div", { class: "t35-two" },
         h("div", { class: "plain stack" }, h("h4", { text: "أرقامك" }),
           h("dl", { class: "t35-dl" }, nums().map(([k, v]) => [h("dt", { text: k }), h("dd", { class: "num", text: v ? String(v) : "—" })])),
@@ -307,7 +309,7 @@ function toolAdmit(el) {
     );
   }
   const majorSel = h("select", { id: "t35-ad-major", onchange: (e) => { my.major = e.target.value; lsSet("p35:admit", my); } });
-  const fillMajors = () => { const i = t35Inst(my.inst) || INST[0]; majorSel.replaceChildren(opt("", "كل التخصصات", !my.major), Object.values(i.majors).flat().map((m) => opt(m, m, my.major === m))); };
+  const fillMajors = () => { const i = t35Inst(my.inst) || INST[0]; t35Fill(majorSel, opt("", "كل التخصصات", !my.major), Object.values(i.majors).flat().map((m) => opt(m, m, my.major === m))); };
   const askBtn = h("button", { class: "btn sm", type: "button", text: "خلّي Claude يفسّر الشروط مقابل أرقامي", onclick: () => {
     const i = t35Inst(my.inst) || INST[0];
     t35Ai({ out: aiOut, btn: askBtn, stop, prompt:
@@ -323,7 +325,7 @@ function toolAdmit(el) {
 أرقام الطالب: ${nums().map(([k, v]) => `${k}: ${v || "غير معروف"}`).join("، ")}
 (السيخم محسوب بحاسبة تقريبية مش رسمية.)` });
   } });
-  el.replaceChildren(t35Wrap("هل أنا مقبول؟", "اختار مؤسسة وشوف شروطها المكتوبة جنب أرقامك. منعرض بس اللي مكتوب بالدليل، بدون تخمين.",
+  t35Fill(el, t35Wrap("هل أنا مقبول؟", "اختار مؤسسة وشوف شروطها المكتوبة جنب أرقامك. منعرض بس اللي مكتوب بالدليل، بدون تخمين.",
     h("div", { class: "form" },
       t35Field("المؤسسة", t35InstSelect("t35-ad-inst", my.inst, (e) => { my.inst = e.target.value; my.major = ""; fillMajors(); save(); })),
       t35Field("التخصص (اختياري)", majorSel),
@@ -350,12 +352,12 @@ function toolEnglish(el) {
   const path = h("div", { class: "result" });
   const drawPath = () => {
     const k = T35_ENG.findIndex((l) => l[0] === pick);
-    if (k < 0) { path.replaceChildren(h("span", { class: "muted", text: "اكبس على مستواك (أو المستوى اللي بتتوقعه) لتشوف الطريق للإعفاء." })); return; }
+    if (k < 0) { t35Fill(path, h("span", { class: "muted", text: "اكبس على مستواك (أو المستوى اللي بتتوقعه) لتشوف الطريق للإعفاء." })); return; }
     const left = T35_ENG.length - 1 - k;
-    path.replaceChildren(h("span", { class: "muted", text: "عدد المساقات للوصول للإعفاء حسب السلّم" }), h("b", { text: left ? String(left) : "ولا مساق" }),
+    t35Fill(path, h("span", { class: "muted", text: "عدد المساقات للوصول للإعفاء حسب السلّم" }), h("b", { text: left ? String(left) : "ولا مساق" }),
       h("span", { class: "small", text: left ? `الطريق: ${T35_ENG.slice(k).map((l) => l[1]).join(" ← ")}` : "مبروك، أنت معفى من الإنجليزي." }));
   };
-  el.replaceChildren(t35Wrap("مستويات الإنجليزي بالجامعة", "كل طالب بيتصنّف لمستوى إنجليزي. كل مستوى تحت «بطور» يعني مساق إنجليزي لازم تنجح فيه، بالترتيب، لحد ما توصل للإعفاء.",
+  t35Fill(el, t35Wrap("مستويات الإنجليزي بالجامعة", "كل طالب بيتصنّف لمستوى إنجليزي. كل مستوى تحت «بطور» يعني مساق إنجليزي لازم تنجح فيه، بالترتيب، لحد ما توصل للإعفاء.",
     h("ol", { class: "t35-ladder" }, T35_ENG.map(([he, ar, d]) => h("li", null,
       h("button", { class: "t35-rung", type: "button", "aria-pressed": String(pick === he), onclick: (e) => { pick = he; lsSet("p35:eng", pick); el.querySelectorAll(".t35-rung").forEach((b) => b.setAttribute("aria-pressed", String(b === e.currentTarget))); drawPath(); } },
         h("span", { class: "t35-rung-name" }, h("b", { class: "he", text: he }), h("span", { class: "muted small", text: ar })), h("span", { class: "small", text: d }))))),
@@ -390,7 +392,7 @@ function toolTranslate(el) {
     lsSet("p35:tr", box.value.slice(0, 6000));
     const t = box.value;
     const hits = t ? DICT.filter(([he]) => he.split(/\s*\/\s*|\s*\(/)[0].split(" ").every((w) => t.includes(w.replace(/[()]/g, "")))) : [];
-    terms.replaceChildren(hits.length ? h("div", { class: "plain stack" }, h("h4", { text: `مصطلحات من قاموس المنصة لقيناها بالنص (${hits.length})` }),
+    t35Fill(terms, hits.length ? h("div", { class: "plain stack" }, h("h4", { text: `مصطلحات من قاموس المنصة لقيناها بالنص (${hits.length})` }),
       h("div", { class: "table-wrap" }, h("table", null, h("tbody", null, hits.map(([he, tr, ar]) => h("tr", null, h("td", { class: "he", text: he }), h("td", { class: "muted", text: tr }), h("td", { text: ar }))))))) : null);
   };
   box.addEventListener("input", local);
@@ -407,10 +409,10 @@ function toolTranslate(el) {
 النص:
 """${t.slice(0, 6000)}"""` });
   } });
-  el.replaceChildren(t35Wrap("ترجم نص عبري من الجامعة", "الصق نص من موقع الجامعة أو مودل أو إيميل، وبنترجمه وبنشرح المصطلحات. المصطلحات المعروفة بتظهر فورًا من قاموس المنصة حتى بدون المساعد.",
+  t35Fill(el, t35Wrap("ترجم نص عبري من الجامعة", "الصق نص من موقع الجامعة أو مودل أو إيميل، وبنترجمه وبنشرح المصطلحات. المصطلحات المعروفة بتظهر فورًا من قاموس المنصة حتى بدون المساعد.",
     t35Field("النص بالعبري", box, "full"),
     terms,
-    h("div", { class: "row" }, btn, stop, h("button", { class: "btn sm ghost", type: "button", text: "امسح", onclick: () => { box.value = ""; local(); out.replaceChildren(); } })),
+    h("div", { class: "row" }, btn, stop, h("button", { class: "btn sm ghost", type: "button", text: "امسح", onclick: () => { box.value = ""; local(); t35Fill(out, ); } })),
     t35AiGate(), out,
     h("p", { class: "muted small", text: "لترجمة وثائق رسمية (شهادات، عقود) بتحتاج مترجم معتمد. هاي الأداة للفهم بس." }),
   ));
@@ -421,7 +423,7 @@ function toolTranslate(el) {
 function toolRoadmap(el) {
   const st = lsGet("p35:road", { inst: t35Key(INST[0]), major: "", note: "" });
   const majorSel = h("select", { id: "t35-rm-major", onchange: (e) => { st.major = e.target.value; lsSet("p35:road", st); } });
-  const fill = () => { const i = t35Inst(st.inst) || INST[0]; const all = Object.values(i.majors).flat(); if (!all.includes(st.major)) st.major = all[0] || ""; majorSel.replaceChildren(all.map((m) => opt(m, m, st.major === m))); };
+  const fill = () => { const i = t35Inst(st.inst) || INST[0]; const all = Object.values(i.majors).flat(); if (!all.includes(st.major)) st.major = all[0] || ""; t35Fill(majorSel, all.map((m) => opt(m, m, st.major === m))); };
   const note = h("input", { type: "text", id: "t35-rm-note", maxlength: 200, value: st.note, placeholder: "مثلًا: بحب البحث، بدي أشتغل بالنقب، بفكّر بلقب ثاني", oninput: (e) => { st.note = e.target.value; lsSet("p35:road", st); } });
   const out = h("div", { class: "t35-ai-out t35-road" });
   const stop = t35StopBtn();
@@ -436,7 +438,7 @@ function toolRoadmap(el) {
 ممنوع: أرقام رواتب، نسب قبول، حدود قبول، أسماء محاضرين، أو تفاصيل خاصة بالمؤسسة مش متأكد منها. قول مرة وحدة إنه البرنامج الرسمي بالידיעון تبع المؤسسة.
 ${st.note ? "ملاحظة من الطالب: " + st.note : ""}` });
   } });
-  el.replaceChildren(t35Wrap("خريطة طريق التخصص", "اختار مؤسسة وتخصص، وClaude بيرسملك صورة عامة سنة بسنة: مساقات، تدريب، مهارات، وشغل بعد اللقب.",
+  t35Fill(el, t35Wrap("خريطة طريق التخصص", "اختار مؤسسة وتخصص، وClaude بيرسملك صورة عامة سنة بسنة: مساقات، تدريب، مهارات، وشغل بعد اللقب.",
     h("div", { class: "form" },
       t35Field("المؤسسة", t35InstSelect("t35-rm-inst", st.inst, (e) => { st.inst = e.target.value; fill(); lsSet("p35:road", st); })),
       t35Field("التخصص", majorSel),
@@ -456,8 +458,8 @@ function toolTimetable(el) {
   const list = h("div", { class: "t35-week" });
   const draw = () => {
     const slots = (doc && doc.slots) || [];
-    if (!slots.length) { list.replaceChildren(empty("الجدول فاضي", "أضف أول محاضرة أو ترچول من النموذج فوق. الجدول بينحفظ إلك لحالك.")); return; }
-    list.replaceChildren(...T35_DAYS.map((d, di) => {
+    if (!slots.length) { t35Fill(list, empty("الجدول فاضي", "أضف أول محاضرة أو ترچول من النموذج فوق. الجدول بينحفظ إلك لحالك.")); return; }
+    t35Fill(list, ...T35_DAYS.map((d, di) => {
       const day = slots.filter((s) => s.day === di).sort((a, b) => a.start.localeCompare(b.start));
       if (!day.length) return null;
       const mins = day.reduce((n, s) => n + Math.max(0, t35Min(s.end) - t35Min(s.start)), 0);
@@ -496,7 +498,7 @@ function toolTimetable(el) {
     const clash = slots.find((x) => x !== s && x.day === s.day && t35Min(x.start) < t35Min(s.end) && t35Min(s.start) < t35Min(x.end));
     if (await save(slots)) { $("#t35-tt-title").value = ""; $("#t35-tt-room").value = ""; toast(clash ? `انضاف، بس في تضارب مع «${clash.title}»` : "انضاف للجدول"); }
   });
-  el.replaceChildren(t35Wrap("الجدول الأسبوعي", "رتّب محاضراتك وترچولاتك وساعات الشغل بمكان واحد، وشوف كم ساعة عندك كل يوم.", t35PrivNote(), f, list));
+  t35Fill(el, t35Wrap("الجدول الأسبوعي", "رتّب محاضراتك وترچولاتك وساعات الشغل بمكان واحد، وشوف كم ساعة عندك كل يوم.", t35PrivNote(), f, list));
   if (S.uid) onLeave(subscribeDoc(myCol(), "p35-timetable", (d) => { doc = d; draw(); })); else draw();
 }
 const t35Min = (hm) => { const [a, b] = String(hm || "0:0").split(":").map(Number); return (a || 0) * 60 + (b || 0); };
@@ -511,8 +513,8 @@ function toolGpa(el) {
     const r = read(); lsSet("p35:gpa", r);
     let nz = 0, sum = 0, all = 0, passOnly = 0;
     r.forEach(([, n, g, p]) => { if (!n) return; if (p) { passOnly += n; all += n; return; } if (g === "" || isNaN(+g)) return; nz += n; sum += n * +g; all += n; });
-    if (!nz) { out.replaceChildren(h("span", { class: "muted", text: "عبّي النقاط والعلامة لكل مساق لتشوف المعدّل." })); return; }
-    out.replaceChildren(h("span", { class: "muted", text: "المعدّل الموزون حسب נ\"ז" }), h("b", { text: (sum / nz).toFixed(2) }),
+    if (!nz) { t35Fill(out, h("span", { class: "muted", text: "عبّي النقاط والعلامة لكل مساق لتشوف المعدّل." })); return; }
+    t35Fill(out, h("span", { class: "muted", text: "المعدّل الموزون حسب נ\"ז" }), h("b", { text: (sum / nz).toFixed(2) }),
       h("span", { class: "small", text: `نقاط بالمعدّل: ${nz}${passOnly ? ` · «עובר» بدون علامة: ${passOnly}` : ""} · مجموع النقاط: ${all}` }));
   };
   const add = ([c, n, g, p]) => tbody.append(h("tr", null,
@@ -522,7 +524,7 @@ function toolGpa(el) {
     h("td", null, h("input", { class: "p", type: "checkbox", checked: p ? true : null, "aria-label": "עובר بدون علامة", onchange: calc })),
     h("td", null, h("button", { class: "link danger", type: "button", text: "×", "aria-label": "إزالة", onclick: (e) => { e.target.closest("tr").remove(); calc(); } }))));
   rows.forEach(add);
-  el.replaceChildren(t35Wrap("حاسبة المعدّل الجامعي", "كل مساق إله نقاط زخوت (נ\"ז). المعدّل = مجموع (العلامة × النقاط) ÷ مجموع النقاط. المساقات اللي علامتها «עובר» بدون رقم ما بتدخل بالمعدّل.",
+  t35Fill(el, t35Wrap("حاسبة المعدّل الجامعي", "كل مساق إله نقاط زخوت (נ\"ז). المعدّل = مجموع (العلامة × النقاط) ÷ مجموع النقاط. المساقات اللي علامتها «עובר» بدون رقم ما بتدخل بالمعدّل.",
     h("div", { class: "table-wrap" }, h("table", null, h("thead", null, h("tr", null, h("th", { text: "المساق" }), h("th", { text: "נ\"ז" }), h("th", { text: "العلامة" }), h("th", { text: "עובר" }), h("th"))), tbody)),
     h("div", { class: "row" }, h("button", { class: "btn sm ghost", type: "button", text: "+ مساق", onclick: () => { add(["", 2, "", false]); calc(); } })),
     out,
@@ -568,7 +570,7 @@ function toolPomodoro(el) {
   const week = days.reduce((n, d) => n + (stats[d]?.min || 0), 0);
   const setMode = (m) => { if (POMO.running) return; POMO.mode = m; POMO.left = null; toolPomodoro(el); };
   const cfgIn = (k, label) => t35Field(label, h("input", { type: "number", id: "t35-pomo-" + k, min: 1, max: 90, value: cfg[k], onchange: (e) => { const c = pomoCfg(); c[k] = Math.min(90, Math.max(1, +e.target.value || 1)); lsSet("p35:pomoCfg", c); if (!POMO.running) { POMO.left = null; pomoTick(); } } }));
-  el.replaceChildren(h("div", { class: "t35 stack", id: "t35-pomo" },
+  t35Fill(el, h("div", { class: "t35 stack", id: "t35-pomo" },
     h("h2", { text: "مؤقت دراسة (بومودورو)" }),
     h("p", { class: "muted", text: "ادرس فترة تركيز كاملة بدون تلفون، وبعدها استراحة قصيرة. كل 4 جلسات استراحة أطول. المؤقت بيضل شغّال لو تنقّلت بين الأدوات." }),
     h("div", { class: "chips", role: "group", "aria-label": "نوع الجلسة" }, Object.entries(POMO_LBL).map(([k, l]) => h("button", { class: "chip", type: "button", "aria-pressed": String(POMO.mode === k), disabled: POMO.running && POMO.mode !== k ? true : null, text: l, onclick: () => setMode(k) }))),
@@ -617,12 +619,12 @@ function toolChecklist(el) {
     return setDoc(myCol(), "p35-check-" + cur, { uid: S.uid, kind: "p35-check", inst: cur, items, createdAt: d ? d.createdAt : Date.now(), updatedAt: Date.now() });
   };
   const draw = () => {
-    started.replaceChildren(...docs.map((d) => { const i = t35Inst(d.inst); if (!i) return null; const n = d.items.filter((x) => x.done).length;
+    t35Fill(started, ...docs.map((d) => { const i = t35Inst(d.inst); if (!i) return null; const n = d.items.filter((x) => x.done).length;
       return h("button", { class: "chip", type: "button", "aria-pressed": String(d.inst === cur), text: `${i.ar} · ${n}/${d.items.length}`, onclick: () => { cur = d.inst; lsSet("p35:checkInst", cur); sel.value = cur; draw(); } }); }));
     const i = t35Inst(cur) || INST[0];
     const d = docOf(cur); const items = d ? d.items : template();
     const done = items.filter((x) => x.done).length;
-    body.replaceChildren(
+    t35Fill(body, 
       h("div", { class: "spread" }, h("h3", { text: i.ar }), h("a", { class: "btn sm blue", href: regUrl(i), target: "_blank", rel: "noopener", text: "صفحة التسجيل" })),
       h("div", { class: "stack", style: "gap:4px" }, h("div", { class: "spread small" }, h("span", { text: d ? "تقدّمك" : "قائمة مقترحة، اكبس على أي بند لتبلّش" }), h("b", { class: "num", text: `${done}/${items.length}` })),
         h("div", { class: "bar" }, h("i", { style: `width:${items.length ? (done / items.length) * 100 : 0}%` }))),
@@ -640,7 +642,7 @@ function toolChecklist(el) {
     );
   };
   const sel = t35InstSelect("t35-ck-inst", cur, (e) => { cur = e.target.value; lsSet("p35:checkInst", cur); draw(); });
-  el.replaceChildren(t35Wrap("قائمة مهام التسجيل", "لكل مؤسسة قائمة: وثائق، مواعيد ودفعات. أضف تاريخ لكل بند وعلّم اللي خلّصته. البنود عامة، والتفاصيل الدقيقة بموقع المؤسسة.",
+  t35Fill(el, t35Wrap("قائمة مهام التسجيل", "لكل مؤسسة قائمة: وثائق، مواعيد ودفعات. أضف تاريخ لكل بند وعلّم اللي خلّصته. البنود عامة، والتفاصيل الدقيقة بموقع المؤسسة.",
     t35PrivNote(), t35Field("المؤسسة", sel), started, body));
   if (S.uid) onLeave(t35Mine("p35-check", (rows) => { docs = rows; draw(); })); else draw();
 }
@@ -678,7 +680,7 @@ function toolReminders(el) {
     const today = t35Ymd();
     const up = rows.filter((r) => r.date >= today).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
     const past = rows.filter((r) => r.date < today).sort((a, b) => b.date.localeCompare(a.date));
-    list.replaceChildren(
+    t35Fill(list, 
       up.length ? h("div", { class: "stack" }, ...up.map(t35RemRow)) : empty("ما في مواعيد جاية", "أضف موعد مهم: آخر يوم تسجيل، امتحان بسيخومتري، مقابلة، دفعة."),
       up.length ? h("div", { class: "row" }, h("button", { class: "btn sm ghost", type: "button", text: "نزّل لتقويم تلفونك (.ics)", onclick: () => saveFile("تذكيرات-الجامعة.ics", t35Ics(up)) }),
         h("span", { class: "muted small", text: "افتح الملف بالتلفون وبينضافوا للتقويم مع تنبيه قبل بيوم." })) : null,
@@ -697,7 +699,7 @@ function toolReminders(el) {
     if (!t || !d) return;
     if (await t35AddReminder(t, d, $("#t35-rm-note").value.trim(), $("#t35-rm-time").value)) f.reset();
   });
-  el.replaceChildren(t35Wrap("تذكيرات المواعيد المهمة", "سجّل مواعيدك وبنعرض أقربها بالصفحة الرئيسية.",
+  t35Fill(el, t35Wrap("تذكيرات المواعيد المهمة", "سجّل مواعيدك وبنعرض أقربها بالصفحة الرئيسية.",
     h("div", { class: "banner" }, "المنصة ما بتقدر تبعث إشعارات للمتصفح أو للتلفون. عشان توصلك تنبيهات حقيقية، نزّل المواعيد كملف تقويم وافتحه بتلفونك."),
     t35PrivNote(), f, list,
     h("button", { class: "link small", type: "button", "data-go": "uni-deadlines", text: "مواعيد تسجيل نشرها الأعضاء، وتقدر تضيفها لتذكيراتك" })));
@@ -713,10 +715,10 @@ function toolBudget(el) {
   const inp = ([k, l]) => t35Field(l, h("input", { type: "number", id: "t35-bd-" + k, min: 0, step: 10, value: v[k] || "", placeholder: "0", oninput: (e) => { v[k] = t35N(e.target.value); lsSet("p35:budget", v); calc(); } }));
   const calc = () => {
     const tin = T35_IN.reduce((n, [k]) => n + (v[k] || 0), 0), tout = T35_OUT.reduce((n, [k]) => n + (v[k] || 0), 0);
-    if (!tin && !tout) { out.replaceChildren(empty("الميزانية فاضية", "عبّي قدّيش بيدخلك بالشهر وقدّيش بتصرف، وبنوريك وين بتروح المصاري.")); return; }
+    if (!tin && !tout) { t35Fill(out, empty("الميزانية فاضية", "عبّي قدّيش بيدخلك بالشهر وقدّيش بتصرف، وبنوريك وين بتروح المصاري.")); return; }
     const bal = tin - tout;
     const exp = T35_OUT.filter(([k]) => v[k]).sort((a, b) => v[b[0]] - v[a[0]]);
-    out.replaceChildren(
+    t35Fill(out, 
       h("div", { class: "result" + (bal < 0 ? " t35-neg" : "") }, h("span", { class: "muted", text: bal >= 0 ? "بيضل معك آخر الشهر" : "ناقصك آخر الشهر" }), h("b", { text: "₪ " + fmt(Math.abs(bal)) }),
         h("span", { class: "small", text: `دخل: ₪ ${fmt(tin)} · مصاريف: ₪ ${fmt(tout)} · بالسنة: ₪ ${fmt(bal * 12)}` })),
       exp.length ? h("div", { class: "stack" }, ...exp.map(([k, l]) => h("div", { class: "stack", style: "gap:4px" },
@@ -724,7 +726,7 @@ function toolBudget(el) {
         h("div", { class: "bar" }, h("i", { style: `width:${tout ? (v[k] / tout) * 100 : 0}%` }))))) : null,
       bal < 0 ? h("p", { class: "small", text: "نصيحة: افحص المنح بقسم «أدوات ← المنح»، وشغل طلابي بيناسب الدراسة بقسم المسار المهني." }) : null);
   };
-  el.replaceChildren(t35Wrap("ميزانية الطالب الشهرية", "حط أرقامك أنت (تقديرية). كل شي بينحفظ على هذا المتصفح بس.",
+  t35Fill(el, t35Wrap("ميزانية الطالب الشهرية", "حط أرقامك أنت (تقديرية). كل شي بينحفظ على هذا المتصفح بس.",
     h("h4", { text: "الدخل بالشهر" }), h("div", { class: "form" }, T35_IN.map(inp)),
     h("h4", { text: "المصاريف بالشهر" }), h("div", { class: "form" }, T35_OUT.map(inp)),
     out, h("button", { class: "link small", type: "button", text: "صفّر الأرقام", onclick: () => confirmBox("تصفّر كل الأرقام؟", () => { lsSet("p35:budget", {}); toolBudget(el); }) })));
@@ -741,15 +743,15 @@ function toolAbroad(el) {
     h("div", { class: "form" }, T35_AB.map(([k, l]) => t35Field(l, h("input", { type: "number", id: `t35-ab-${key}-${k}`, min: 0, step: k === "years" ? 1 : 50, value: v[key][k] ?? "", placeholder: "0", oninput: (e) => { v[key][k] = e.target.value; lsSet("p35:abroad", v); calc(); } })))));
   const calc = () => {
     const a = total(v.here), b = total(v.there);
-    if (!a.all && !b.all) { tbl.replaceChildren(empty("لسا ما في أرقام", "عبّي الطرفين بأرقام لقيتها بمواقع المؤسسات، وبنحطهم جنب بعض.")); return; }
+    if (!a.all && !b.all) { t35Fill(tbl, empty("لسا ما في أرقام", "عبّي الطرفين بأرقام لقيتها بمواقع المؤسسات، وبنحطهم جنب بعض.")); return; }
     const cn = v.country || "بالخارج";
     const r = (l, x, y, strong) => h("tr", null, h("td", { text: l }), h("td", { class: "num", text: "₪ " + fmt(x) }), h("td", { class: "num", text: "₪ " + fmt(y) }), strong ? null : null);
     const diff = b.all - a.all;
-    tbl.replaceChildren(h("table", { class: "t35-cmp" }, h("thead", null, h("tr", null, h("th"), h("th", { text: "بالبلاد" }), h("th", { text: cn }))),
+    t35Fill(tbl, h("table", { class: "t35-cmp" }, h("thead", null, h("tr", null, h("th"), h("th", { text: "بالبلاد" }), h("th", { text: cn }))),
       h("tbody", null, r("بالسنة", a.perYear, b.perYear), r("اللقب كله", a.all, b.all))),
       h("p", { class: "small", text: diff === 0 ? "نفس التكلفة تقريبًا." : diff > 0 ? `الدراسة بالخارج أغلى بـ ₪ ${fmt(diff)} عاللقب كله.` : `الدراسة بالبلاد أغلى بـ ₪ ${fmt(-diff)} عاللقب كله.` }));
   };
-  el.replaceChildren(t35Wrap("مقارنة: الدراسة بالبلاد أو بالخارج", "حط أرقام حقيقية لقيتها أنت (بالشيكل). ما في أرقام جاهزة لأنها بتختلف كثير حسب البلد والجامعة والتخصص.",
+  t35Fill(el, t35Wrap("مقارنة: الدراسة بالبلاد أو بالخارج", "حط أرقام حقيقية لقيتها أنت (بالشيكل). ما في أرقام جاهزة لأنها بتختلف كثير حسب البلد والجامعة والتخصص.",
     t35Field("البلد بالخارج", h("input", { type: "text", id: "t35-ab-country", maxlength: 40, value: v.country, placeholder: "مثال: الأردن، ألمانيا، مولدوفا", oninput: (e) => { v.country = e.target.value; lsSet("p35:abroad", v); calc(); } })),
     h("div", { class: "row" }, h("button", { class: "btn sm ghost", type: "button", text: "خذ أرقام البلاد من حاسبة التكلفة", onclick: () => {
       const c = lsGet("cost", null); if (!c) { toast("لسا ما فتحت حاسبة التكلفة"); return; }
@@ -792,7 +794,7 @@ function toolReading(el) {
       done ? h("div", { class: "result" }, h("span", { class: "muted", text: "الفهم" }), h("b", { text: `${score} من 3` }), h("span", { class: "small", text: score === 3 ? "قراءة سريعة مع فهم كامل. ممتاز." : "السرعة بتفيد بس إذا الفهم كامل. جرّب تقرأ أبطأ شوي المرة الجاي." })) : null,
       done ? h("button", { class: "btn ghost", type: "button", text: "جرّب مرة ثانية", onclick: () => { READ.phase = "intro"; re(); } }) : null];
   }
-  el.replaceChildren(t35Wrap("اختبار سرعة القراءة بالعبري", "الجامعة يعني قراءة كثير بالعبري. قيس سرعتك وفهمك، وارجع جرّب كل كم أسبوع لتشوف تقدّمك.", ...body,
+  t35Fill(el, t35Wrap("اختبار سرعة القراءة بالعبري", "الجامعة يعني قراءة كثير بالعبري. قيس سرعتك وفهمك، وارجع جرّب كل كم أسبوع لتشوف تقدّمك.", ...body,
     hist.length ? h("div", { class: "plain stack" }, h("h4", { text: "محاولاتك السابقة" }), h("div", { class: "table-wrap" }, h("table", null,
       h("thead", null, h("tr", null, h("th", { text: "متى" }), h("th", { text: "كلمة/دقيقة" }), h("th", { text: "الفهم" }))),
       h("tbody", null, hist.map((x) => h("tr", null, h("td", { text: rel(x.d) }), h("td", { class: "num", text: x.wpm }), h("td", { class: "num", text: `${x.s}/3` }))))))) : null,
@@ -817,7 +819,7 @@ function toolCv(el) {
     const L = T35_CV_L[v.lang];
     preview.setAttribute("dir", L.dir);
     const sec = (k) => lines(v[k]).length ? h("section", null, h("h4", { text: L[k] }), k === "summary" ? h("p", { text: v[k] }) : h("ul", null, lines(v[k]).map((x) => h("li", { text: x })))) : null;
-    preview.replaceChildren(
+    t35Fill(preview, 
       h("header", null, h("h3", { text: v.name || "اسمك هون" }), v.title ? h("p", { class: "muted", text: v.title }) : null,
         h("p", { class: "small", text: [v.phone, v.email, v.city].filter(Boolean).join(" · ") })),
       ...["summary", "edu", "exp", "vol", "skills", "langs"].map(sec));
@@ -858,7 +860,7 @@ Input: ${JSON.stringify(Object.fromEntries(keys.map((k) => [k, v[k] || ""])))}`)
     } catch (e) { status.textContent = aiError(e); }
     finally { better.disabled = false; }
   } });
-  el.replaceChildren(t35Wrap("مولّد السيرة الذاتية", "عبّي تفاصيلك مرة وحدة، اختار اللغة، وشوف المعاينة. بتقدر تنزّلها كملف وتفتحه وتطبعه PDF من المتصفح.",
+  t35Fill(el, t35Wrap("مولّد السيرة الذاتية", "عبّي تفاصيلك مرة وحدة، اختار اللغة، وشوف المعاينة. بتقدر تنزّلها كملف وتفتحه وتطبعه PDF من المتصفح.",
     h("div", { class: "chips", role: "group", "aria-label": "لغة السيرة" }, Object.entries(T35_CV_L).map(([k, L]) => h("button", { class: "chip", type: "button", "aria-pressed": String(v.lang === k), text: L.name, onclick: (e) => { v.lang = k; lsSet("p35:cv", v); e.currentTarget.parentNode.querySelectorAll(".chip").forEach((c) => c.setAttribute("aria-pressed", String(c === e.currentTarget))); draw(); } }))),
     h("p", { class: "muted small", text: "العناوين بتتغير حسب اللغة. اكتب المحتوى باللغة اللي بدك، أو اكتبه بالعربي وخلّي «حسّن بالذكاء» يترجم ويرتّب." }),
     h("div", { class: "form" }, fields),
@@ -898,7 +900,7 @@ Facts:
 - Goals after graduation: ${v.goal || ""}
 Start with a greeting suitable for a scholarship committee, end with thanks and the student's name.` });
   } });
-  el.replaceChildren(t35Wrap("رسالة طلب منحة", "اكتب الحقائق عنك، وClaude بيكتب مسودة مرتّبة. بعدها عدّل عليها بحرية، وانسخها لطلب المنحة.",
+  t35Fill(el, t35Wrap("رسالة طلب منحة", "اكتب الحقائق عنك، وClaude بيكتب مسودة مرتّبة. بعدها عدّل عليها بحرية، وانسخها لطلب المنحة.",
     h("div", { class: "chips", role: "group", "aria-label": "لغة الرسالة" }, [["he", "עברית"], ["ar", "العربية"], ["en", "English"]].map(([k, l]) => h("button", { class: "chip", type: "button", "aria-pressed": String(v.lang === k), text: l, onclick: (e) => { v.lang = k; lsSet("p35:letter", v); e.currentTarget.parentNode.querySelectorAll(".chip").forEach((c) => c.setAttribute("aria-pressed", String(c === e.currentTarget))); } }))),
     h("div", { class: "form" },
       inp("grant", "المنحة أو الجهة", "مثال: منحة پراح، منحة الجامعة الاجتماعية"),
@@ -943,7 +945,7 @@ registerHome(() => {
   const draw = (rows) => {
     const today = t35Ymd();
     const next = rows.filter((r) => r.date >= today).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))[0];
-    remBox.replaceChildren(next
+    t35Fill(remBox, next
       ? h("div", { class: "plain t35-rem" }, h("div", { class: "t35-rem-date" }, h("b", { class: "num", text: next.date.slice(8) }), h("span", { text: new Date(next.date + "T00:00").toLocaleDateString("ar-EG", { month: "short" }) })),
         h("div", { style: "min-width:0" }, h("span", { class: "muted small", text: "أقرب موعد عندك · " + t35In(t35DaysTo(next.date)) }), h("b", { style: "display:block", text: next.title })),
         h("button", { class: "link small", type: "button", text: "كل التذكيرات", onclick: () => { toolTab = "reminders"; go("tools"); } }))

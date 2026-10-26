@@ -49,7 +49,7 @@ function u36CompareView() {
     const row = (label, fa, fb) => [h("h4", { class: "u36-cmp-label", text: label }), h("div", { class: "u36-cell" }, fa(A)), h("div", { class: "u36-cell" }, fb ? fb(B) : fa(B))];
     const majors = (i) => h("div", { class: "stack", style: "gap:6px" }, ...Object.entries(i.majors).map(([fac, l]) => h("div", { class: "fac" }, h("span", { class: "fac-name", text: fac }),
       h("div", { class: "chips" }, l.map((m) => h("span", { class: "tag" + (common.includes(m) ? " hit" : ""), text: m }))))));
-    table.replaceChildren(
+    t35Fill(table, 
       h("div", { class: "u36-cell u36-name" }, h("h3", { text: A.ar }), h("span", { class: "he muted small", text: A.he })),
       h("div", { class: "u36-cell u36-name" }, h("h3", { text: B.ar }), h("span", { class: "he muted small", text: B.he })),
       ...row("النوع والمنطقة", (i) => h("div", { class: "row" }, h("span", { class: "pill", text: TYPES[i.t] }), h("span", { class: "pill grey", text: i.r }))),
@@ -92,11 +92,11 @@ function u36ReviewsView() {
     const byInst = {};
     vis.forEach((r) => (byInst[r.inst] ||= []).push(r));
     const ranked = Object.keys(byInst).map((k) => ({ k, ...u36Avg(vis, k) })).sort((a, b) => b.n - a.n || b.avg - a.avg);
-    summary.replaceChildren(...(ranked.length ? ranked.slice(0, 12).map((x) => h("button", { class: "plain u36-sum-item", type: "button", "aria-pressed": String(REV.inst === x.k), onclick: () => { REV.inst = REV.inst === x.k ? "" : x.k; $("#u36-rv-filter").value = REV.inst; draw(); } },
+    t35Fill(summary, ...(ranked.length ? ranked.slice(0, 12).map((x) => h("button", { class: "plain u36-sum-item", type: "button", "aria-pressed": String(REV.inst === x.k), onclick: () => { REV.inst = REV.inst === x.k ? "" : x.k; $("#u36-rv-filter").value = REV.inst; draw(); } },
       h("b", { text: t35Inst(x.k).ar }), u36AvgLine(x))) : []));
     let shown = vis.filter((r) => !REV.inst || r.inst === REV.inst);
     shown = shown.sort(REV.sort === "high" ? (a, b) => b.stars - a.stars || b.createdAt - a.createdAt : REV.sort === "low" ? (a, b) => a.stars - b.stars || b.createdAt - a.createdAt : (a, b) => (b.updatedAt || b.createdAt) - (a.updatedAt || a.createdAt));
-    list.replaceChildren(...(shown.length ? shown.map((r) => h("article", { class: "card item" },
+    t35Fill(list, ...(shown.length ? shown.map((r) => h("article", { class: "card item" },
       h("div", { class: "spread" }, h("b", { text: t35Inst(r.inst).ar }), u36Stars(+r.stars || 0)),
       h("p", { text: r.text }),
       h("div", { class: "meta" }, avatar(nameOf(r.uid), r.uid), h("span", { class: "who", text: nameOf(r.uid) }), isMod("verified", r.uid) ? h("span", { class: "pill good", text: "موثّق" }) : null,
@@ -106,7 +106,7 @@ function u36ReviewsView() {
     drawForm();
   };
   const drawForm = () => {
-    if (!S.uid || !S.canWrite) { formBox.replaceChildren(h("p", { class: "muted small", text: "لتكتب تجربة لازم تكون مسجّل دخول ومعك صلاحية مشاركة." })); return; }
+    if (!S.uid || !S.canWrite) { t35Fill(formBox, h("p", { class: "muted small", text: "لتكتب تجربة لازم تكون مسجّل دخول ومعك صلاحية مشاركة." })); return; }
     const sel = $("#u36-rv-inst"); const cur = sel ? sel.value : (REV.inst || "");
     if (sel && formBox.contains(sel) && formBox.dataset.inst === cur) return;
     const key = cur || t35Key(INST[0]);
@@ -133,7 +133,7 @@ function u36ReviewsView() {
       const ok = await setDoc("reviews", `${inst}__${S.uid}`, { uid: S.uid, inst, stars, role: $("#u36-rv-role").value, text, createdAt: old ? old.createdAt : Date.now(), updatedAt: Date.now() });
       if (ok) { toast(old ? "تحدّثت تجربتك" : "انشرت تجربتك، شكرًا"); formBox.dataset.inst = ""; drawForm(); }
     });
-    formBox.replaceChildren(f);
+    t35Fill(formBox, f);
   };
   const v = h("div", { class: "view" },
     head("قسم «جامعة»", "تجارب الطلاب", "خريجو المدرسة بيحكوا عن مؤسساتهم: شو منيح، شو صعب، وشو لازم تعرف قبل ما تسجّل. تقييم من 1 لـ 5 وتجربة قصيرة."),
@@ -178,7 +178,7 @@ function u36DeadlinesView() {
           n >= 0 ? h("button", { class: "btn sm", type: "button", text: "أضف لتذكيراتي", onclick: () => t35AddReminder(`${r.title} · ${i.ar}`, r.date, u || "") }) : null,
           u36ReportBtn("deadlines", r), rowActions("deadlines", r)));
     };
-    list.replaceChildren(
+    t35Fill(list, 
       up.length ? h("div", { class: "stack" }, ...up.map(card)) : empty(DL.inst ? "ما في مواعيد جاية لهاي المؤسسة" : "لسا ما في مواعيد", "شفت موعد تسجيل رسمي بموقع مؤسسة؟ أضفه مع رابط المصدر، وكل طلاب المدرسة بيستفيدوا."),
       past.length ? h("details", { class: "t35-past" }, h("summary", { text: `مواعيد فاتت (${past.length})` }), h("div", { class: "stack" }, ...past.slice(0, 20).map(card))) : null);
   };
