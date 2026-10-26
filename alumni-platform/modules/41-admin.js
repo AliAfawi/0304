@@ -355,7 +355,7 @@ registerView("ad-backup", "admin", "نسخ احتياطي", () => {
   return h("div", { class: "view" },
     adHead("نسخ احتياطي وتصدير", "نزّل نسخة كاملة من بيانات المنصة المشتركة كملف JSON، أو قائمة الخريجين كملف Excel (CSV)."),
     h("div", { class: "card stack" }, h("h3", { text: "نسخة احتياطية كاملة" }),
-      h("p", { class: "muted small", text: "بتشمل: " + AD_BACKUP.join("، ") + ". ما بتشمل الردود داخل المنشورات ورسائل الدردشة، ولا المساحات الخاصة بالأعضاء." }),
+      h("p", { class: "muted small", text: `بتشمل: ${AD_BACKUP.join("، ")}. ما بتشمل الردود داخل المنشورات ورسائل الدردشة، ولا المساحات الخاصة بالأعضاء.` }),
       h("label", { class: "field" }, h("span", { text: "مجموعات إضافية من أقسام ثانية (اختياري)" }), extra),
       h("div", { class: "row" }, h("button", { class: "btn blue", type: "button", onclick: run, text: "نزّل النسخة الاحتياطية" })), status,
       h("p", { class: "muted small", text: "الملف فيه معلومات تواصل للأعضاء. خزّنه بمكان آمن وما تبعثه لحدا." })),

@@ -22,7 +22,7 @@
 :root { --ux-zoom: 1; }
 :root.ux-fs-1 { --ux-zoom: 1.12; }
 :root.ux-fs-2 { --ux-zoom: 1.25; }
-:root.ux-fs-1 body, :root.ux-fs-2 body { zoom: var(--ux-zoom); }
+:root.ux-fs-1 :is(main, footer, .modal-box), :root.ux-fs-2 :is(main, footer, .modal-box) { zoom: var(--ux-zoom); }
 :root.ux-contrast { --bg: #FFFFFF; --grid: transparent; --surface: #FFFFFF; --surface-2: #F2F2F2; --ink: #000000; --muted: #2A2A2A; --line: #555555; --accent: #0038B8; --accent-soft: rgba(0, 56, 184, .12); --good: #00603A; --warn: #7A4A00; --bad: #A0000A; --shadow: none; }
 @media (prefers-color-scheme: dark) {
   :root.ux-contrast:not([data-theme="light"]) { --bg: #000000; --surface: #000000; --surface-2: #121212; --ink: #FFFFFF; --muted: #E0E0E0; --line: #A8A8A8; --accent: #9DBBFF; --accent-soft: rgba(157, 187, 255, .2); --on-accent: #000000; --good: #6FE3AE; --warn: #FFC86B; --bad: #FF8A80; }

@@ -76,7 +76,7 @@ function uxShareView() {
   const done = () => modal("رابط هالقسم", h("div", { class: "stack" },
     h("p", { text: "نسخنا الرمز تبع هالقسم. أضفه لآخر رابط المنصة (بعد آخر حرف) وابعته بالواتساب، وبيفتح على هالقسم مباشرة." }),
     h("input", { type: "text", id: "ux-share-token", readonly: true, value: token, "aria-label": "رمز القسم", class: "num" }),
-    h("p", { class: "muted small", text: "مثال: رابط المنصة اللي عندك وبآخره " + token }))); // eslint-disable-line
+    h("p", { class: "muted small", text: `مثال: رابط المنصة اللي عندك وبآخره ${token}` })));
   try { navigator.clipboard.writeText(token).then(done, done); } catch { done(); }
 }
 const uxMo = new MutationObserver(() => {
@@ -121,7 +121,12 @@ const uxClip = (s, n = 90) => { s = String(s || "").replace(/\s+/g, " ").trim();
 function uxSearch(q) {
   const t = uxTerms(q); if (!t.length) return [];
   const groups = [];
-  const add = (label, items) => { if (items.length) groups.push({ label, items: items.slice(0, 6), more: Math.max(0, items.length - 6) }); };
+  const add = (label, items) => {
+    if (!items.length) return;
+    let g = groups.find((x) => x.label === label);
+    if (!g) groups.push((g = { label, all: [] }));
+    g.all.push(...items); g.items = g.all.slice(0, 6); g.more = Math.max(0, g.all.length - 6);
+  };
   add("أقسام المنصة", visibleViews().filter((v) => uxMatch(v.label, t)).map((v) => ({ title: v.label, sub: (SECTIONS.find(([id]) => id === v.section) || [])[1] || "", go: v.id })));
   add("الخريجين", Object.values(S.alumni).filter((a) => uxMatch([a.name, a.place, a.field, a.city, a.year, a.bio].join(" "), t))
     .map((a) => ({ title: a.name, sub: [`فوج ${a.year}`, a.field, a.place].filter(Boolean).join(" · "), onOpen: () => openMemberCard(a.uid || a.id) })));

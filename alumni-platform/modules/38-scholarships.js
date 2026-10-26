@@ -108,9 +108,9 @@ registerView("grants", "grants", "كل المنح", () => {
         h("button", { class: "btn ghost", type: "button", "data-go": "my-apps", text: "متابعة طلباتي" }),
         h("button", { class: "btn ghost", type: "button", "data-go": "grants-suggest", text: "بعرف منحة" }))),
     h("section", { class: "grid-3" },
-      h("div", { class: "stat" }, h("b", { text: visible.length }), h("span", { text: "منحة بالقاعدة" })),
-      h("div", { class: "stat" }, h("b", { text: open }), h("span", { text: "مفتوحة هلّق" })),
-      h("div", { class: "stat" }, h("b", { text: soon }), h("span", { text: "قرّب موعدها" }))),
+      h("div", { class: "stat" }, h("b", { id: "sch-n-all", text: visible.length }), h("span", { text: "منحة بالقاعدة" })),
+      h("div", { class: "stat" }, h("b", { id: "sch-n-open", text: open }), h("span", { text: "مفتوحة هلّق" })),
+      h("div", { class: "stat" }, h("b", { id: "sch-n-soon", text: soon }), h("span", { text: "قرّب موعدها" }))),
     h("section", { class: "section" },
       h("div", { class: "spread" }, h("h2", { text: "مصادر عامة" }), h("span", { class: "muted small", text: "نقطة بداية ثابتة، مش منح بموعد محدّد" })),
       h("div", { class: "sch-sources" }, SCHOLARSHIPS.map(([t, d, u]) => h("div", { class: "plain item sch-source" },
@@ -150,6 +150,9 @@ function schDrawList() {
     const ka = da === null ? 1e6 : da < 0 ? 2e6 - da : da, kb = db_ === null ? 1e6 : db_ < 0 ? 2e6 - db_ : db_;
     return ka - kb;
   });
+  const setN = (id, n) => { const el = $(id); if (el) el.textContent = n; };
+  setN("#sch-n-all", schData.rows.length); setN("#sch-n-open", schData.rows.filter(schOpen).length);
+  setN("#sch-n-soon", schData.rows.filter((r) => { const d = schDays(r); return d !== null && d >= 0 && d <= 14; }).length);
   const c = $("#sch-count"); if (c) c.textContent = schData.rows.length ? `${rows.length} منحة` : "";
   if (rows.length) { box.replaceChildren(...rows.map(schCard)); return; }
   box.replaceChildren(schData.rows.length
