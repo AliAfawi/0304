@@ -69,4 +69,4 @@ function crSelect(id, list, value, first) {
 function crLink(url, label, cls) { const u = safeUrl(url); return u ? h("a", { class: cls || "btn sm ghost", href: u, target: "_blank", rel: "noopener", text: label }) : null; }
 function crCount(rows, key) { const m = new Map(); rows.forEach((r) => { const k = (typeof key === "function" ? key(r) : r[key]) || ""; if (k) m.set(k, (m.get(k) || 0) + 1); }); return [...m.entries()].sort((a, b) => b[1] - a[1]); }
 // Fills a container only when it is on screen (lists refresh on every data change).
-function crFill(id, nodes) { const el = document.getElementById(id); if (el) el.replaceChildren(...nodes); return el; }
+function crFill(id, nodes) { const el = document.getElementById(id); if (el) el.replaceChildren(...nodes.filter(Boolean)); return el; }
