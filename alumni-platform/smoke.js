@@ -15,6 +15,8 @@ const { chromium } = require("playwright");
     await p.waitForTimeout(120);
     const w = await p.evaluate(() => document.documentElement.scrollWidth);
     if (w > 390) wide.push(id + ":" + w);
+    const junk = await p.evaluate(() => { const w = document.createTreeWalker(document.querySelector("#main"), NodeFilter.SHOW_TEXT); for (let n = w.nextNode(); n; n = w.nextNode()) if (/^(null|undefined|NaN)$|\[object Object\]/.test(n.nodeValue.trim())) return n.nodeValue.trim(); return ""; });
+    if (junk) errs.push(`view ${id} shows "${junk}"`);
   }
   const tools = await p.evaluate(() => TOOLS.map((t) => t.id));
   for (const t of tools) { await p.evaluate((t) => { toolTab = t; go("tools"); }, t); await p.waitForTimeout(100); }

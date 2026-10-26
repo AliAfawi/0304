@@ -219,6 +219,10 @@ td input, td select { padding: 6px 8px; }
 .toast { position: fixed; z-index: 60; inset-inline: 0; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); margin: 0 auto; width: max-content; max-width: calc(100% - 32px); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 999px; font-weight: 600; font-size: 14px; }
 footer { border-top: 1px solid var(--line); padding-block: 18px; color: var(--muted); font-size: 13px; background: var(--surface); }
 /*MODULE_CSS*/
+@media (max-width: 560px) { .home-sections { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; } .home-sections .tool-card { padding: 12px; } .home-sections .tool-card b { font-size: 15px; } .home-sections .tool-card span { font-size: 12.5px; } }
+.home-widgets { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); align-items: start; }
+.home-w { min-width: 0; display: grid; }
+.home-w:has(.empty) { display: none; }
 .subnav { margin-bottom: 18px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>

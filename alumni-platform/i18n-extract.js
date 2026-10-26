@@ -2,7 +2,7 @@
 // dictionary expects: whitespace collapsed, ${…} placeholders as "#"). Used to build he-dict.js.
 const fs = require("fs");
 const dir = __dirname;
-const files = ["ideas.js", "institutions.js", "page.html", ...fs.readdirSync(dir + "/modules").filter((f) => f.endsWith(".js")).map((f) => "modules/" + f)];
+const files = ["ideas.js", "institutions.js", "majors-data.js", "page.html", ...fs.readdirSync(dir + "/modules").filter((f) => f.endsWith(".js")).map((f) => "modules/" + f)];
 const AR = /[؀-ۿ]/;
 const keys = new Set();
 const add = (s) => {

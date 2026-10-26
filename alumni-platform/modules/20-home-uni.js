@@ -3,12 +3,14 @@
 views.home = () => {
   const counts = { u: 0, c: 0, e: 0 }; INST.forEach((i) => counts[i.t]++);
   const sections = [
-    ["uni", "قسم جامعة", "كل الجامعات والكليات ومعاهد الهندسائيين، مع الروابط اللي بتحتاجها."],
+    ["uni", "قسم جامعة", "المؤسسات، شروط القبول لكل تخصص، ورابط التسجيل."],
+    ["grants", "المنح", "كل المنح بمكان واحد، ومواعيد التقديم."],
     ["tools", "أدوات للجامعة", "حاسبات، اختبار الميول، القاموس، المساعد الذكي وأكثر."],
-    ["feed", "المجتمع", "اسأل، ساعد، وشارك فرص. ودردشة لكل فوج."],
-    ["library", "المواد والامتحانات", "ملخصات وامتحانات وحلول من الخريجين."],
-    ["tutors", "دروس ومساعدة", "خريجون بيعلّموا، وطلاب بيطلبوا مساعدة."],
-    ["alumni", "الأفواج", "مين وين؟ كل خريجي المدرسة على مدار السنين."],
+    ["learn", "التعلّم", "مواد وامتحانات، بطاقات حفظ ودروس خصوصية."],
+    ["community", "المجتمع", "نقاشات، دردشة لكل فوج، قصص واستطلاعات."],
+    ["career", "المسار المهني", "فرص عمل، إرشاد، ومقابلة تجريبية."],
+    ["events", "الفعاليات", "لقاءات، أيام مفتوحة وورشات مع تسجيل."],
+    ["guides", "الأدلة", "أدلة عملية من الصف العاشر لحد التخرج."],
   ];
   return h("div", { class: "view" },
     h("section", { class: "section" },
@@ -25,12 +27,15 @@ views.home = () => {
       h("div", { class: "stat" }, h("b", { text: counts.c }), h("span", { text: "كلّيّة" })),
       h("div", { class: "stat" }, h("b", { text: counts.e }), h("span", { text: "معهد هندسائيين" })),
     ),
-    h("section", { class: "grid-3", id: "live-stats" }),
-    ...HOOKS.home.slice().sort((a, b) => a.order - b.order).map((f) => { try { return f(); } catch (e) { console.warn(e); return null; } }),
     h("section", { class: "section" },
       h("h2", { text: "شو في بالمنصة" }),
-      h("div", { class: "tool-cards" }, sections.map(([id, t, d]) => h("button", { class: "tool-card", type: "button", "data-go": id }, h("b", { text: t }), h("span", { text: d })))),
+      h("div", { class: "tool-cards home-sections" }, sections.map(([id, t, d]) => h("button", { class: "tool-card", type: "button", "data-go": id }, h("b", { text: t }), h("span", { text: d })))),
     ),
+    h("section", { class: "grid-3", id: "live-stats" }),
+    // Feature widgets; a widget showing only an empty state is hidden by CSS until it has content.
+    h("div", { class: "home-widgets" }, HOOKS.home.slice().sort((a, b) => a.order - b.order).map((f) => {
+      try { const el = f(); return el ? h("div", { class: "home-w" }, el) : null; } catch (e) { console.warn(e); return null; }
+    })),
     h("section", { class: "section" },
       h("div", { class: "spread" }, h("h2", { text: "آخر النقاشات" }), h("button", { class: "link", type: "button", "data-go": "feed", text: "كل النقاشات" })),
       h("div", { class: "stack", id: "home-posts" }),
@@ -129,14 +134,14 @@ function openMajor(i, m) {
     h("h4", { text: "شروط القبول لهالتخصص" }),
     r ? h("div", { class: "stack", style: "gap:8px" },
           reqList(r.req),
-          h("p", { class: "muted small" }, r.year && !/غير/.test(r.year) ? `حسب موقع المؤسسة لسنة ${r.year}.` : "حسب موقع المؤسسة.", " ",
-            "الحدود بتتغير كل سنة، فتأكد من ", src ? h("a", { href: src, target: "_blank", rel: "noopener", text: "صفحة المصدر" }) : "صفحة المؤسسة", " قبل ما تقرر."))
+          h("p", { class: "muted small" }, r.year && !/غير/.test(r.year) ? L(`حسب موقع المؤسسة لسنة ${r.year}.`, `לפי אתר המוסד לשנת ${r.year}.`) : "حسب موقع المؤسسة.", " ",
+            "الحدود بتتغير كل سنة، فتأكد من المصدر قبل ما تقرر.", " ", src ? h("a", { href: src, target: "_blank", rel: "noopener", text: "صفحة المصدر" }) : null))
       : h("div", { class: "banner" }, "لسا ما وثّقنا شروط هالتخصص بالذات. الشروط العامة للمؤسسة بتنطبق، والزر تحت بيفتح صفحة الشروط الرسمية."),
     h("div", { class: "row" },
       h("a", { class: "btn ghost sm", href: majorSearchUrl(i, m), target: "_blank", rel: "noopener", text: "صفحة الشروط الرسمية" }),
       h("a", { class: "btn blue sm", href: regUrl(i), target: "_blank", rel: "noopener", text: i.reg ? (i.regLabel || "رابط التسجيل") : "ابحث عن صفحة التسجيل" })),
     !r && i.req.length ? h("div", { class: "stack", style: "gap:6px" }, h("h4", { text: "شروط المؤسسة العامة" }), reqList(i.req)) : null,
-    h("div", { class: "stack", style: "gap:6px" }, h("h4", { text: "شروط عامة لكل " + ({ u: "الجامعات", c: "الكليات", e: "معاهد الهندسائيين" })[i.t] }), reqList(GENERAL_REQ[i.t])),
+    h("div", { class: "stack", style: "gap:6px" }, h("h4", { text: ({ u: "شروط عامة لكل الجامعات", c: "شروط عامة لكل الكليات", e: "شروط عامة لكل معاهد الهندسائيين" })[i.t] }), reqList(GENERAL_REQ[i.t])),
     others.length ? h("div", { class: "stack", style: "gap:6px" }, h("h4", { text: `مؤسسات ثانية بتدرّس ${L(m, majorHe(m))} (${others.length})` }),
       h("div", { class: "chips" }, others.map((x) => h("button", { class: "tag tag-btn" + (majorReq(x, m) ? " verified" : ""), type: "button", onclick: () => openMajor(x, m), text: L(x.ar, x.he) })))) : null,
   ));

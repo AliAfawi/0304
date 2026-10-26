@@ -311,10 +311,10 @@ HOOKS.lists.push(() => {
   const rows = Object.entries(ptCompute(plMonthStart())).filter(([, s]) => s.points > 0).sort((a, b) => b[1].points - a[1].points).slice(0, 5);
   const ch = ptCohorts(plMonthStart()).filter((c) => c.help > 0).sort((a, b) => b.help - a.help)[0];
   resolveNames(rows.map(([u]) => u));
-  el.replaceChildren(
+  el.replaceChildren(...[
     h("div", { class: "spread" }, h("h2", { text: "المساهمين المميزين هالشهر" }), h("button", { class: "link", type: "button", "data-go": "me-board", text: "لوحة الصدارة" })),
     rows.length ? h("div", { class: "pt-top" }, rows.map(([u, s], i) => h("button", { class: "pt-top-i", type: "button", onclick: () => openMemberCard(u) },
       h("span", { class: "pt-top-av" }, avatar(nameOf(u), u), i < 3 ? ptMedal(i) : null), h("b", { text: nameOf(u) }), h("span", { class: "muted small num", text: `${fmt(s.points)} نقطة` }))))
       : empty("الشهر لسا بأوّله", "شارك مادة أو اعرض درس تطوّعي، وبتظهر هون لكل المنصة."),
-    ch ? h("p", { class: "small" }, "تحدّي الفوج هالشهر: ", h("b", { text: `فوج ${ch.year}` }), ` بيتصدّر بـ ${fmt(ch.help)} مساعدة.`) : null);
+    ch ? h("p", { class: "small" }, "تحدّي الفوج هالشهر: ", h("b", { text: `فوج ${ch.year}` }), ` بيتصدّر بـ ${fmt(ch.help)} مساعدة.`) : null].filter(Boolean));
 });

@@ -1,4 +1,10 @@
 // ---------- utilities ----------
+// Modules build optional children as `cond ? el : null`; make append/prepend/replaceChildren skip
+// null/undefined/false instead of printing "null" on the page.
+for (const m of ["append", "prepend", "replaceChildren"]) {
+  const orig = Element.prototype[m];
+  Element.prototype[m] = function (...nodes) { return orig.apply(this, nodes.filter((n) => n != null && n !== false)); };
+}
 function h(tag, props, ...kids) {
   const el = document.createElement(tag);
   for (const [k, v] of Object.entries(props || {})) {

@@ -285,6 +285,7 @@ views.library = () => {
     // follows (62)
     const fol = lnMine("ln-follow") || { subjects: [], seen: 0 };
     const isF = fol.subjects.includes(libState.subject);
+    followBtn.hidden = libState.subject === "all";
     followBtn.textContent = isF ? "إلغاء متابعة «" + libState.subject + "»" : "تابع «" + libState.subject + "»";
     followBtn.onclick = () => {
       const subjects = isF ? fol.subjects.filter((s) => s !== libState.subject) : [...fol.subjects, libState.subject];
