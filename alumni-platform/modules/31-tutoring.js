@@ -23,7 +23,7 @@ function lnMatchScore(req, o) {
   if ((online(req.mode) && online(o.mode)) || (face(req.mode) && face(o.mode))) s += 1; else s -= 2;
   if (req.area && o.area && norm(req.area).trim() === norm(o.area).trim()) { s += 2; why.push("نفس المنطقة"); }
   else if (online(o.mode) && online(req.mode)) why.push("أونلاين");
-  if (!o.price) { s += 0.5; why.push("مجاني"); }
+  if (!o.price) s += 0.5;
   const r = lnRating(o.id); if (r.n) s += r.avg / 5;
   return { s, why };
 }
