@@ -463,7 +463,7 @@ footer{background:var(--bg-2);border-top:1px solid var(--line);padding:50px 0 30
 .tt th{color:var(--muted);font-weight:500;padding:4px}
 .tt td{background:var(--bg-2);border-radius:8px;padding:9px 6px;text-align:center}
 .tt td.now{background:var(--accent);color:#fff;font-weight:700}
-.sv-evgrid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.sv-evgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:22px}
 .sv-board{padding:22px}
 .sv-board h3{margin-bottom:10px}
 .note{padding:12px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:54px 1fr;gap:12px}
@@ -510,7 +510,26 @@ html[dir="rtl"] .sel{text-align:right}
 .gal{margin:0;border-radius:14px;overflow:hidden;background:var(--bg-2)}.gal img{width:100%;aspect-ratio:4/3;object-fit:cover}
 .gal-ph{aspect-ratio:4/3;display:grid;place-items:center;font-size:2rem;color:var(--muted)}.gal figcaption{padding:8px 12px;font-size:.88rem}
 .alumni{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
-.alum{padding:18px;display:grid;grid-template-columns:auto 1fr;gap:14px}.alum p{margin:6px 0 0;color:var(--ink-2);font-size:.93rem}
+.alum{padding:18px;display:grid;grid-template-columns:auto 1fr;gap:14px}
+.sv-open{background:linear-gradient(90deg,var(--brand),#2f4a0b);color:#fff}
+.sv-open .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px 18px;flex-wrap:wrap;padding-block:14px}
+.sv-open .cd{display:inline-block;background:rgba(255,255,255,.18);border-radius:999px;padding:2px 12px;margin-inline-start:10px;font-weight:800;font-size:.9rem}
+.sv-open .btn{background:#fff;color:#2f4508;border-color:#fff}
+.sv-gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.sv-gal .gal figcaption a{font-weight:700;color:var(--brand);white-space:nowrap}
+.awards{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.award{padding:18px 20px;display:grid;gap:4px}.award .yr{color:var(--brand);font-weight:900;font-variant-numeric:tabular-nums}
+.daytl{list-style:none;margin:0;padding:0;max-width:760px}
+.daytl li{display:grid;grid-template-columns:90px 1fr;gap:16px;padding:16px 0;border-top:1px solid var(--line)}
+.daytl time{font-weight:900;color:var(--brand);font-variant-numeric:tabular-nums}
+.daytl p{margin:4px 0 0;color:var(--ink-2)}
+.sv-partners{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:8px}
+.sv-partner{display:flex;align-items:center;gap:10px;padding:10px 18px;background:var(--surface);border:1px solid var(--line);border-radius:14px;font-weight:700;color:var(--ink);text-decoration:none}
+.sv-partner img{width:44px;height:44px;object-fit:contain;border-radius:8px;background:#fff}
+.tt-tabs{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 12px}
+.tt-tabs input{width:110px;padding:5px 10px;border:1.5px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);font:inherit;font-size:.85rem}
+.sv-links{padding:22px}.sv-links h3{margin-bottom:10px}.sv-links .lk{padding:8px 0;border-top:1px solid var(--line)}
+.alum p{margin:6px 0 0;color:var(--ink-2);font-size:.93rem}
 .press-list{display:grid;gap:10px;margin-top:10px}.press{display:grid;gap:2px;padding:12px 16px;background:var(--surface);border:1px solid var(--line);border-radius:12px}.press a{font-weight:700;color:var(--ink)}
 .projects{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin-top:16px}
 .proj{overflow:hidden}.proj img{width:100%;aspect-ratio:16/9;object-fit:cover}.pb{padding:18px 20px;display:grid;gap:8px}.pb p{margin:0;color:var(--ink-2)}
@@ -1370,6 +1389,10 @@ he:{back:"כל בתי הספר ברשת",open:"לעמוד בית הספר",overv
 ar:{back:"كل مدارس الشبكة",open:"لصفحة المدرسة",overview:"نظرة عامة",data:"معطيات",staff:"الطاقم",tracks:"مسارات",schedule:"البرنامج",events:"فعاليات",contact:"اتصال",principal:"المدير/ة",symbol:"رمز المؤسسة",joined:"انضمت للشبكة",students:"طلاب",teachers:"أفراد طاقم",classes:"صفوف",avgClass:"معدل الصف",attendance:"حضور",bagrut:"أهلية البجروت",enroll:"التسجيل للمدرسة",tour:"تنسيق جولة",tourOk:"تم استلام طلب الجولة (تجريبي)",vision:"رؤيتنا",fromPrincipal:"كلمة المدير/ة",pride:"ما نفخر به",dataLead:"أداء المدرسة عبر السنين مقارنة بالمعدل القطري.",bagrutT:"أهلية البجروت",bagrutS:"المدرسة مقابل المعدل القطري",gradesT:"الطلاب حسب الطبقة",gradesS:"العام الدراسي 2026–2027",fiveT:"5 وحدات حسب الموضوع",fiveS:"عدد الطلاب في المستوى المكثّف",grade:"طبقة",subject:"موضوع",nat:"المعدل القطري",staffLead:"تعرّفوا على الطاقم الذي يقود المدرسة.",search:"ابحث بالاسم أو الموضوع…",allDepts:"كل الأقسام",yrs:"سنوات في المدرسة",homeroom:"مربي/ة صف",msg:"رسالة",msgOk:"أُرسلت الرسالة (تجريبي)",shown:"معروض",of:"من",tracksLead:"مسارات التعلم المميزة في المدرسة.",inTrack:"طلاب",bells:"جدول الأجراس",week:"برنامج أسبوعي نموذجي",klass:"صف",brk:"استراحة",lunch:"استراحة غداء",now:"الآن",days:["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس"],news:"لوحة الإعلانات",upcoming:"فعاليات قريبة",facilities:"مرافق وفضاءات تعلم",secretary:"السكرتارية",hours:"الأحد–الخميس، 07:30–15:30",phone:"هاتف",email:"بريد إلكتروني",address:"عنوان",copy:"نسخ",copied:"تم النسخ",nav:"ملاحة",noStaff:"لم يُعثر على أفراد طاقم",period:"حصة"},
 en:{back:"All network schools",open:"School page",overview:"Overview",data:"Data",staff:"Staff",tracks:"Tracks",schedule:"Timetable",events:"Events",contact:"Contact",principal:"Principal",symbol:"School ID",joined:"Joined network",students:"students",teachers:"staff",classes:"classes",avgClass:"avg. class size",attendance:"attendance",bagrut:"Bagrut eligibility",enroll:"Enroll at this school",tour:"Book a visit",tourOk:"Visit request received (demo)",vision:"Our vision",fromPrincipal:"From the principal",pride:"What we're proud of",dataLead:"School performance over time against the national average.",bagrutT:"Bagrut eligibility",bagrutS:"School vs national average",gradesT:"Students by grade",gradesS:"School year 2026–27",fiveT:"5-unit level by subject",fiveS:"Students at the advanced level",grade:"Grade",subject:"Subject",nat:"National average",staffLead:"Meet the team leading the school.",search:"Search by name or subject…",allDepts:"All departments",yrs:"years at school",homeroom:"Homeroom",msg:"Message",msgOk:"Message sent (demo)",shown:"Showing",of:"of",tracksLead:"The school's signature learning tracks.",inTrack:"students",bells:"Bell schedule",week:"Sample weekly timetable",klass:"Class",brk:"Break",lunch:"Lunch break",now:"Now",days:["Sun","Mon","Tue","Wed","Thu"],news:"Notice board",upcoming:"Upcoming events",facilities:"Facilities & learning spaces",secretary:"Front office",hours:"Sun–Thu, 07:30–15:30",phone:"Phone",email:"Email",address:"Address",copy:"Copy",copied:"Copied",nav:"Directions",noStaff:"No staff found",period:"Period"}
 };
+Object.assign(SPT.he,{week:"מערכת שבועית",gallery:"גלריה",galleryT:"רגעים מבית הספר",video:"לצפייה בסרטון",alumni:"בוגרים",alumniT:"הבוגרים שלנו – איפה הם היום",alumCls:"מחזור",awards:"הישגים ופרסים",partners:"שותפים",day:"יום בחיי תלמיד/ה",dayT:"איך נראה יום לימודים אצלנו",links:"קישורים שימושיים",openDay:"יום פתוח",inDays:"בעוד {n} ימים",tomorrow:"מחר",todayX:"היום!",openBtn:"להרשמה ליום הפתוח",ttAdd:"+ כיתה",ttDel:"מחיקת הכיתה",ttNew:"כיתה חדשה"});
+Object.assign(SPT.ar,{week:"البرنامج الأسبوعي",gallery:"معرض الصور",galleryT:"لحظات من المدرسة",video:"مشاهدة الفيديو",alumni:"الخريجون",alumniT:"خريجونا – أين هم اليوم",alumCls:"فوج",awards:"إنجازات وجوائز",partners:"شركاء",day:"يوم في حياة طالب/ة",dayT:"كيف يبدو يوم الدراسة عندنا",links:"روابط مفيدة",openDay:"يوم مفتوح",inDays:"بعد {n} أيام",tomorrow:"غدًا",todayX:"اليوم!",openBtn:"التسجيل لليوم المفتوح",ttAdd:"+ صف",ttDel:"حذف الصف",ttNew:"صف جديد"});
+Object.assign(SPT.en,{week:"Weekly timetable",gallery:"Gallery",galleryT:"Moments from our school",video:"Watch the video",alumni:"Alumni",alumniT:"Our graduates – where they are today",alumCls:"Class of",awards:"Achievements & awards",partners:"Partners",day:"A day in the life",dayT:"What a school day looks like",links:"Useful links",openDay:"Open day",inDays:"in {n} days",tomorrow:"tomorrow",todayX:"today!",openBtn:"Sign up for the open day",ttAdd:"+ Class",ttDel:"Delete class",ttNew:"New class"});
+let TTI=0;
 const GRADE_EN={"ז":"7","ח":"8","ט":"9","י":"10","יא":"11","יב":"12"}, GRADE_AR={"ז":"السابع","ח":"الثامن","ט":"التاسع","י":"العاشر","יא":"الحادي عشر","יב":"الثاني عشر"};
 const gradeName=g=>LANG==="en"?GRADE_EN[g]:LANG==="ar"?GRADE_AR[g]:(g.length>1?g[0]+"״"+g[1]:g+"׳");
 const hr=h=>!h?"":h.replace(/^(יב|יא|[זחטי])(\d)$/,(m,g,n)=>LANG==="he"?gradeName(g)+n:GRADE_EN[g]+"-"+n);
@@ -1381,7 +1404,9 @@ function renderSchoolPage(){
   const si=DATA.schools.findIndex(x=>x.id===CUR), s=DATA.schools[si], d=SCHOOL_PAGES[CUR]; if(!s||!d) return;
   const id=CUR, arrow=LANG==="en"?"←":"→", hasCoh=!!(d.cohorts&&d.cohorts.length);
   document.title=Lr(s.name)+" | "+T[LANG].brand;
-  const secs=[["overview",P("overview")],["data",P("data")],["staff",P("staff")],["tracks",P("tracks")],["schedule",P("schedule")],["events",P("events")],["contact",P("contact")]];
+  const ttHas=t=>t.week.some(r=>r.some(Boolean)), ttVis=EDIT?d.tts.map((_,i)=>i):d.tts.map((t,i)=>ttHas(t)?i:-1).filter(i=>i>=0);
+  if(!ttVis.includes(TTI)) TTI=ttVis[0]||0; const tt=d.tts[TTI]||d.tts[0];
+  const secs=[["overview",P("overview")],...(EDIT||d.gallery.some(x=>safeImg(x.img)||SAFE_URL(x.video))?[["gallery",P("gallery")]]:[]),["data",P("data")],...(EDIT||d.alumni.length||d.awards.length?[["alumni",d.alumni.length||EDIT?P("alumni"):P("awards")]]:[]),["staff",P("staff")],["tracks",P("tracks")],["schedule",P("schedule")],["events",P("events")],["contact",P("contact")]];
   const stat=(v,l)=>`<div class="sv-stat"><b>${v}</b><span>${l}</span></div>`;
   const hue=/^#[0-9a-f]{6}$/i.test(d.hue||"")?d.hue:"#4a6b12";
   const cover=safeImg(d.cover)?`;background-image:linear-gradient(to top,#141c08f5 0%,#141c08c7 38%,${hue}66 75%,#141c0833 100%),url(${safeImg(d.cover)});background-size:cover;background-position:center 30%`:"";
@@ -1405,6 +1430,7 @@ function renderSchoolPage(){
     </div>
   </div>
   <nav class="sv-nav" aria-label="${L(s.name)}"><div class="wrap">${secs.map(([k,v])=>`<a href="#${id}-${k}">${v}</a>`).join("")}</div></nav>
+  ${svOpenBanner(d)}
 
   <section id="${id}-overview" class="sv-sec"><div class="wrap sv-over">
     <div><span class="eyebrow">${P("vision")}</span><p class="sv-vision">${L(d.vision)}</p>
@@ -1413,7 +1439,9 @@ function renderSchoolPage(){
     <div><span class="eyebrow">${P("pride")}</span><div class="sv-high">${d.highlights.map((h,i)=>`<div class="card edi">${edb("hl",i)}<b><bdi dir="ltr">${esc(h.v)}</bdi></b><span>${L(h.l)}</span></div>`).join("")}${eda("hl")}</div></div>
   </div></section>
 
+  ${svGallery(d,id)}
   <section id="${id}-data" class="sv-sec alt"><div class="wrap">${hasCoh?cohortSection(s,d,id):legacyData(s,d,id)}</div></section>
+  ${svAlumni(d,id)}
 
   <section id="${id}-staff" class="sv-sec"><div class="wrap">
     <div class="sec-head" style="margin-bottom:22px"><div><span class="eyebrow">${P("staff")}</span><h2>${P("staffLead")}</h2></div></div>
@@ -1429,18 +1457,22 @@ function renderSchoolPage(){
     <div class="sv-fac">${d.facilities.map(f=>`<span>${L(f)}</span>`).join("")}</div>
   </div></section>
 
+  ${svDay(d,id)}
   <section id="${id}-schedule" class="sv-sec"><div class="wrap sv-sched">
     <div class="card sv-bells"><h3>${P("bells")}</h3><ol id="bells">${(()=>{let bn=0;return BELLS.map((b,i)=>`<li data-i="${i}" class="${b[0]==="b"||b[0]==="l"||b[0]==="g"?"brk":""}"><span>${b[0]==="b"?P("brk")+" "+(++bn):b[0]==="l"?P("lunch"):b[0]==="g"?P("goodMorning"):P("period")+" "+b[0]}</span><time>${b[1]}–${b[2]}</time></li>`).join("")})()}</ol></div>
-    ${EDIT||d.week.some(r=>r.some(Boolean))?`<div class="card sv-week"><h3>${P("week")} · ${P("klass")} ${esc(hr(d.klass))}</h3>
+    ${EDIT||ttVis.length?`<div class="card sv-week"><h3>${P("week")} · ${P("klass")} ${esc(hr(tt.klass))}</h3>
+      ${EDIT||ttVis.length>1?`<div class="tt-tabs">${ttVis.map(i=>`<button type="button" class="chip" data-tti="${i}" aria-pressed="${i===TTI}">${esc(hr(d.tts[i].klass))}</button>`).join("")}${EDIT?`<input id="ttName" value="${esc(tt.klass)}" aria-label="${P("klass")}"><button type="button" class="chip" id="ttAdd">${P("ttAdd")}</button>${d.tts.length>1?`<button type="button" class="chip" id="ttDel">${P("ttDel")}</button>`:""}`:""}</div>`:""}
       <div class="tt-wrap"><table class="tt"><thead><tr><th></th>${P("days").map(x=>`<th>${x}</th>`).join("")}</tr></thead>
-      <tbody>${d.week.map((row,i)=>`<tr><th>${i+1}</th>${row.map((c,j)=>`<td data-d="${j}" data-p="${i+1}">${EDIT?`<select class="tt-sel" data-tt="${i},${j}" aria-label="${P("period")} ${i+1}"><option value="">–</option>${Object.keys(SUBJ).map(k=>`<option value="${k}" ${k===c?"selected":""}>${L(SUBJ[k])}</option>`).join("")}</select>`:(c&&SUBJ[c]?L(SUBJ[c]):"–")}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>`:""}
+      <tbody>${tt.week.map((row,i)=>`<tr><th>${i+1}</th>${row.map((c,j)=>`<td data-d="${j}" data-p="${i+1}">${EDIT?`<select class="tt-sel" data-tt="${i},${j}" aria-label="${P("period")} ${i+1}"><option value="">–</option>${Object.keys(SUBJ).map(k=>`<option value="${k}" ${k===c?"selected":""}>${L(SUBJ[k])}</option>`).join("")}</select>`:(c&&SUBJ[c]?L(SUBJ[c]):"–")}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>`:""}
   </div></section>
 
   <section id="${id}-events" class="sv-sec alt"><div class="wrap sv-evgrid">
     <div class="card events"><h3>${P("upcoming")}</h3>${d.events.length?"":`<p class="muted">${P("soon")}</p>`}${d.events.map((e,i)=>`<div class="ev edi">${edb("sev",i)}<div class="date">${esc(e.d)}<small>${L(e.m)}</small></div><div><b>${L(e.t)}</b><span>${L(s.short)} · ${esc(e.time)}</span></div></div>`).join("")}${eda("sev")}</div>
+    ${svLinks(d)}
     <div class="card sv-board"><h3>${P("news")}</h3>${d.news.length?"":`<p class="muted">${P("soon")}</p>`}${d.news.map((n,i)=>`<div class="note edi">${edb("snews",i)}<time>${esc(n.date)}</time><p>${L(n.t)}</p></div>`).join("")}${eda("snews")}</div>
   </div></section>
 
+  ${svPartners(d,id)}
   <section id="${id}-contact" class="sv-sec"><div class="wrap">
     <span class="eyebrow">${P("contact")}</span><h2>${L(s.name)}</h2>
     <div class="contact sv-contact">
@@ -1460,8 +1492,34 @@ function renderSchoolPage(){
   $$("#schoolView [data-sview]").forEach(b=>b.onclick=()=>{const t=b.dataset.target;b.parentNode.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));$("#"+t).classList.toggle("hidden",b.dataset.sview==="table");$("#"+t+"-table").classList.toggle("hidden",b.dataset.sview!=="table")});
   $$("#schoolView .copy").forEach(b=>b.onclick=()=>{const v=b.dataset.copy;const done=()=>{b.textContent=P("copied");setTimeout(()=>b.textContent=P("copy"),1500)};
     try{navigator.clipboard.writeText(v).then(done,()=>{selectText(b.previousElementSibling);done()})}catch(e){selectText(b.previousElementSibling);done()}});
-  $$("#schoolView .tt-sel").forEach(sel=>sel.onchange=()=>{const [i,j]=sel.dataset.tt.split(",").map(Number);d.week[i][j]=sel.value;commit(false)});
+  $$("#schoolView .tt-sel").forEach(sel=>sel.onchange=()=>{const [i,j]=sel.dataset.tt.split(",").map(Number);tt.week[i][j]=sel.value;commit(false)});
+  $$("#schoolView [data-tti]").forEach(b=>b.onclick=()=>{TTI=+b.dataset.tti;renderSchoolPage()});
+  if($("#ttName")) $("#ttName").onchange=e=>{tt.klass=e.target.value.trim().slice(0,12)||tt.klass;commit()};
+  if($("#ttAdd")) $("#ttAdd").onclick=()=>{d.tts.push({klass:P("ttNew"),week:tt.week.map(r=>r.map(()=>""))});TTI=d.tts.length-1;commit()};
+  if($("#ttDel")) armDelete($("#ttDel"),()=>{d.tts.splice(TTI,1);TTI=0;commit()});
+  if($("#openDayBtn")) $("#openDayBtn").onclick=()=>openContact({subject:"tour",school:Lr(s.name)});
+  $$("#schoolView .sv-sec").forEach((el,i)=>el.classList.toggle("alt",i%2===1));
 }
+function svOpenBanner(d){const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(d.openDate||"");if(!m)return "";
+  const t0=new Date();t0.setHours(0,0,0,0);const n=Math.round((new Date(+m[1],m[2]-1,+m[3])-t0)/864e5);if(n<0)return "";
+  const when=n===0?P("todayX"):n===1?P("tomorrow"):P("inDays").replace("{n}",n);
+  return `<div class="sv-open" role="region" aria-label="${P("openDay")}"><div class="wrap"><div>📅 <b>${Lr(d.openTitle)?L(d.openTitle):P("openDay")}</b> · <bdi dir="ltr">${m[3]}.${m[2]}.${m[1]}${d.openTime?" · "+esc(d.openTime):""}</bdi><span class="cd">${esc(when)}</span></div><button class="btn" type="button" id="openDayBtn">${P("openBtn")}</button></div></div>`}
+function svGallery(d,id){if(!(EDIT||d.gallery.some(x=>safeImg(x.img)||SAFE_URL(x.video))))return "";
+  return `<section id="${id}-gallery" class="sv-sec"><div class="wrap"><span class="eyebrow">${P("gallery")}</span><h2>${P("galleryT")}</h2><div class="sv-gal">${d.gallery.map((x,i)=>{const img=safeImg(x.img),vid=SAFE_URL(x.video);if(!img&&!vid&&!EDIT)return "";
+    const vlink=vid?`<a href="${esc(vid)}" target="_blank" rel="noopener">▶ ${P("video")}</a>`:"";
+    return `<figure class="gal edi">${edb("sgal",i)}${img?`<img src="${img}" alt="${L(x.c)}" loading="lazy">`:vid?`<a class="gal-ph" href="${esc(vid)}" target="_blank" rel="noopener" aria-label="${P("video")}">▶</a>`:`<div class="gal-ph">+</div>`}${Lr(x.c)||vlink?`<figcaption>${L(x.c)} ${vlink}</figcaption>`:""}</figure>`}).join("")}${eda("sgal")}</div></div></section>`}
+function svAlumni(d,id){const al=EDIT||d.alumni.length, aw=EDIT||d.awards.length;if(!al&&!aw)return "";
+  return `<section id="${id}-alumni" class="sv-sec"><div class="wrap">
+    ${al?`<span class="eyebrow">${P("alumni")}</span><h2>${P("alumniT")}</h2><div class="alumni">${d.alumni.map((x,i)=>`<article class="card alum edi">${edb("salum",i)}${safeImg(x.photo)?`<img class="av" src="${safeImg(x.photo)}" alt="">`:`<div class="av" style="background:var(--brand)">${ini(x.n)}</div>`}<div><b>${L(x.n)}</b>${x.y?`<small class="muted"> · ${P("alumCls")} ${esc(x.y)}</small>`:""}<p>${L(x.now)}</p></div></article>`).join("")}${eda("salum")}</div>`:""}
+    ${aw?`<h2 style="margin-top:${al?"44px":"8px"}">${P("awards")}</h2><div class="awards">${d.awards.map((x,i)=>`<article class="card award edi">${edb("award",i)}<span class="yr">🏆 ${esc(x.y)}</span><b>${L(x.t)}</b>${Lr(x.d)?`<p class="muted" style="margin:0">${L(x.d)}</p>`:""}</article>`).join("")}${eda("award")}</div>`:""}
+  </div></section>`}
+function svDay(d,id){if(!(EDIT||d.day.length))return "";
+  return `<section id="${id}-day" class="sv-sec"><div class="wrap"><span class="eyebrow">${P("day")}</span><h2>${P("dayT")}</h2><ol class="daytl">${d.day.map((x,i)=>`<li class="edi">${edb("day",i)}<time>${esc(x.time||"")}</time><div><b>${L(x.t)}</b>${Lr(x.d)?`<p>${L(x.d)}</p>`:""}</div></li>`).join("")}</ol>${eda("day")}</div></section>`}
+function svPartners(d,id){if(!(EDIT||d.partners.length))return "";
+  return `<section id="${id}-partners" class="sv-sec"><div class="wrap"><span class="eyebrow">${P("partners")}</span><div class="sv-partners">${d.partners.map((x,i)=>{const inner=`${safeImg(x.logo)?`<img src="${safeImg(x.logo)}" alt="">`:""}<span>${L(x.n)}</span>`,u=SAFE_URL(x.url);
+    return `<div class="edi">${edb("spart",i)}${u?`<a class="sv-partner" href="${esc(u)}" target="_blank" rel="noopener">${inner} ↗</a>`:`<div class="sv-partner">${inner}</div>`}</div>`}).join("")}${eda("spart")}</div></div></section>`}
+function svLinks(d){if(!(EDIT||d.links.length))return "";
+  return `<div class="card sv-links"><h3>${P("links")}</h3>${d.links.map((x,i)=>{const u=SAFE_URL(x.url);return `<div class="lk edi">${edb("slink",i)}${u?`<a href="${esc(u)}" target="_blank" rel="noopener">${L(x.t)} ↗</a>`:`<b>${L(x.t)}</b>`}</div>`}).join("")}${eda("slink")}</div>`}
 function legacyData(s,d,id){
   const seg=t=>`<div class="seg"><button aria-pressed="true" data-sview="chart" data-target="${t}">${Tx("v.chart")}</button><button aria-pressed="false" data-sview="table" data-target="${t}">${Tx("v.table")}</button></div>`;
   return `
@@ -1546,6 +1604,9 @@ en:{editMode:"Edit mode",hint:"Click any text to change it, or ✎ next to an it
  k_school:"School",k_program:"Program",k_news:"News story",k_event:"Event",k_story:"Story",k_job:"Job",k_tl:"Milestone",k_partner:"Partner",k_ticker:"Ticker item",k_goal:"Goal",k_five:"Subject (5 units)",k_staff:"Staff member",k_track:"Track",k_hl:"Highlight",k_sev:"Event",k_snews:"Notice",k_grade:"Grade",k_sfive:"Subject (5 units)",k_fac:"Facility",k_hero:"Header figure",k_leader:"Leader",k_cal:"Calendar date",k_link:"Useful link",k_faq:"FAQ item",k_gallery:"Photo",k_alumni:"Alumnus",k_press:"Press item",k_project:"Donation project",backup:"Copy a backup of all content",copied:"Backup copied. Paste it into a file and save it.",k_cohort:"Graduating class",o_schoolinfo:"School page details",o_sseries:"School Bagrut data",o_net:"Network data",o_settings:"Forms & inbox settings",past:"Past",now:"Now",future:"Vision",menuTitle:"What do you want to add or manage?",adminOn:"Admin tools are on. Only you can see them.",csvHint:"Numbers separated by commas",published:"Published. Everyone sees the new version."}
 };
 const LB=(he,ar,en)=>({he,ar,en});
+Object.assign(ED.he,{k_sgal:"תמונה לגלריה",k_salum:"בוגר/ת",k_award:"הישג",k_spart:"שותף",k_day:"שלב ביום",k_slink:"קישור"});
+Object.assign(ED.ar,{k_sgal:"صورة للمعرض",k_salum:"خريج/ة",k_award:"إنجاز",k_spart:"شريك",k_day:"محطة في اليوم",k_slink:"رابط"});
+Object.assign(ED.en,{k_sgal:"Gallery photo",k_salum:"Graduate",k_award:"Achievement",k_spart:"Partner",k_day:"Day step",k_slink:"Link"});
 const SP=()=>SCHOOL_PAGES[CUR];
 const OPT={
   ages:()=>[["el",T[LANG]["a.el"]],["mid",T[LANG]["a.mid"]],["hi",T[LANG]["a.hi"]],["adult",T[LANG]["a.adult"]]],
@@ -1597,10 +1658,16 @@ const SCH={
   alumni:{list:()=>CONTENT.alumni,fields:[["n","l10n",F.name],["y","text",LB("מחזור","الفوج","Class")],["now","l10nl",LB("איפה היום (לימודים / עבודה)","أين اليوم","Where now")],["photo","image",F.photo]],blank:()=>({n:LB("","",""),y:"",now:LB("","",""),photo:""})},
   press:{list:()=>CONTENT.press,fields:[["t","l10n",F.title],["src","text",LB("כלי תקשורת","الوسيلة الإعلامية","Outlet")],["date","text",F.date],["url","text",LB("קישור לכתבה","رابط","Link")]],blank:()=>({t:LB("","",""),src:"",date:"",url:""})},
   project:{list:()=>CONTENT.projects,fields:[["t","l10n",F.title],["d","l10nl",F.desc],["goal","num",LB("יעד גיוס (₪)","هدف (₪)","Goal (₪)")],["raised","num",LB("גויס עד כה (₪)","جُمع (₪)","Raised (₪)")],["img","image",F.image]],blank:()=>({t:LB("","",""),d:LB("","",""),goal:0,raised:0,img:""})},
+  sgal:{list:()=>SP().gallery,fields:[["img","image",F.image],["c","l10n",LB("כיתוב","تعليق","Caption")],["video","text",LB("קישור לסרטון – YouTube וכד׳ (לא חובה)","رابط فيديو – YouTube (اختياري)","Video link – YouTube etc. (optional)")]],blank:()=>({img:"",c:LB("","",""),video:""})},
+  salum:{list:()=>SP().alumni,fields:[["n","l10n",F.name],["y","text",LB("מחזור (למשל תשפ\"ה)","الفوج","Class (e.g. 2025)")],["now","l10nl",LB("איפה היום (לימודים / עבודה)","أين اليوم (دراسة / عمل)","Where now (studies / work)")],["photo","image",F.photo]],blank:()=>({n:LB("","",""),y:"",now:LB("","",""),photo:""})},
+  award:{list:()=>SP().awards,fields:[["y","text",LB("שנה","السنة","Year")],["t","l10n",F.title],["d","l10nl",F.desc]],blank:()=>({y:String(new Date().getFullYear()),t:LB("","",""),d:LB("","","")})},
+  spart:{list:()=>SP().partners,fields:[["n","l10n",F.name],["logo","image",LB("לוגו","شعار","Logo")],["url","text",LB("קישור (https://…)","رابط (https://…)","Link (https://…)")]],blank:()=>({n:LB("","",""),logo:"",url:""})},
+  day:{list:()=>SP().day,fields:[["time","text",LB("שעה (לא חובה)","الساعة (اختياري)","Time (optional)")],["t","l10n",F.title],["d","l10nl",F.desc]],blank:()=>({time:"",t:LB("","",""),d:LB("","","")})},
+  slink:{list:()=>SP().links,fields:[["t","l10n",F.title],["url","text",LB("קישור (https://…)","رابط (https://…)","Link (https://…)")]],blank:()=>({t:LB("","",""),url:""})},
   fac:{list:()=>SP().facilities,self:true,fields:[["_","l10n",F.name]],blank:()=>LB("","","")}
 };
 const OBJ={
-  schoolinfo:{get:()=>SP(),fields:[["principal","l10n",LB("שם המנהל/ת","اسم المدير/ة","Principal name")],["principalPhoto","image",LB("תמונת המנהל/ת","صورة المدير/ة","Principal photo")],["logo","image",LB("לוגו בית הספר","شعار المدرسة","School logo")],["affil","l10n",LB("שיוך (למשל תמר–ברנקו וייס)","الانتماء","Affiliation")],["cover","image",LB("תמונת רקע לראש העמוד","صورة خلفية لرأس الصفحة","Header background image")],["hue","color",LB("צבע בית הספר","لون المدرسة","School color")],["symbol","text",LB("סמל מוסד","رمز المؤسسة","School ID")],["phone","text",LB("טלפון","هاتف","Phone")],["email","text",LB("דוא\"ל","بريد إلكتروني","Email")],["addr","l10n",LB("כתובת","العنوان","Address")],["navQuery","text",LB("כתובת לניווט (Waze / Google)","عنوان الملاحة","Navigation address")],["directions","l10nl",LB("איך מגיעים","طريقة الوصول","How to get here")],["classes","num",LB("כיתות","صفوف","Classes")],["avgClass","num",LB("ממוצע תלמידים בכיתה","معدل الطلاب في الصف","Average class size")],["attendance","num",LB("% נוכחות","% حضور","Attendance %")],["girls","num",LB("% בנות במגמות מדע","% فتيات في العلوم","Girls in STEM %")],["vision","l10nl",LB("החזון","الرؤية","Vision")],["msg","l10nl",LB("דבר המנהל/ת","كلمة المدير/ة","Principal's message")],["klass","text",LB("כיתה במערכת לדוגמה (למשל י1)","الصف في البرنامج النموذجي","Sample timetable class")]]},
+  schoolinfo:{get:()=>SP(),fields:[["principal","l10n",LB("שם המנהל/ת","اسم المدير/ة","Principal name")],["principalPhoto","image",LB("תמונת המנהל/ת","صورة المدير/ة","Principal photo")],["logo","image",LB("לוגו בית הספר","شعار المدرسة","School logo")],["affil","l10n",LB("שיוך (למשל תמר–ברנקו וייס)","الانتماء","Affiliation")],["cover","image",LB("תמונת רקע לראש העמוד","صورة خلفية لرأس الصفحة","Header background image")],["hue","color",LB("צבע בית הספר","لون المدرسة","School color")],["symbol","text",LB("סמל מוסד","رمز المؤسسة","School ID")],["phone","text",LB("טלפון","هاتف","Phone")],["email","text",LB("דוא\"ל","بريد إلكتروني","Email")],["addr","l10n",LB("כתובת","العنوان","Address")],["navQuery","text",LB("כתובת לניווט (Waze / Google)","عنوان الملاحة","Navigation address")],["directions","l10nl",LB("איך מגיעים","طريقة الوصول","How to get here")],["classes","num",LB("כיתות","صفوف","Classes")],["avgClass","num",LB("ממוצע תלמידים בכיתה","معدل الطلاب في الصف","Average class size")],["attendance","num",LB("% נוכחות","% حضور","Attendance %")],["girls","num",LB("% בנות במגמות מדע","% فتيات في العلوم","Girls in STEM %")],["vision","l10nl",LB("החזון","الرؤية","Vision")],["msg","l10nl",LB("דבר המנהל/ת","كلمة المدير/ة","Principal's message")],["openTitle","l10n",LB("יום פתוח – כותרת (למשל: יום פתוח לשכבת ז׳)","اليوم المفتوح – العنوان","Open day – title")],["openDate","text",LB("יום פתוח – תאריך בפורמט 2027-01-20 (ריק = ללא באנר)","اليوم المفتوح – التاريخ 2027-01-20 (فارغ = بلا إعلان)","Open day – date as 2027-01-20 (empty = no banner)")],["openTime","text",LB("יום פתוח – שעה","اليوم المفتوح – الساعة","Open day – time")]]},
   sseries:{get:()=>SP(),fields:[["years","csvt",LB("שנים / מחזורים","السنوات / الأفواج","Years / classes")],["bagrut","csv",LB("% בגרות בבית הספר","% البجروت في المدرسة","School Bagrut %")],["national","csv",LB("% ממוצע ארצי","% المعدل القطري","National average %")]]},
   settings:{get:()=>CONTENT.settings,fields:[["formEndpoint","text",LB("כתובת Apps Script (מסתיימת ב-/exec)","عنوان Apps Script (ينتهي بـ /exec)","Apps Script URL (ends with /exec)")],["sheetUrl","text",LB("קישור לגיליון הפניות (לשימושך בלבד)","رابط جدول الاستفسارات","Inbox sheet link")],["donateUrl","text",LB("קישור לעמוד תרומה מאובטח (לא חובה)","رابط صفحة تبرع آمنة","Secure donation page link")],
     ["alert","l10n",LB("הודעה דחופה בראש האתר (ריק = ללא)","إعلان عاجل أعلى الموقع","Urgent banner (empty = none)")],["whatsapp","text",LB("וואטסאפ למזכירות (מספר)","واتساب للسكرتارية","Office WhatsApp number")],
@@ -1645,10 +1712,14 @@ function normalize(){
     d.week=d.week||Array.from({length:8},()=>["","","","",""]);
     ["years","bagrut","national"].forEach(k=>d[k]=d[k]||[]);
     d.cohorts=(d.cohorts||[]).map(c=>Object.assign({avg:{},tracks:{}},c));
+    ["gallery","alumni","awards","partners","day","links"].forEach(k=>{if(!Array.isArray(d[k]))d[k]=[]});
+    if(!Array.isArray(d.tts)||!d.tts.length) d.tts=[{klass:d.klass||"י1",week:d.week}];
+    d.tts.forEach(t=>{t.klass=String(t.klass||"");if(!Array.isArray(t.week)||!t.week.length)t.week=Array.from({length:8},()=>["","","","",""])});
+    d.openDate=d.openDate||""; d.openTime=d.openTime||""; d.openTitle=d.openTitle||LB("","","");
   });
 }
 function blankPage(s){return {symbol:"",principal:LB("","",""),principalPhoto:"",hue:"#4a6b12",phone:"",email:"",addr:LB("","",""),classes:0,avgClass:0,attendance:0,girls:0,years:[2025,2026],bagrut:[s.bagrut||0,s.bagrut||0],national:[73,73],grades:[],five:[],vision:LB("","",""),msg:LB("","",""),highlights:[],tracks:[],facilities:[],staff:[],week:Array.from({length:8},()=>["","","","",""]),klass:"י1",events:[],news:[],cover:""}}
-const getState=()=>({v:2,DATA,CONTENT,SCHOOL_PAGES,T,IMG});
+const getState=()=>({v:3,DATA,CONTENT,SCHOOL_PAGES,T,IMG});
 function applyState(st){
   if(!st||typeof st!=="object") return;
   if(st.DATA) Object.assign(DATA,st.DATA);
@@ -1658,6 +1729,8 @@ function applyState(st){
   if(st.IMG) Object.assign(IMG,st.IMG);
   // states published before v2 predate the Al-Sana team photo
   if((st.v||1)<2&&SCHOOL_PAGES.alsana&&!SCHOOL_PAGES.alsana.cover&&window.ALSANA_COVER) SCHOOL_PAGES.alsana.cover=window.ALSANA_COVER;
+  // states published before v3 predate the gallery, partners and day-in-the-life defaults
+  if((st.v||1)<3&&SCHOOL_PAGES.alsana&&window.ALSANA_V3){const a=SCHOOL_PAGES.alsana;Object.entries(window.ALSANA_V3).forEach(([k,v])=>{if(!Array.isArray(a[k])||!a[k].length)a[k]=JSON.parse(JSON.stringify(v))})}
   normalize();
 }
 function buildHTML(st){
@@ -1947,7 +2020,17 @@ async function initAdmin(){
   Object.assign(al,{lat:31.3605,lon:34.7735,town:LB3("רהט","رهط","Rahat")});
   DATA.schools=DATA.schools.filter(x=>x.id!=="rahat"); CONTENT.jobs=CONTENT.jobs.filter(j=>j.s!=="rahat");
   d.events=[]; d.news=[]; d.facilities=[];
-  d.week=Array.from({length:7},()=>["","","","",""]);
+  d.tts=[{klass:"י1",week:Array.from({length:7},()=>["","","","",""])}]; delete d.week; delete d.klass;
+  d.gallery=[{img:d.cover,c:LB3("צוות בית ספר אלסנא","طاقم مدرسة السنا","The Al-Sana staff"),video:""}];
+  d.partners=[{n:LB3("רשת תמר – מחוללים שינוי","شبكة تمار – نُحدث التغيير","Tamar Network – Igniting Change"),logo:"",url:""},{n:LB3("רשת ברנקו וייס","شبكة برانكو فايس","Branco Weiss Network"),logo:"",url:""}];
+  d.day=[
+    {time:"08:30",t:LB3("בוקר טוב","صباح الخير","Good morning"),d:LB3("פתיחת היום בכיתה עם המחנך/ת.","افتتاح اليوم في الصف مع المربّي/ة.","The day opens in class with the homeroom teacher.")},
+    {time:"08:45",t:LB3("שבעה שיעורים ושתי הפסקות","سبع حصص واستراحتان","Seven lessons and two breaks"),d:LB3('אנגלית ומתמטיקה ברמה מוגברת, עברית, ערבית ומקצועות ההומניסטיקה.','إنجليزية ورياضيات بمستوى مكثف، عبرية، عربية ومواضيع إنسانية.',"Advanced English and math, Hebrew, Arabic and the humanities.")},
+    {time:"",t:LB3("מגמות ומעבדות","مسارات ومختبرات","Tracks and labs"),d:LB3("פיזיקה, כימיה, מידע ונתונים ומדעי המחשב, כולל עבודת מעבדה ופרויקטי גמר.","فيزياء، كيمياء، معلومات ومعطيات وعلوم الحاسوب، مع عمل مخبري ومشاريع تخرج.","Physics, chemistry, data science and computer science, with lab work and final projects.")},
+    {time:"14:35",t:LB3("סיום יום הלימודים","نهاية اليوم الدراسي","End of the school day"),d:LB3("","","")}
+  ];
+  d.alumni=[]; d.awards=[]; d.links=[];
+  window.ALSANA_V3={gallery:d.gallery,partners:d.partners,day:d.day};
   al.name=LB3("בית ספר אלסנא למצוינות מדעית","مدرسة السنا للتفوّق العلمي","Al-Sana School for Scientific Excellence");
   al.short=LB3("אלסנא","السنا","Al-Sana"); al.founded=null; al.teachers=22;
   d.five=[{k:"data",v:33},{k:"eng",v:25},{k:"phys",v:25},{k:"chem",v:15},{k:"math",v:11},{k:"cs",v:8}];
