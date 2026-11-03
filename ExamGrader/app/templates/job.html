@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}{{ job.title }}{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="report-head">
+    <div>
+      <h1>{{ job.title }}</h1>
+      <div class="muted">{{ job.created.replace("T", " ")[:16] }} ·
+        {% if job.mode == "rubric" %}سلم تصحيح منظم{% else %}تصحيح حر بالذكاء الاصطناعي{% endif %} ·
+        سلم التصحيح: {{ job.files.rubric }}</div>
+    </div>
+    <div class="actions">
+      <a class="btn" href="/jobs/{{ job.id }}/export.xlsx">⬇ العلامات (Excel)</a>
+      <a class="btn light" href="/jobs/{{ job.id }}/reports.zip">⬇ تقارير الطلاب (ZIP)</a>
+      <form method="post" action="/jobs/{{ job.id }}/delete" onsubmit="return confirm('حذف هذا التصحيح نهائياً؟')">
+        <button class="btn danger" type="submit">حذف</button></form>
+    </div>
+  </div>
+</div>
+
+{% if job.error %}<div class="alert err">{{ job.error }}</div>{% endif %}
+{% for w in job.warnings %}<div class="alert warn">{{ w }}</div>{% endfor %}
+
+{% if stats.count %}
+<div class="card">
+  <h2>إحصائيات الصف</h2>
+  <div class="stats">
+    <div class="stat"><div class="v">{{ stats.count }}</div><div class="l">طلاب</div></div>
+    <div class="stat"><div class="v">{{ stats.mean }}</div><div class="l">المعدل</div></div>
+    <div class="stat"><div class="v">{{ stats.median }}</div><div class="l">الوسيط</div></div>
+    <div class="stat"><div class="v">{{ stats.min }}–{{ stats.max }}</div><div class="l">أدنى – أعلى</div></div>
+    <div class="stat"><div class="v">{{ stats.pass_rate }}%</div><div class="l">نجحوا ({{ stats.passed }}) · علامة النجاح {{ pass_mark }}</div></div>
+    <div class="stat"><div class="v">{{ stats.needs_review }}</div><div class="l">بحاجة لمراجعة</div></div>
+  </div>
+
+  <div class="grid2" style="margin-top:20px">
+    <div>
+      <b>توزيع العلامات</b>
+      {% set maxc = stats.distribution | map(attribute="count") | max %}
+      <div class="bars">
+        {% for b in stats.distribution %}
+        <div class="bar"><b>{{ b.count }}</b>
+          <span class="fill" style="height: {{ (100 * b.count / maxc) | round | int if maxc else 0 }}%"></span>
+          <small>{{ b.label }}</small></div>
+        {% endfor %}
+      </div>
+    </div>
+    <div>
+      <b>الأسئلة الأصعب</b> <span class="muted">(أقل نسبة نجاح – مرشحة لإعادة الشرح)</span>
+      <table>
+        {% for q in stats.hardest %}
+        <tr><td>سؤال {{ q.qid }}<div class="muted">{{ q.description }}</div></td>
+          <td style="width:45%"><div class="meter {{ 'low' if q.percent < 55 else 'mid' if q.percent < 75 else '' }}"><i style="width: {{ q.percent }}%"></i></div></td>
+          <td class="num">{{ q.percent }}%</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if similar %}
+<div class="card">
+  <h2>⚠ تشابه مريب في الأخطاء</h2>
+  <p class="muted">طلاب كتبوا نفس الإجابة الخاطئة في عدة بنود. هذا ليس دليلاً على الغش، لكنه يستحق نظرة.</p>
+  <table>
+    <tr><th>طالب</th><th>طالب</th><th class="num">أخطاء متطابقة</th><th>في الأسئلة</th></tr>
+    {% for f in similar %}
+    <tr><td>{{ f.a }}</td><td>{{ f.b }}</td><td class="num">{{ f.count }}</td><td>{{ f.questions | join("، ") }}</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endif %}
+
+<div class="card">
+  <h2>علامات الطلاب</h2>
+  <div class="table-wrap"><table>
+    <tr><th>الطالب</th>
+      {% for q in qids %}<th class="num">س{{ q }}</th>{% endfor %}
+      <th class="num">المجموع</th><th class="num">العلامة</th><th></th></tr>
+    {% for s in job.students %}
+    {% set qs = scores[loop.index0] %}
+    <tr>
+      <td><a href="/jobs/{{ job.id }}/students/{{ loop.index0 }}">{{ s.name }}</a>
+        {% if s.error %}<div class="pill s-wrong">{{ s.error }}</div>{% endif %}</td>
+      {% for q in qids %}
+        <td class="num">{% if q in qs %}{{ qs[q][0] | num }}<span class="muted">/{{ qs[q][1] | num }}</span>{% else %}–{% endif %}</td>
+      {% endfor %}
+      <td class="num">{{ s.total | num }}/{{ s.max_points | num }}</td>
+      <td class="num grade {{ 'pass' if s.grade >= pass_mark else 'fail' }}">{{ s.grade }}</td>
+      <td>{% if s.needs_review %}<span class="pill s-review">للمراجعة</span>{% elif s.reviewed %}<span class="pill s-correct">رُوجع</span>{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </table></div>
+</div>
+{% endblock %}

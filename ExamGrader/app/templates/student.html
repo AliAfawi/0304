@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}{{ s.name }} – {{ job.title }}{% endblock %}
+{% block content %}
+{% if not standalone %}
+<p class="no-print"><a href="/jobs/{{ job.id }}">→ العودة لنتائج الصف</a></p>
+{% if saved %}<div class="alert ok no-print">تم حفظ التعديلات.</div>{% endif %}
+{% endif %}
+
+<div class="card">
+  <div class="report-head">
+    <div>
+      <div class="muted">تقرير تصحيح · {{ job.title }}</div>
+      <h1>{{ s.name }}</h1>
+      <div class="muted">الملف: {{ s.filename }}</div>
+    </div>
+    <div style="text-align:center">
+      <div class="big-grade grade {{ 'pass' if s.grade >= pass_mark else 'fail' }}">{{ s.grade }}</div>
+      <div class="muted">{{ s.total | num }} من {{ s.max_points | num }} نقطة</div>
+    </div>
+  </div>
+</div>
+
+{% if s.error %}<div class="alert err">{{ s.error }}</div>{% endif %}
+
+{% if not standalone %}<form method="post">{% endif %}
+<div class="card">
+  <h2>تفصيل العلامة</h2>
+  <div class="table-wrap"><table>
+    <tr><th>سؤال</th><th>البند</th><th>إجابتك</th>{% if job.mode == "rubric" %}<th>الإجابة الصحيحة</th>{% endif %}<th class="num">العلامة</th><th>ملاحظات</th></tr>
+    {% for it in s["items"] %}
+    <tr>
+      <td><b>{{ it.qid }}</b><div><span class="pill s-{{ it.status }}">{{ status_labels[it.status] }}</span></div></td>
+      <td>{{ it.description }}{% if it.cell %}<div class="muted code">{{ it.cell }}</div>{% endif %}
+        <div class="muted">{{ check_labels.get(it.check, it.check) }}</div></td>
+      <td class="code">{{ it.student_answer }}</td>
+      {% if job.mode == "rubric" %}<td class="code">{{ it.expected_answer }}</td>{% endif %}
+      <td class="num">
+        {% if standalone %}{{ it.score | num }}{% else %}
+        <input class="score-input" type="number" step="0.25" min="0" max="{{ it.points }}" name="score_{{ loop.index0 }}" value="{{ it.score | num }}">
+        {% endif %}<div class="muted">من {{ it.points | num }}</div>
+        {% if it.teacher_edited %}<div class="muted">✎ عدّلها المعلم</div>{% endif %}
+      </td>
+      <td class="fb">{% if standalone %}{{ it.feedback }}{% else %}
+        <textarea name="feedback_{{ loop.index0 }}" rows="3">{{ it.feedback }}</textarea>{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </table></div>
+</div>
+
+{% if s.general_feedback %}
+<div class="card"><h2>ملاحظة عامة</h2><p>{{ s.general_feedback }}</p></div>
+{% endif %}
+
+{% if standalone %}
+  {% if s.teacher_comment %}<div class="card"><h2>ملاحظة المعلم</h2><p>{{ s.teacher_comment }}</p></div>{% endif %}
+{% else %}
+<div class="card no-print">
+  <h2>ملاحظة المعلم للطالب</h2>
+  <textarea name="teacher_comment" rows="3" placeholder="تظهر في تقرير الطالب">{{ s.teacher_comment }}</textarea>
+  <p><label><input type="checkbox" name="reviewed" {% if s.reviewed %}checked{% endif %}> راجعت هذا التصحيح (إزالة علامة «للمراجعة»)</label></p>
+  <div class="actions">
+    <button class="btn" type="submit">حفظ التعديلات</button>
+    <button class="btn light" type="button" onclick="window.print()">🖨 طباعة / حفظ PDF</button>
+  </div>
+</div>
+</form>
+{% endif %}
+{% endblock %}

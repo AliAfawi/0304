@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+{% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+
+<div class="card">
+  <h1>تصحيح امتحان جديد</h1>
+  <p class="muted">ارفع الامتحان الأصلي والامتحان المحلول وسلم التصحيح وملفات الطلاب. سيصحح الموقع كل ملف ويعطي كل طالب علامة وتقريراً مفصلاً.</p>
+
+  <form action="/grade" method="post" enctype="multipart/form-data">
+    <p><label>اسم الامتحان<input type="text" name="title" placeholder="مثلاً: امتحان تحليل بيانات – الصف العاشر – فصل أول"></label></p>
+    <div class="grid2">
+      <label class="field"><b>الامتحان الأصلي</b><span class="muted">PDF / Word / Excel (اختياري)</span>
+        <input type="file" name="exam" accept=".pdf,.docx,.xlsx,.xlsm,.txt"></label>
+      <label class="field"><b>الامتحان المحلول</b><span class="muted">Excel يُقارن خلية بخلية، أو PDF / Word</span>
+        <input type="file" name="solution" accept=".xlsx,.xlsm,.pdf,.docx,.txt,.ipynb,.py,.sql"></label>
+      <label class="field req"><b>سلم التصحيح</b><span class="muted">قالب Excel (دقيق) أو ملف حر PDF / Word (بالذكاء الاصطناعي)</span>
+        <input type="file" name="rubric" required accept=".xlsx,.xlsm,.pdf,.docx,.txt"></label>
+      <label class="field req"><b>ملفات الطلاب</b><span class="muted">عدة ملفات أو ملف ZIP واحد. اسم الملف = اسم الطالب</span>
+        <input type="file" name="students" multiple required accept=".xlsx,.xlsm,.pdf,.docx,.ipynb,.py,.sql,.txt,.csv,.zip"></label>
+    </div>
+    <p class="actions" style="margin-top:16px">
+      <button class="btn" type="submit">ابدأ التصحيح</button>
+      <a class="btn light" href="/rubric-template.xlsx">⬇ تحميل قالب سلم التصحيح</a>
+    </p>
+  </form>
+
+  {% if ai %}
+    <div class="alert ok">✓ التصحيح بالذكاء الاصطناعي مفعّل: الأسئلة المفتوحة والملفات غير المنظمة ستُصحح آلياً.</div>
+  {% else %}
+    <div class="alert info">التصحيح بالذكاء الاصطناعي غير مفعّل (لا يوجد ANTHROPIC_API_KEY). الأسئلة المحسوبة في Excel تُصحح بالكامل، والأسئلة المفتوحة تُعلَّم «للمراجعة» ليصححها المعلم.</div>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h2>كيف يعمل التصحيح؟</h2>
+  <div class="grid2">
+    <div><b>١. سلم تصحيح منظم (موصى به)</b><p class="muted">املأ القالب: لكل بند اكتب الخلية في ملف الطالب، العلامة ونوع الفحص (قيمة، معادلة، نص، ذكاء اصطناعي). الإجابات الصحيحة تؤخذ من الامتحان المحلول تلقائياً. دقيق 100% للأسئلة المحسوبة.</p></div>
+    <div><b>٢. سلم تصحيح حر</b><p class="muted">ارفع سلم التصحيح كما هو (PDF أو Word)، والذكاء الاصطناعي يقرأ الامتحان والحل وحل الطالب ويصحح حسبه. مناسب لامتحانات ورقية ممسوحة أو كود Python/SQL.</p></div>
+    <div><b>٣. مراجعة المعلم</b><p class="muted">كل علامة قابلة للتعديل. البنود غير المؤكدة تظهر بلون بنفسجي «للمراجعة».</p></div>
+    <div><b>٤. التقارير</b><p class="muted">تقرير لكل طالب (للطباعة أو PDF)، ملف Excel بكل العلامات، إحصائيات الصف، وتنبيه عند تشابه الأخطاء بين طالبين.</p></div>
+  </div>
+</div>
+
+{% if jobs %}
+<div class="card">
+  <h2>تصحيحات سابقة</h2>
+  <div class="table-wrap"><table>
+    <tr><th>الامتحان</th><th>التاريخ</th><th class="num">طلاب</th><th>الحالة</th></tr>
+    {% for j in jobs %}
+    <tr>
+      <td><a href="/jobs/{{ j.id }}">{{ j.title }}</a></td>
+      <td>{{ j.created.replace("T", " ")[:16] }}</td>
+      <td class="num">{{ j.count }}</td>
+      <td>{% if j.status == "running" %}قيد التصحيح{% elif j.status == "failed" %}فشل{% else %}مكتمل{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </table></div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block head %}<meta http-equiv="refresh" content="2">{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>{{ job.title }}</h1>
+  <p>جاري التصحيح… تم {{ job.progress }} من {{ job.total }} طلاب</p>
+  <div class="progress"><i style="width: {{ (100 * job.progress / job.total) | round | int if job.total else 0 }}%"></i></div>
+  <p class="muted">ستتحدث الصفحة تلقائياً. التصحيح بالذكاء الاصطناعي قد يستغرق بعض الوقت لكل طالب.</p>
+</div>
+{% endblock %}
