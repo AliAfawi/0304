@@ -67,7 +67,8 @@ def delete_job(job_id: str) -> None:
         path.unlink(missing_ok=True)
 
 
-def list_jobs() -> list[dict]:
+def list_jobs(owner: str | None = None) -> list[dict]:
+    """All jobs, or only those created by `owner`."""
     folder = DATA_DIR / "jobs"
     if not folder.exists():
         return []
@@ -77,6 +78,8 @@ def list_jobs() -> list[dict]:
             j = json.loads(p.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             continue
-        jobs.append({"id": j["id"], "title": j["title"], "created": j["created"],
+        if owner is not None and j.get("owner") != owner:
+            continue
+        jobs.append({"id": j["id"], "owner": j.get("owner"), "title": j["title"], "created": j["created"],
                      "status": j["status"], "count": len(j.get("students", []))})
     return sorted(jobs, key=lambda j: j["created"], reverse=True)

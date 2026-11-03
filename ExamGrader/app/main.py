@@ -1,7 +1,9 @@
 """Web app: upload exam files, grade every student, review and export results."""
 from __future__ import annotations
 
+import hmac
 import io
+import os
 import re
 import threading
 import zipfile
@@ -15,7 +17,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from . import ai_grader, grader, reports, storage
+from . import ai_grader, auth, grader, reports, storage
 from .excel_reader import ExcelFile, WorkbookError
 from .extract import SUPPORTED_EXTS, extension
 from .rubric import CHECK_LABELS_AR, Rubric, RubricError, build_template, parse_rubric
@@ -174,17 +176,192 @@ def run_job(job_id: str, students: list[tuple[str, str, bytes]], rubric: Rubric 
     storage.update_job(job_id, finish)
 
 
+# --------------------------------------------------------------------- auth
+
+class LoginRequired(Exception):
+    pass
+
+
+@app.exception_handler(LoginRequired)
+def _login_redirect(request: Request, exc: LoginRequired):
+    if not auth.has_users():
+        return RedirectResponse("/setup", status_code=303)
+    nxt = request.url.path if request.method == "GET" else "/"
+    return RedirectResponse(f"/login?next={quote(nxt)}", status_code=303)
+
+
+class Session:
+    def __init__(self, user: dict, csrf: str):
+        self.user, self.csrf = user, csrf
+
+    @property
+    def is_admin(self) -> bool:
+        return self.user["role"] == auth.ROLE_ADMIN
+
+
+def session(request: Request) -> Session:
+    found = auth.read_session(request.cookies.get(auth.COOKIE))
+    if not found:
+        raise LoginRequired()
+    return Session(*found)
+
+
+def admin_session(request: Request) -> Session:
+    sess = session(request)
+    if not sess.is_admin:
+        raise HTTPException(403, "هذه الصفحة للمدير فقط")
+    return sess
+
+
+def check_csrf(sess: Session, token) -> None:
+    if not token or not hmac.compare_digest(str(token), sess.csrf):
+        raise HTTPException(403, "انتهت صلاحية الصفحة. حدّثها وحاول مرة أخرى")
+
+
+def render(request: Request, name: str, ctx: dict, sess: Session | None = None, status_code: int = 200):
+    ctx = dict(ctx, user=sess.user if sess else None, csrf=sess.csrf if sess else "",
+               is_admin=bool(sess and sess.is_admin))
+    return templates.TemplateResponse(request, name, ctx, status_code=status_code)
+
+
+def _set_cookie(resp: Response, user: dict) -> Response:
+    resp.set_cookie(auth.COOKIE, auth.make_session(user), max_age=auth.SESSION_SECONDS, httponly=True,
+                    samesite="lax", secure=os.environ.get("EXAM_GRADER_SECURE_COOKIE") == "1")
+    return resp
+
+
+def _safe_next(nxt: str | None) -> str:
+    return nxt if nxt and nxt.startswith("/") and not nxt.startswith("//") else "/"
+
+
+@app.get("/setup", response_class=HTMLResponse)
+def setup_page(request: Request):
+    if auth.has_users():
+        return RedirectResponse("/login", status_code=303)
+    return render(request, "setup.html", {"error": None})
+
+
+@app.post("/setup")
+def setup(request: Request, username: str = Form(...), name: str = Form(""),
+          password: str = Form(...), password2: str = Form(...)):
+    if auth.has_users():
+        return RedirectResponse("/login", status_code=303)
+    try:
+        if password != password2:
+            raise auth.AuthError("كلمتا المرور غير متطابقتين")
+        auth.create_user(username, name, password, role=auth.ROLE_ADMIN)
+    except auth.AuthError as exc:
+        return render(request, "setup.html", {"error": str(exc)}, status_code=400)
+    return _set_cookie(RedirectResponse("/", status_code=303), auth.get_user(username.strip().lower()))
+
+
+@app.get("/login", response_class=HTMLResponse)
+def login_page(request: Request, next: str = "/"):
+    if not auth.has_users():
+        return RedirectResponse("/setup", status_code=303)
+    return render(request, "login.html", {"error": None, "next": _safe_next(next)})
+
+
+@app.post("/login")
+def login(request: Request, username: str = Form(...), password: str = Form(...), next: str = Form("/")):
+    try:
+        user = auth.verify_password(username, password)
+    except auth.AuthError as exc:
+        return render(request, "login.html", {"error": str(exc), "next": _safe_next(next)}, status_code=401)
+    return _set_cookie(RedirectResponse(_safe_next(next), status_code=303), user)
+
+
+@app.post("/logout")
+def logout():
+    resp = RedirectResponse("/login", status_code=303)
+    resp.delete_cookie(auth.COOKIE)
+    return resp
+
+
+@app.get("/account", response_class=HTMLResponse)
+def account_page(request: Request, saved: int = 0):
+    sess = session(request)
+    return render(request, "account.html", {"error": None, "saved": bool(saved)}, sess)
+
+
+@app.post("/account")
+def change_password(request: Request, csrf: str = Form(""), current: str = Form(...),
+                    password: str = Form(...), password2: str = Form(...)):
+    sess = session(request)
+    check_csrf(sess, csrf)
+    try:
+        auth.verify_password(sess.user["username"], current)
+        if password != password2:
+            raise auth.AuthError("كلمتا المرور غير متطابقتين")
+        auth.set_password(sess.user["username"], password)
+    except auth.AuthError as exc:
+        return render(request, "account.html", {"error": str(exc), "saved": False}, sess, status_code=400)
+    # the password change invalidated this session too: issue a fresh one
+    return _set_cookie(RedirectResponse("/account?saved=1", status_code=303), auth.get_user(sess.user["username"]))
+
+
+@app.get("/users", response_class=HTMLResponse)
+def users_page(request: Request, msg: str = ""):
+    sess = admin_session(request)
+    return render(request, "users.html", {"users": auth.list_users(), "error": None, "msg": msg}, sess)
+
+
+@app.post("/users")
+def add_user(request: Request, csrf: str = Form(""), username: str = Form(...), name: str = Form(""),
+             password: str = Form(...), role: str = Form(auth.ROLE_TEACHER)):
+    sess = admin_session(request)
+    check_csrf(sess, csrf)
+    try:
+        auth.create_user(username, name, password, role=role)
+    except auth.AuthError as exc:
+        return render(request, "users.html", {"users": auth.list_users(), "error": str(exc), "msg": ""},
+                      sess, status_code=400)
+    return RedirectResponse("/users?msg=" + quote("تمت إضافة المستخدم"), status_code=303)
+
+
+@app.post("/users/{username}/password")
+def reset_password(request: Request, username: str, csrf: str = Form(""), password: str = Form(...)):
+    sess = admin_session(request)
+    check_csrf(sess, csrf)
+    try:
+        auth.set_password(username, password)
+    except auth.AuthError as exc:
+        return render(request, "users.html", {"users": auth.list_users(), "error": str(exc), "msg": ""},
+                      sess, status_code=400)
+    return RedirectResponse("/users?msg=" + quote("تم تغيير كلمة المرور"), status_code=303)
+
+
+@app.post("/users/{username}/delete")
+def remove_user(request: Request, username: str, csrf: str = Form("")):
+    sess = admin_session(request)
+    check_csrf(sess, csrf)
+    try:
+        if username == sess.user["username"]:
+            raise auth.AuthError("لا يمكنك حذف حسابك")
+        auth.delete_user(username)
+    except auth.AuthError as exc:
+        return render(request, "users.html", {"users": auth.list_users(), "error": str(exc), "msg": ""},
+                      sess, status_code=400)
+    return RedirectResponse("/users?msg=" + quote("تم حذف المستخدم"), status_code=303)
+
+
 # -------------------------------------------------------------------- pages
+
+def _visible_jobs(sess: Session) -> list[dict]:
+    return storage.list_jobs(owner=None if sess.is_admin else sess.user["username"])
+
 
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
-    return templates.TemplateResponse(request, "index.html", {
-        "jobs": storage.list_jobs(), "ai": ai_grader.ai_available(), "error": None,
-    })
+    sess = session(request)
+    return render(request, "index.html", {
+        "jobs": _visible_jobs(sess), "ai": ai_grader.ai_available(), "error": None,
+    }, sess)
 
 
 @app.get("/rubric-template.xlsx")
-def rubric_template():
+def rubric_template(request: Request):
+    session(request)
     return Response(build_template(),
                     media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     headers={"Content-Disposition": "attachment; filename*=UTF-8''" + quote("سلم_التصحيح.xlsx")})
@@ -192,15 +369,19 @@ def rubric_template():
 
 @app.post("/grade")
 async def grade(request: Request,
+                csrf: str = Form(""),
                 title: str = Form(""),
                 exam: UploadFile | None = File(None),
                 solution: UploadFile | None = File(None),
                 rubric: UploadFile = File(...),
                 students: list[UploadFile] = File(...)):
+    sess = session(request)
+    check_csrf(sess, csrf)
+
     def fail(msg: str):
-        return templates.TemplateResponse(request, "index.html", {
-            "jobs": storage.list_jobs(), "ai": ai_grader.ai_available(), "error": msg,
-        }, status_code=400)
+        return render(request, "index.html", {
+            "jobs": _visible_jobs(sess), "ai": ai_grader.ai_available(), "error": msg,
+        }, sess, status_code=400)
 
     try:
         exam_f = await _read(exam)
@@ -242,6 +423,7 @@ async def grade(request: Request,
         warnings.append("لم يُرفع امتحان محلول، والبنود التي ليس لها «إجابة متوقعة» في السلم ستظهر للمراجعة.")
     job = {
         "id": job_id,
+        "owner": sess.user["username"],
         "title": title.strip() or f"امتحان {datetime.now():%d/%m/%Y}",
         "created": datetime.now().isoformat(timespec="seconds"),
         "status": "running", "error": None, "progress": 0, "total": len(named),
@@ -258,11 +440,15 @@ async def grade(request: Request,
     return RedirectResponse(f"/jobs/{job_id}", status_code=303)
 
 
-def _job_or_404(job_id: str) -> dict:
+def _job_or_404(job_id: str, sess: Session) -> dict:
+    """Teachers only see their own exams; the admin sees all of them."""
     try:
-        return storage.load_job(job_id)
+        job = storage.load_job(job_id)
     except KeyError:
         raise HTTPException(404, "التصحيح غير موجود")
+    if not sess.is_admin and job.get("owner") != sess.user["username"]:
+        raise HTTPException(404, "التصحيح غير موجود")
+    return job
 
 
 def _student_or_404(job: dict, idx: int) -> dict:
@@ -273,31 +459,35 @@ def _student_or_404(job: dict, idx: int) -> dict:
 
 @app.get("/jobs/{job_id}", response_class=HTMLResponse)
 def job_page(request: Request, job_id: str):
-    job = _job_or_404(job_id)
+    sess = session(request)
+    job = _job_or_404(job_id, sess)
     if job["status"] == "running":
-        return templates.TemplateResponse(request, "progress.html", {"job": job})
+        return render(request, "progress.html", {"job": job}, sess)
     qids = reports.question_order(job["students"])
-    return templates.TemplateResponse(request, "job.html", {
+    return render(request, "job.html", {
         "job": job, "qids": qids,
         "scores": [reports.question_scores(s) for s in job["students"]],
         "stats": reports.class_stats(job["students"]),
         "similar": reports.similarity_flags(job["students"]),
-    })
+    }, sess)
 
 
 @app.get("/jobs/{job_id}/students/{idx}", response_class=HTMLResponse)
 def student_page(request: Request, job_id: str, idx: int, saved: int = 0):
-    job = _job_or_404(job_id)
-    return templates.TemplateResponse(request, "student.html", {
+    sess = session(request)
+    job = _job_or_404(job_id, sess)
+    return render(request, "student.html", {
         "job": job, "s": _student_or_404(job, idx), "idx": idx,
         "standalone": False, "saved": bool(saved),
-    })
+    }, sess)
 
 
 @app.post("/jobs/{job_id}/students/{idx}")
 async def save_student(request: Request, job_id: str, idx: int):
+    sess = session(request)
     form = await request.form()
-    _job_or_404(job_id)
+    check_csrf(sess, form.get("csrf"))
+    _job_or_404(job_id, sess)
 
     def apply(job):
         s = _student_or_404(job, idx)
@@ -325,8 +515,8 @@ async def save_student(request: Request, job_id: str, idx: int):
 
 
 @app.get("/jobs/{job_id}/export.xlsx")
-def export(job_id: str):
-    job = _job_or_404(job_id)
+def export(request: Request, job_id: str):
+    job = _job_or_404(job_id, session(request))
     data = reports.export_grades_xlsx(job)
     return Response(data, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     headers={"Content-Disposition": "attachment; filename*=UTF-8''" + quote(f"علامات - {job['title']}.xlsx")})
@@ -334,7 +524,7 @@ def export(job_id: str):
 
 @app.get("/jobs/{job_id}/reports.zip")
 def reports_zip(request: Request, job_id: str):
-    job = _job_or_404(job_id)
+    job = _job_or_404(job_id, session(request))
     css = (BASE / "static" / "style.css").read_text(encoding="utf-8")
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
@@ -352,7 +542,9 @@ def reports_zip(request: Request, job_id: str):
 
 
 @app.post("/jobs/{job_id}/delete")
-def delete(job_id: str):
-    _job_or_404(job_id)
+def delete(request: Request, job_id: str, csrf: str = Form("")):
+    sess = session(request)
+    check_csrf(sess, csrf)
+    _job_or_404(job_id, sess)
     storage.delete_job(job_id)
     return RedirectResponse("/", status_code=303)

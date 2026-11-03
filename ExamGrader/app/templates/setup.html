@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card narrow">
+  <h1>إعداد الموقع لأول مرة</h1>
+  <p class="muted">أنشئ حساب المدير. بعد ذلك يستطيع المدير إضافة حسابات للمعلمين من صفحة «المستخدمون».</p>
+  {% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+  <form method="post">
+    <label>اسم المستخدم (بالإنجليزية)<input type="text" name="username" required autocomplete="username" dir="ltr"></label>
+    <label>الاسم الكامل<input type="text" name="name"></label>
+    <label>كلمة المرور (8 أحرف على الأقل)<input type="password" name="password" required minlength="8" autocomplete="new-password"></label>
+    <label>تأكيد كلمة المرور<input type="password" name="password2" required minlength="8" autocomplete="new-password"></label>
+    <button class="btn" type="submit">إنشاء الحساب</button>
+  </form>
+</div>
+{% endblock %}

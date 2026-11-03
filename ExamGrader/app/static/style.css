@@ -74,3 +74,14 @@ td.fb textarea { min-height: 64px; }
   .card { border: 0; padding: 0; }
   input, textarea { border: 0 !important; padding: 0 !important; resize: none; }
 }
+header.top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+header.top nav { display: flex; gap: 16px; align-items: center; font-size: .95rem; }
+header.top nav a { font-size: .95rem; font-weight: 500; }
+header.top nav form { margin: 0; }
+header.top nav button { background: none; border: 1px solid rgba(255,255,255,.5); color: #fff; border-radius: 6px;
+  padding: 3px 12px; font: inherit; cursor: pointer; }
+.narrow { max-width: 440px; margin: 40px auto; }
+.narrow label { display: block; margin-bottom: 12px; }
+select { padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; font: inherit; }
+.inline-form { display: flex; gap: 6px; align-items: center; margin: 0; }
+.inline-form input { width: 150px !important; }

@@ -8,7 +8,15 @@
   {% block head %}{% endblock %}
 </head>
 <body>
-  {% if not standalone %}<header class="top"><a href="/">📊 مصحح امتحانات تحليل البيانات</a></header>{% endif %}
+  {% if not standalone %}<header class="top">
+    <a class="brand" href="/">📊 مصحح امتحانات تحليل البيانات</a>
+    {% if user %}<nav>
+      <span>{{ user.name }}</span>
+      {% if is_admin %}<a href="/users">المستخدمون</a>{% endif %}
+      <a href="/account">حسابي</a>
+      <form method="post" action="/logout"><button type="submit">خروج</button></form>
+    </nav>{% endif %}
+  </header>{% endif %}
   <main>{% block content %}{% endblock %}</main>
 </body>
 </html>

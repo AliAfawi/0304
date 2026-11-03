@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card narrow">
+  <h1>تسجيل الدخول</h1>
+  {% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+  <form method="post" action="/login">
+    <input type="hidden" name="next" value="{{ next }}">
+    <label>اسم المستخدم<input type="text" name="username" required autocomplete="username" dir="ltr" autofocus></label>
+    <label>كلمة المرور<input type="password" name="password" required autocomplete="current-password"></label>
+    <button class="btn" type="submit">دخول</button>
+  </form>
+  <p class="muted">نسيت كلمة المرور؟ اطلب من مدير الموقع تعيين كلمة جديدة.</p>
+</div>
+{% endblock %}

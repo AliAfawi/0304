@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+{% if msg %}<div class="alert ok">{{ msg }}</div>{% endif %}
+{% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+
+<div class="card">
+  <h1>المستخدمون</h1>
+  <p class="muted">كل معلم يرى الامتحانات التي صححها هو فقط. المدير يرى كل الامتحانات ويدير الحسابات.</p>
+  <div class="table-wrap"><table>
+    <tr><th>الاسم</th><th>اسم المستخدم</th><th>الدور</th><th>كلمة مرور جديدة</th><th></th></tr>
+    {% for u in users %}
+    <tr>
+      <td>{{ u.name }}</td>
+      <td dir="ltr" style="text-align:right">{{ u.username }}</td>
+      <td>{{ "مدير" if u.role == "admin" else "معلم" }}</td>
+      <td>
+        <form class="inline-form" method="post" action="/users/{{ u.username }}/password">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <input type="password" name="password" minlength="8" required placeholder="8 أحرف على الأقل" autocomplete="new-password">
+          <button class="btn light" type="submit">تعيين</button>
+        </form>
+      </td>
+      <td>{% if u.username != user.username %}
+        <form method="post" action="/users/{{ u.username }}/delete" onsubmit="return confirm('حذف حساب {{ u.name }}؟ امتحاناته تبقى ظاهرة للمدير.')">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <button class="btn danger" type="submit">حذف</button>
+        </form>{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table></div>
+</div>
+
+<div class="card">
+  <h2>إضافة مستخدم</h2>
+  <form method="post" action="/users">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <div class="grid2">
+      <label>اسم المستخدم (بالإنجليزية)<input type="text" name="username" required dir="ltr"></label>
+      <label>الاسم الكامل<input type="text" name="name"></label>
+      <label>كلمة المرور<input type="password" name="password" required minlength="8" autocomplete="new-password"></label>
+      <label>الدور<br><select name="role"><option value="teacher">معلم</option><option value="admin">مدير</option></select></label>
+    </div>
+    <p><button class="btn" type="submit">إضافة</button></p>
+  </form>
+</div>
+{% endblock %}

@@ -7,6 +7,7 @@
   <p class="muted">ارفع الامتحان الأصلي والامتحان المحلول وسلم التصحيح وملفات الطلاب. سيصحح الموقع كل ملف ويعطي كل طالب علامة وتقريراً مفصلاً.</p>
 
   <form action="/grade" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
     <p><label>اسم الامتحان<input type="text" name="title" placeholder="مثلاً: امتحان تحليل بيانات – الصف العاشر – فصل أول"></label></p>
     <div class="grid2">
       <label class="field"><b>الامتحان الأصلي</b><span class="muted">PDF / Word / Excel (اختياري)</span>
@@ -45,10 +46,10 @@
 <div class="card">
   <h2>تصحيحات سابقة</h2>
   <div class="table-wrap"><table>
-    <tr><th>الامتحان</th><th>التاريخ</th><th class="num">طلاب</th><th>الحالة</th></tr>
+    <tr><th>الامتحان</th>{% if is_admin %}<th>المعلم</th>{% endif %}<th>التاريخ</th><th class="num">طلاب</th><th>الحالة</th></tr>
     {% for j in jobs %}
     <tr>
-      <td><a href="/jobs/{{ j.id }}">{{ j.title }}</a></td>
+      <td><a href="/jobs/{{ j.id }}">{{ j.title }}</a></td>{% if is_admin %}<td>{{ j.owner or "" }}</td>{% endif %}
       <td>{{ j.created.replace("T", " ")[:16] }}</td>
       <td class="num">{{ j.count }}</td>
       <td>{% if j.status == "running" %}قيد التصحيح{% elif j.status == "failed" %}فشل{% else %}مكتمل{% endif %}</td>
