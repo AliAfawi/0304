@@ -51,7 +51,7 @@ def test_parse_rubric_types(rubric):
 
 
 def test_template_is_a_valid_rubric():
-    assert len(parse_rubric(build_template()).items) == 5
+    assert len(parse_rubric(build_template()).items) == 7
 
 
 def test_rubric_missing_columns():

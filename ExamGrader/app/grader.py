@@ -8,8 +8,8 @@ from datetime import date, datetime, time
 
 from . import ai_grader
 from .excel_reader import CellData, ExcelFile, WorkbookError
-from .rubric import (CHECK_AI, CHECK_FORMULA, CHECK_TEXT, CHECK_VALUE,
-                     Rubric, RubricItem)
+from .rubric import (CHECK_AI, CHECK_CHART, CHECK_FORMULA, CHECK_PIVOT, CHECK_TEXT,
+                     CHECK_VALUE, Rubric, RubricItem)
 
 STATUS_CORRECT = "correct"
 STATUS_PARTIAL = "partial"
@@ -211,6 +211,17 @@ def _grade_item(item: RubricItem, student: ExcelFile, key: ExcelFile | None) -> 
         "points": item.points, "score": 0.0, "status": STATUS_WRONG,
         "student_answer": "", "expected_answer": "", "feedback": "", "ai": False,
     }
+    if item.check in (CHECK_CHART, CHECK_PIVOT):
+        from . import visuals  # imported here: visuals uses helpers from this module
+
+        g = (visuals.grade_chart if item.check == CHECK_CHART else visuals.grade_pivot)(item, student, key)
+        score = _round(item.points * g.fraction)
+        result.update(score=score, feedback=g.feedback, student_answer=g.student_answer,
+                      expected_answer=g.expected_answer,
+                      status=STATUS_REVIEW if g.review else _status(score, item.points),
+                      cell=item.sheet or "")
+        return result
+
     try:
         cells = student.cells(item.sheet, item.cell)
     except WorkbookError as exc:
