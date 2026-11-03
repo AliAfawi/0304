@@ -3,15 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}مصحح امتحانات تحليل البيانات{% endblock %}</title>
+  <title>{% block title %}مصحح الامتحانات{% endblock %}</title>
   {% if standalone %}<style>{{ inline_css | safe }}</style>{% else %}<link rel="stylesheet" href="/static/style.css">{% endif %}
   {% block head %}{% endblock %}
 </head>
 <body>
   {% if not standalone %}<header class="top">
-    <a class="brand" href="/">📊 مصحح امتحانات تحليل البيانات</a>
+    <a class="brand" href="/">📊 مصحح الامتحانات</a>
     {% if user %}<nav>
       <span>{{ user.name }}</span>
+      <a href="/library">مكتبة الامتحانات</a>
       {% if is_admin %}<a href="/users">المستخدمون</a>{% endif %}
       <a href="/account">حسابي</a>
       <form method="post" action="/logout"><button type="submit">خروج</button></form>

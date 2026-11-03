@@ -85,3 +85,10 @@ header.top nav button { background: none; border: 1px solid rgba(255,255,255,.5)
 select { padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; font: inherit; }
 .inline-form { display: flex; gap: 6px; align-items: center; margin: 0; }
 .inline-form input { width: 150px !important; }
+h3 { font-size: 1rem; margin: 22px 0 10px; color: var(--brand); border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+.grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.grid4 label { display: block; }
+.grid4 select, label > select { width: 100%; margin-top: 4px; }
+.small { font-size: .85rem; }
+.s-skip { background: #eef0f3; color: #667085; }
+tr.not-counted td { opacity: .55; }

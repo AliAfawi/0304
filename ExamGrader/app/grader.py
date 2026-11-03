@@ -204,7 +204,7 @@ def _answer_lines(cells: list[CellData], values: list | None = None) -> str:
     return "\n".join(lines)
 
 
-def _grade_item(item: RubricItem, student: ExcelFile, key: ExcelFile | None) -> dict:
+def _grade_item(item: RubricItem, student: ExcelFile, key: ExcelFile | None, context: str = "") -> dict:
     result = {
         "qid": item.qid, "description": item.description, "check": item.check,
         "cell": f"{item.sheet + '!' if item.sheet else ''}{item.cell}",
@@ -241,7 +241,7 @@ def _grade_item(item: RubricItem, student: ExcelFile, key: ExcelFile | None) -> 
     result["expected_answer"] = _answer_lines(cells, expected)
 
     if item.check == CHECK_AI:
-        return _grade_ai_item(item, cells, expected, result)
+        return _grade_ai_item(item, cells, expected, result, context)
 
     checker = {CHECK_VALUE: _check_values, CHECK_FORMULA: _check_formula,
                CHECK_TEXT: _check_text}[item.check]
@@ -254,7 +254,8 @@ def _grade_item(item: RubricItem, student: ExcelFile, key: ExcelFile | None) -> 
     return result
 
 
-def _grade_ai_item(item: RubricItem, cells: list[CellData], expected: list, result: dict) -> dict:
+def _grade_ai_item(item: RubricItem, cells: list[CellData], expected: list, result: dict,
+                   context: str = "") -> dict:
     answer = "\n".join(display(c.value) for c in cells if c.value not in (None, ""))
     result["ai"] = True
     if not answer.strip():
@@ -267,7 +268,7 @@ def _grade_ai_item(item: RubricItem, cells: list[CellData], expected: list, resu
     try:
         ai = ai_grader.grade_open_answer(
             question=item.description, expected="\n".join(display(e) for e in expected),
-            notes=item.notes, student_answer=answer, points=item.points,
+            notes=item.notes, student_answer=answer, points=item.points, context=context,
         )
     except ai_grader.AIError as exc:
         result.update(status=STATUS_REVIEW, feedback=f"تعذر التصحيح الآلي: {exc}")
@@ -280,23 +281,35 @@ def _grade_ai_item(item: RubricItem, cells: list[CellData], expected: list, resu
 
 # ------------------------------------------------------------------ students
 
-def summarize(student: dict) -> dict:
-    """Recompute totals from the item scores (also after teacher edits)."""
+def summarize(student: dict, sections: list | None = None) -> dict:
+    """Recompute totals from the item scores (also after teacher edits).
+    With an exam structure, only the questions that count are added up."""
+    from .structure import apply_structure
+
+    if sections is not None:
+        apply_structure(student, sections)
     items = student["items"]
-    total = _round(sum(i["score"] for i in items))
-    max_points = _round(sum(i["points"] for i in items))
+    counted = [i for i in items if i.get("counted", True)]
+    total = _round(sum(i["score"] for i in counted))
+    max_points = student.get("section_max")
+    if max_points is None:
+        max_points = _round(sum(i["points"] for i in items))
     student["total"] = total
     student["max_points"] = max_points
-    student["grade"] = round(100 * total / max_points) if max_points else 0
+    student["grade"] = min(100, round(100 * total / max_points)) if max_points else 0
     student["needs_review"] = (not student.get("reviewed")) and (
-        bool(student.get("error")) or any(i["status"] == STATUS_REVIEW for i in items))
+        bool(student.get("error")) or any(i["status"] == STATUS_REVIEW for i in counted))
     return student
 
 
+def _new_student(name: str, filenames: list[str], mode: str) -> dict:
+    return {"name": name, "filename": "، ".join(filenames), "files": filenames, "mode": mode,
+            "items": [], "error": None, "general_feedback": "", "teacher_comment": "", "reviewed": False}
+
+
 def grade_excel_student(name: str, filename: str, data: bytes, rubric: Rubric,
-                        key: ExcelFile | None) -> dict:
-    student = {"name": name, "filename": filename, "mode": "rubric", "items": [],
-               "error": None, "general_feedback": "", "teacher_comment": "", "reviewed": False}
+                        key: ExcelFile | None, sections: list | None = None, context: str = "") -> dict:
+    student = _new_student(name, [filename], "rubric")
     try:
         wb = ExcelFile(data)
     except WorkbookError as exc:
@@ -306,28 +319,28 @@ def grade_excel_student(name: str, filename: str, data: bytes, rubric: Rubric,
             "points": i.points, "score": 0.0, "status": STATUS_REVIEW, "student_answer": "",
             "expected_answer": "", "feedback": "تعذر فتح ملف الطالب", "ai": False,
         } for i in rubric.items]
-        return summarize(student)
-    student["items"] = [_grade_item(item, wb, key) for item in rubric.items]
-    return summarize(student)
+        return summarize(student, sections)
+    student["items"] = [_grade_item(item, wb, key, context) for item in rubric.items]
+    return summarize(student, sections)
 
 
-def grade_ai_student(name: str, filename: str, data: bytes, reference_blocks: list[dict]) -> dict:
-    student = {"name": name, "filename": filename, "mode": "ai", "items": [],
-               "error": None, "general_feedback": "", "teacher_comment": "", "reviewed": False}
+def grade_ai_student(name: str, files: list[tuple[str, bytes]], reference_blocks: list[dict],
+                     sections: list | None = None) -> dict:
+    student = _new_student(name, [f for f, _ in files], "ai")
     try:
-        out = ai_grader.grade_submission(reference_blocks, name, filename, data)
+        out = ai_grader.grade_submission(reference_blocks, name, files)
     except (ai_grader.AIError, ValueError) as exc:
         student["error"] = f"تعذر التصحيح: {exc}"
-        return summarize(student)
+        return summarize(student, sections)
     student["general_feedback"] = out.get("general_feedback", "")
     for q in out["questions"]:
         score = _round(q["score"])
         points = float(q["max_points"])
         student["items"].append({
-            "qid": q["qid"], "description": q["description"], "check": "ai", "cell": "",
+            "qid": str(q["qid"]).strip(), "description": q["description"], "check": "ai", "cell": "",
             "points": points, "score": score,
             "status": _status(score, points) if q["confident"] else STATUS_REVIEW,
             "student_answer": q["student_answer"], "expected_answer": "",
             "feedback": q["feedback"], "ai": True,
         })
-    return summarize(student)
+    return summarize(student, sections)

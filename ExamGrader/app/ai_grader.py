@@ -16,13 +16,21 @@ MODEL = os.environ.get("EXAM_GRADER_MODEL", "claude-opus-5-5")
 EFFORT = os.environ.get("EXAM_GRADER_EFFORT", "medium")
 FALLBACK_BETA = "server-side-fallback-2026-07-01"
 
-SYSTEM_PROMPT = """أنت مصحح امتحانات خبير في تحليل البيانات (Excel، إحصاء، SQL، Python).
+SYSTEM_PROMPT = """أنت مصحح خبير لامتحانات البجروت (בגרות) والامتحانات المدرسية في إسرائيل، في كل المواضيع.
 تصحح إجابات الطلاب بدقة وعدل وفق سلم التصحيح الذي يحدده المعلم.
-- التزم بسلم التصحيح؛ لا تخترع معايير جديدة.
+- التزم بسلم التصحيح والحل النموذجي؛ لا تخترع معايير جديدة.
 - امنح علامة جزئية عندما يكون جزء من الحل صحيحاً، ولا تعاقب الطالب مرتين على خطأ واحد انتقل إلى الخطوات التالية.
 - اقبل أي طريقة حل صحيحة حتى لو اختلفت عن الحل النموذجي.
-- اكتب الملاحظات للطالب بالعربية، قصيرة وواضحة: ما الخطأ وما الصحيح.
+- إجابات الطلاب قد تكون مكتوبة باليد ومصوَّرة، وبالعربية أو العبرية أو الإنجليزية. اقرأها بعناية.
+- في أسئلة اللغة والتعبير قيّم المضمون واللغة كما يحدد سلم التصحيح فقط.
+- الملاحظات للطالب قصيرة وواضحة: ما الخطأ وما الصحيح.
 - إذا كانت الإجابة غير مقروءة أو غير واضحة أو لم تستطع الحكم بثقة، ضع confident=false ليراجعها المعلم."""
+
+FEEDBACK_LANGUAGES = {"ar": "العربية", "he": "العبرية", "en": "الإنجليزية"}
+IMAGE_TYPES = {".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png",
+               ".webp": "image/webp", ".gif": "image/gif"}
+MAX_IMAGE_SIDE = 2000          # keeps handwriting readable
+MAX_IMAGE_BYTES = 4_500_000    # the API accepts up to 5MB per image
 
 
 class AIError(RuntimeError):
@@ -102,9 +110,10 @@ class AIItemResult:
 
 
 def grade_open_answer(*, question: str, expected: str, notes: str | None,
-                      student_answer: str, points: float) -> AIItemResult:
+                      student_answer: str, points: float, context: str = "") -> AIItemResult:
     prompt = (
-        f"السؤال: {question or '(بدون وصف)'}\n"
+        (f"{context}\n\n" if context else "")
+        + f"السؤال: {question or '(بدون وصف)'}\n"
         f"العلامة القصوى: {points}\n"
         f"الإجابة النموذجية: {expected or '(غير محددة)'}\n"
         f"تعليمات المعلم للتصحيح: {notes or '(لا يوجد)'}\n\n"
@@ -114,6 +123,18 @@ def grade_open_answer(*, question: str, expected: str, notes: str | None,
     data = _call([{"type": "text", "text": prompt}], _ITEM_SCHEMA, max_tokens=4000)
     score = max(0.0, min(float(data["score"]), points))
     return AIItemResult(score=score, feedback=data["feedback"], confident=bool(data["confident"]))
+
+
+def exam_context(*, label: str = "", structure: str = "", language: str = "ar") -> str:
+    """A short header for the model: subject, structure and feedback language."""
+    lines = []
+    if label:
+        lines.append(f"الامتحان: {label}")
+    if structure:
+        lines.append("مبنى الامتحان (أي الأسئلة تُحسب يُحدَّد لاحقاً تلقائياً؛ صحح كل سؤال أجاب عنه الطالب):\n"
+                     + structure)
+    lines.append(f"اكتب كل الملاحظات للطالب باللغة {FEEDBACK_LANGUAGES.get(language, 'العربية')}.")
+    return "\n".join(lines)
 
 
 # ----------------------------------------------------------- whole submission
@@ -146,10 +167,40 @@ _SUBMISSION_SCHEMA = {
 }
 
 
+def _image_block(data: bytes, ext: str) -> dict:
+    """Photos from phones are often large: shrink them while keeping
+    handwriting readable."""
+    media = IMAGE_TYPES[ext]
+    try:
+        from io import BytesIO
+
+        from PIL import Image, ImageOps
+
+        img = Image.open(BytesIO(data))
+        if max(img.size) > MAX_IMAGE_SIDE or len(data) > MAX_IMAGE_BYTES:
+            img = ImageOps.exif_transpose(img).convert("RGB")
+            img.thumbnail((MAX_IMAGE_SIDE, MAX_IMAGE_SIDE))
+            quality = 85
+            while True:
+                buf = BytesIO()
+                img.save(buf, "JPEG", quality=quality)
+                if buf.tell() <= MAX_IMAGE_BYTES or quality <= 40:
+                    break
+                quality -= 15
+            data, media = buf.getvalue(), "image/jpeg"
+    except ImportError:
+        pass
+    except Exception as exc:  # not a readable image
+        raise ValueError(f"تعذر قراءة الصورة: {exc}") from exc
+    return {"type": "image", "source": {"type": "base64", "media_type": media,
+                                        "data": base64.b64encode(data).decode("ascii")}}
+
+
 def _file_blocks(label: str, filename: str, data: bytes) -> list[dict]:
-    """PDFs go to Claude as documents (so scanned pages are read too);
-    everything else is converted to text first."""
-    if extension(filename) == ".pdf":
+    """PDFs and photos go to Claude as they are (so handwriting and scanned
+    pages are read too); everything else is converted to text first."""
+    ext = extension(filename)
+    if ext == ".pdf":
         return [
             {"type": "text", "text": f"=== {label} ({filename}) ==="},
             {"type": "document", "source": {
@@ -157,31 +208,41 @@ def _file_blocks(label: str, filename: str, data: bytes) -> list[dict]:
                 "data": base64.b64encode(data).decode("ascii"),
             }},
         ]
+    if ext in IMAGE_TYPES:
+        return [{"type": "text", "text": f"=== {label} ({filename}) ==="}, _image_block(data, ext)]
     return [{"type": "text", "text": f"=== {label} ({filename}) ===\n{file_to_text(filename, data)}"}]
 
 
 def build_reference_blocks(exam: tuple[str, bytes] | None, solution: tuple[str, bytes] | None,
-                           rubric: tuple[str, bytes]) -> list[dict]:
+                           rubric: tuple[str, bytes] | None, context: str = "") -> list[dict]:
     blocks: list[dict] = []
+    if context:
+        blocks.append({"type": "text", "text": context})
     if exam:
         blocks += _file_blocks("الامتحان الأصلي", *exam)
     if solution:
         blocks += _file_blocks("الامتحان المحلول (الحل النموذجي)", *solution)
-    blocks += _file_blocks("سلم التصحيح", *rubric)
+    if rubric:
+        blocks += _file_blocks("سلم التصحيح", *rubric)
+    if not blocks:
+        raise ValueError("لا توجد ملفات مرجعية للتصحيح")
     # The reference material is identical for every student: cache it.
     blocks[-1] = {**blocks[-1], "cache_control": {"type": "ephemeral"}}
     return blocks
 
 
 def grade_submission(reference_blocks: list[dict], student_name: str,
-                     filename: str, data: bytes) -> dict:
+                     files: list[tuple[str, bytes]]) -> dict:
+    """`files`: everything one student handed in (e.g. several photographed pages)."""
     content = list(reference_blocks)
-    content += _file_blocks(f"حل الطالب {student_name}", filename, data)
+    for n, (filename, data) in enumerate(files, start=1):
+        label = f"حل الطالب {student_name}" + (f" – ملف {n} من {len(files)}" if len(files) > 1 else "")
+        content += _file_blocks(label, filename, data)
     content.append({"type": "text", "text": (
         "صحح حل الطالب وفق سلم التصحيح. أعد قائمة بكل الأسئلة/البنود الموجودة في سلم التصحيح "
-        "بنفس الترتيب وبنفس أرقام الأسئلة، مع العلامة القصوى لكل بند كما في السلم، "
-        "والعلامة التي يستحقها الطالب، وإجابته باختصار، وملاحظة له. "
-        "ثم ملاحظة عامة قصيرة عن أداء الطالب."
+        "بنفس الترتيب وبنفس أرقام الأسئلة (حتى الأسئلة التي لم يُجب عنها، بعلامة 0 وإجابة فارغة)، "
+        "مع العلامة القصوى لكل بند كما في السلم، والعلامة التي يستحقها الطالب، وإجابته باختصار، "
+        "وملاحظة له. ثم ملاحظة عامة قصيرة عن أداء الطالب."
     )})
     data_out = _call(content, _SUBMISSION_SCHEMA)
     for q in data_out["questions"]:

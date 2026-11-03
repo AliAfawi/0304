@@ -26,6 +26,8 @@ def question_scores(student: dict) -> dict[str, tuple[float, float]]:
     """Per-question (score, points); a question may span several rubric rows."""
     out: dict[str, list[float]] = {}
     for item in student["items"]:
+        if not item.get("counted", True):
+            continue  # a question the student answered beyond what the exam asks
         acc = out.setdefault(item["qid"], [0.0, 0.0])
         acc[0] += item["score"]
         acc[1] += item["points"]
@@ -84,7 +86,7 @@ def similarity_flags(students: list[dict], min_shared_wrong: int = 2) -> list[di
         return {
             (i["qid"], i["cell"]): i["student_answer"]
             for i in s["items"]
-            if i["status"] not in (STATUS_CORRECT, STATUS_REVIEW)
+            if i["status"] not in (STATUS_CORRECT, STATUS_REVIEW) and i.get("counted", True)
             and i["student_answer"] and i["student_answer"] != "(فارغ)"
             and not i.get("ai")
         }
@@ -130,15 +132,17 @@ def export_grades_xlsx(job: dict) -> bytes:
 
     details = wb.create_sheet("تفاصيل")
     details.sheet_view.rightToLeft = True
-    details.append(["اسم الطالب", "سؤال", "الوصف", "الخلية", "العلامة", "من", "إجابة الطالب", "الإجابة الصحيحة", "ملاحظة"])
+    details.append(["اسم الطالب", "سؤال", "الوصف", "الخلية", "العلامة", "من", "يُحسب", "إجابة الطالب",
+                    "الإجابة الصحيحة", "ملاحظة"])
     for s in students:
         for i in s["items"]:
             details.append([s["name"], i["qid"], i["description"], i["cell"], i["score"], i["points"],
+                            "نعم" if i.get("counted", True) else "لا (اختيار)",
                             i["student_answer"], i["expected_answer"], i["feedback"]])
     for c in details[1]:
         c.font = Font(bold=True, color="FFFFFF")
         c.fill = fill
-    for col, w in zip("ABCDEFGHI", [22, 8, 30, 12, 8, 6, 30, 30, 60]):
+    for col, w in zip("ABCDEFGHIJ", [22, 8, 30, 12, 8, 6, 10, 30, 30, 60]):
         details.column_dimensions[col].width = w
 
     stats = class_stats(students)

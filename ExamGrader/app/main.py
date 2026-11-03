@@ -17,10 +17,11 @@ from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from . import ai_grader, auth, grader, reports, storage
+from . import ai_grader, auth, catalog, grader, library, reports, storage
 from .excel_reader import ExcelFile, WorkbookError
-from .extract import SUPPORTED_EXTS, extension
+from .extract import IMAGE_EXTS, SUPPORTED_EXTS, extension
 from .rubric import CHECK_LABELS_AR, Rubric, RubricError, build_template, parse_rubric
+from .structure import StructureError, parse_structure, sections_from_dicts, sections_to_dicts
 
 BASE = Path(__file__).resolve().parent
 MAX_FILE_BYTES = 25 * 1024 * 1024
@@ -28,7 +29,7 @@ MAX_ZIP_TOTAL = 300 * 1024 * 1024
 MAX_STUDENTS = 500
 AI_WORKERS = 4
 
-app = FastAPI(title="مصحح امتحانات تحليل البيانات")
+app = FastAPI(title="مصحح الامتحانات")
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
 templates = Jinja2Templates(directory=BASE / "templates")
 templates.env.globals.update(check_labels=CHECK_LABELS_AR, pass_mark=grader.PASS_MARK)
@@ -75,7 +76,8 @@ def _student_name(filename: str) -> str:
 
 
 def collect_student_files(files: list[tuple[str, bytes]]) -> list[tuple[str, bytes]]:
-    """Expand ZIP archives; keep supported files only."""
+    """Expand ZIP archives; keep supported files only. Paths inside a ZIP are
+    kept (e.g. "class/Ahmad/page1.jpg") so files can be grouped per student."""
     out: list[tuple[str, bytes]] = []
     for name, data in files:
         if extension(name) == ".zip":
@@ -88,69 +90,114 @@ def collect_student_files(files: list[tuple[str, bytes]]) -> list[tuple[str, byt
                 inner = PurePath(info.filename)
                 if info.is_dir() or "__MACOSX" in inner.parts or inner.name.startswith((".", "~$")):
                     continue
-                if extension(inner.name) not in SUPPORTED_EXTS:
+                if ".." in inner.parts or extension(inner.name) not in SUPPORTED_EXTS:
                     continue
                 total += info.file_size
                 if info.file_size > MAX_FILE_BYTES or total > MAX_ZIP_TOTAL:
                     raise UploadError(f"محتوى الملف {name} كبير جداً")
-                out.append((inner.name, zf.read(info)))
+                out.append((inner.as_posix(), zf.read(info)))
         elif extension(name) in SUPPORTED_EXTS:
             out.append((name, data))
-    if len(out) > MAX_STUDENTS:
-        raise UploadError(f"عدد ملفات الطلاب أكبر من {MAX_STUDENTS}")
+    if len(out) > MAX_STUDENTS * 20:
+        raise UploadError("عدد الملفات كبير جداً")
     return out
 
 
-def _unique_names(files: list[tuple[str, bytes]]) -> list[tuple[str, str, bytes]]:
+# "Ahmad_2.jpg", "Ahmad - 3.png", "Ahmad (2).jpg", "Ahmad p2.jpg", "أحمد صفحة 2.jpg"
+_PAGE_SUFFIX = re.compile(r"^(.+?)(?:[\s_\-]+(?:p|page|صفحة|עמוד)?\s*\d{1,2}|\s*\(\d{1,2}\))$", re.IGNORECASE)
+
+
+def group_submissions(files: list[tuple[str, bytes]]) -> list[tuple[str, list[tuple[str, bytes]]]]:
+    """One entry per student: [(name, [(filename, data), ...])].
+
+    - Files in their own folder belong to that student (folder name = name).
+    - Photos named like "Ahmad_1.jpg", "Ahmad_2.jpg" are pages of one student.
+    - Any other file is one student, named after the file.
+    """
+    parents = [PurePath(p).parent.parts for p, _ in files]
+    common = parents[0] if parents else ()
+    for parts in parents[1:]:
+        n = 0
+        while n < min(len(common), len(parts)) and common[n] == parts[n]:
+            n += 1
+        common = common[:n]
+
+    groups: dict[str, list[tuple[str, bytes]]] = {}
+    for path, data in sorted(files, key=lambda f: f[0]):
+        pp = PurePath(path)
+        below = pp.parent.parts[len(common):]
+        if below:
+            key = below[0]
+        elif extension(pp.name) in IMAGE_EXTS:
+            m = _PAGE_SUFFIX.match(pp.stem)
+            key = m.group(1) if m else pp.stem
+        else:
+            key = pp.stem + "\0" + pp.suffix  # same name, different type: separate students
+        groups.setdefault(key, []).append((pp.name, data))
+    if len(groups) > MAX_STUDENTS:
+        raise UploadError(f"عدد الطلاب أكبر من {MAX_STUDENTS}")
+
     seen: dict[str, int] = {}
     out = []
-    for filename, data in sorted(files, key=lambda f: f[0]):
-        base = _student_name(filename)
+    for key, group in groups.items():
+        base = _student_name(key.split("\0")[0])
         seen[base] = seen.get(base, 0) + 1
-        name = base if seen[base] == 1 else f"{base} ({seen[base]})"
-        out.append((name, filename, data))
+        out.append((base if seen[base] == 1 else f"{base} ({seen[base]})", group))
     return out
 
 
 # --------------------------------------------------------------- grading run
 
-def run_job(job_id: str, students: list[tuple[str, str, bytes]], rubric: Rubric | None,
+EXCEL_EXTS = {".xlsx", ".xlsm"}
+
+
+def run_job(job_id: str, students: list[tuple[str, list[tuple[str, bytes]]]], rubric: Rubric | None,
             solution: tuple[str, bytes] | None, exam: tuple[str, bytes] | None,
-            rubric_file: tuple[str, bytes]) -> None:
+            rubric_file: tuple[str, bytes] | None, sections: list | None = None,
+            context: str = "") -> None:
     key = None
     warnings: list[str] = []
-    if rubric is not None and solution and extension(solution[0]) in {".xlsx", ".xlsm"}:
+    if rubric is not None and solution and extension(solution[0]) in EXCEL_EXTS:
         try:
             key = ExcelFile(solution[1])
         except WorkbookError as exc:
             warnings.append(f"تعذر فتح الامتحان المحلول: {exc}")
 
     reference_blocks = None
+    refs_lock = threading.Lock()
 
     def refs():
         nonlocal reference_blocks
-        if reference_blocks is None:
-            reference_blocks = ai_grader.build_reference_blocks(exam, solution, rubric_file)
+        with refs_lock:
+            if reference_blocks is None:
+                reference_blocks = ai_grader.build_reference_blocks(exam, solution, rubric_file, context)
         return reference_blocks
 
     def grade_one(entry):
-        name, filename, data = entry
-        is_excel = extension(filename) in {".xlsx", ".xlsm"}
+        name, files = entry
+        excel = [f for f in files if extension(f[0]) in EXCEL_EXTS]
 
         def failed(msg):
             return grader.summarize({
-                "name": name, "filename": filename, "mode": "ai", "items": [], "error": msg,
+                "name": name, "filename": "، ".join(f for f, _ in files), "files": [f for f, _ in files],
+                "mode": "ai", "items": [], "error": msg,
                 "general_feedback": "", "teacher_comment": "", "reviewed": False,
             })
         try:
-            if rubric is not None and is_excel:
-                result = grader.grade_excel_student(name, filename, data, rubric, key)
+            if rubric is not None and excel:
+                result = grader.grade_excel_student(name, excel[0][0], excel[0][1], rubric, key,
+                                                    sections, context)
+                if len(files) > 1:
+                    result["error"] = (f"تم تصحيح الملف {excel[0][0]} فقط؛ "
+                                       f"بقية ملفات الطالب ({len(files) - 1}) لم تُصحح")
+                    grader.summarize(result)
             elif ai_grader.ai_available():
-                result = grader.grade_ai_student(name, filename, data, refs())
+                result = grader.grade_ai_student(name, files, refs(), sections)
             else:
-                result = failed("هذا الملف ليس Excel ويحتاج تصحيحاً بالذكاء الاصطناعي، لكن مفتاح API غير مُعدّ")
+                result = failed("هذه الملفات تحتاج تصحيحاً بالذكاء الاصطناعي (صور، PDF، Word...)، "
+                                "لكن مفتاح API غير مُعدّ")
         except Exception as exc:  # one broken file must not stop the class
-            result = failed(f"حدث خطأ أثناء تصحيح هذا الملف: {exc}")
+            result = failed(f"حدث خطأ أثناء تصحيح ملفات هذا الطالب: {exc}")
 
         def add(job):
             job["students"].append(result)
@@ -158,9 +205,6 @@ def run_job(job_id: str, students: list[tuple[str, str, bytes]], rubric: Rubric 
         storage.update_job(job_id, add)
 
     try:
-        if ai_grader.ai_available() and (rubric is None or any(
-                extension(f) not in {".xlsx", ".xlsm"} for _, f, _ in students)):
-            refs()  # build once before fanning out so all workers share the cache prefix
         with ThreadPoolExecutor(max_workers=AI_WORKERS) as pool:
             list(pool.map(grade_one, students))
         status, error = "done", None
@@ -168,7 +212,7 @@ def run_job(job_id: str, students: list[tuple[str, str, bytes]], rubric: Rubric 
         status, error = "failed", f"حدث خطأ أثناء التصحيح: {exc}"
 
     def finish(job):
-        order = {name: i for i, (name, _, _) in enumerate(students)}
+        order = {name: i for i, (name, _) in enumerate(students)}
         job["students"].sort(key=lambda s: order.get(s["name"], 0))
         job["status"] = status
         job["error"] = error
@@ -351,12 +395,20 @@ def _visible_jobs(sess: Session) -> list[dict]:
     return storage.list_jobs(owner=None if sess.is_admin else sess.user["username"])
 
 
+def _form_ctx(**extra) -> dict:
+    return {
+        "subjects": catalog.SUBJECTS, "units": catalog.UNITS, "seasons": catalog.SEASONS,
+        "languages": ai_grader.FEEDBACK_LANGUAGES, "this_year": datetime.now().year,
+        "library_entries": [dict(e, label=catalog.exam_label(e)) for e in library.list_entries()],
+        "ai": ai_grader.ai_available(), **extra,
+    }
+
+
 @app.get("/", response_class=HTMLResponse)
-def index(request: Request):
+def index(request: Request, library_id: str = ""):
     sess = session(request)
-    return render(request, "index.html", {
-        "jobs": _visible_jobs(sess), "ai": ai_grader.ai_available(), "error": None,
-    }, sess)
+    return render(request, "index.html", _form_ctx(jobs=_visible_jobs(sess), error=None,
+                                                   selected_library=library_id), sess)
 
 
 @app.get("/rubric-template.xlsx")
@@ -367,41 +419,85 @@ def rubric_template(request: Request):
                     headers={"Content-Disposition": "attachment; filename*=UTF-8''" + quote("سلم_التصحيح.xlsx")})
 
 
+def _exam_meta(subject: str, subject_custom: str, units: str, questionnaire: str, year: str,
+               season: str, language: str) -> dict:
+    if subject and subject not in catalog.SUBJECT_KEYS:
+        raise UploadError("موضوع غير معروف")
+    if season and season not in catalog.SEASON_NAMES:
+        raise UploadError("موعد غير معروف")
+    year_n = None
+    if year.strip():
+        if not year.strip().isdigit() or not 1990 <= int(year) <= 2100:
+            raise UploadError("السنة غير صالحة")
+        year_n = int(year)
+    return {
+        "subject": subject or None,
+        "subject_custom": subject_custom.strip()[:80] or None,
+        "units": int(units) if units.isdigit() and int(units) in catalog.UNITS else None,
+        "questionnaire": re.sub(r"[^\w\-/ ]", "", questionnaire.strip())[:30] or None,
+        "year": year_n, "season": season or None,
+        "language": language if language in ai_grader.FEEDBACK_LANGUAGES else "ar",
+    }
+
+
 @app.post("/grade")
 async def grade(request: Request,
                 csrf: str = Form(""),
                 title: str = Form(""),
+                subject: str = Form(""), subject_custom: str = Form(""), units: str = Form(""),
+                questionnaire: str = Form(""), year: str = Form(""), season: str = Form(""),
+                language: str = Form("ar"), structure: str = Form(""),
+                library_id: str = Form(""), save_to_library: str = Form(""),
                 exam: UploadFile | None = File(None),
                 solution: UploadFile | None = File(None),
-                rubric: UploadFile = File(...),
+                rubric: UploadFile | None = File(None),
                 students: list[UploadFile] = File(...)):
     sess = session(request)
     check_csrf(sess, csrf)
 
     def fail(msg: str):
-        return render(request, "index.html", {
-            "jobs": _visible_jobs(sess), "ai": ai_grader.ai_available(), "error": msg,
-        }, sess, status_code=400)
+        return render(request, "index.html", _form_ctx(jobs=_visible_jobs(sess), error=msg,
+                                                       selected_library=library_id), sess, status_code=400)
 
     try:
         exam_f = await _read(exam)
         solution_f = await _read(solution)
         rubric_f = await _read(rubric)
         raw_students = [f for f in [await _read(u) for u in students] if f]
-        student_files = collect_student_files(raw_students)
+        submissions = group_submissions(collect_student_files(raw_students))
+        meta = _exam_meta(subject, subject_custom, units, questionnaire, year, season, language)
     except UploadError as exc:
         return fail(str(exc))
 
-    if not rubric_f:
-        return fail("يجب رفع سلم التصحيح")
-    if not student_files:
-        return fail("لم يتم العثور على ملفات طلاب مدعومة (xlsx, pdf, docx, ipynb, py, sql, txt, csv أو ZIP يحتويها)")
-    if extension(rubric_f[0]) not in SUPPORTED_EXTS:
-        return fail("صيغة سلم التصحيح غير مدعومة")
+    entry = None
+    if library_id:
+        try:
+            entry = library.get_entry(library_id)
+        except KeyError:
+            return fail("الامتحان المختار غير موجود في المكتبة")
+        # files uploaded now replace the library's; empty fields take the library's values
+        exam_f = exam_f or library.load_file(library_id, "exam")
+        solution_f = solution_f or library.load_file(library_id, "solution")
+        rubric_f = rubric_f or library.load_file(library_id, "rubric")
+        for k in ("subject", "subject_custom", "units", "questionnaire", "year", "season"):
+            meta[k] = meta[k] or entry.get(k)
+        structure = structure.strip() or entry.get("structure_text", "")
+
+    if not rubric_f and not solution_f:
+        return fail("يجب رفع سلم التصحيح أو الامتحان المحلول (أو اختيار امتحان من المكتبة)")
+    if not submissions:
+        return fail("لم يتم العثور على ملفات طلاب مدعومة (Excel، PDF، Word، صور، كود، أو ZIP يحتويها)")
+    for f in (rubric_f, solution_f, exam_f):
+        if f and extension(f[0]) not in SUPPORTED_EXTS:
+            return fail(f"صيغة الملف {f[0]} غير مدعومة")
+    try:
+        sections = parse_structure(structure)
+    except StructureError as exc:
+        return fail(f"مبنى الامتحان: {exc}")
 
     structured: Rubric | None = None
     rubric_error = None
-    if extension(rubric_f[0]) in {".xlsx", ".xlsm"}:
+    if rubric_f and extension(rubric_f[0]) in EXCEL_EXTS:
         try:
             structured = parse_rubric(rubric_f[1])
         except RubricError as exc:
@@ -414,7 +510,14 @@ async def grade(request: Request,
             msg += f" التفاصيل: {rubric_error}"
         return fail(msg)
 
-    named = _unique_names(student_files)
+    if save_to_library and not entry:
+        files = {k: f for k, f in (("exam", exam_f), ("solution", solution_f), ("rubric", rubric_f)) if f}
+        entry = library.create_entry({**meta, "title": title.strip() or None, "structure_text": structure.strip(),
+                                      "created_by": sess.user["username"]}, files)
+
+    label = catalog.exam_label(meta)
+    context = ai_grader.exam_context(label=label, structure="\n".join(x.describe() for x in sections),
+                                     language=meta["language"])
     job_id = storage.new_job_id()
     warnings = []
     if structured is None:
@@ -424,20 +527,101 @@ async def grade(request: Request,
     job = {
         "id": job_id,
         "owner": sess.user["username"],
-        "title": title.strip() or f"امتحان {datetime.now():%d/%m/%Y}",
+        "title": title.strip() or (entry or {}).get("title") or label or f"امتحان {datetime.now():%d/%m/%Y}",
         "created": datetime.now().isoformat(timespec="seconds"),
-        "status": "running", "error": None, "progress": 0, "total": len(named),
+        "status": "running", "error": None, "progress": 0, "total": len(submissions),
         "mode": "rubric" if structured else "ai",
+        "meta": meta, "label": label, "library_id": entry["id"] if entry else None,
+        "structure": sections_to_dicts(sections), "structure_text": structure.strip(),
         "files": {"exam": exam_f[0] if exam_f else None,
                   "solution": solution_f[0] if solution_f else None,
-                  "rubric": rubric_f[0]},
+                  "rubric": rubric_f[0] if rubric_f else None},
         "rubric": structured.to_dict() if structured else None,
         "warnings": warnings, "students": [],
     }
     storage.save_job(job)
     threading.Thread(target=run_job, daemon=True,
-                     args=(job_id, named, structured, solution_f, exam_f, rubric_f)).start()
+                     args=(job_id, submissions, structured, solution_f, exam_f, rubric_f, sections,
+                           context)).start()
     return RedirectResponse(f"/jobs/{job_id}", status_code=303)
+
+
+# ------------------------------------------------------------------- library
+
+@app.get("/library", response_class=HTMLResponse)
+def library_page(request: Request, subject: str = "", msg: str = ""):
+    sess = session(request)
+    entries = [dict(e, label=catalog.exam_label(e),
+                    structure_lines=[x.describe() for x in parse_structure(e.get("structure_text", ""))])
+               for e in library.list_entries(subject or None)]
+    return render(request, "library.html", _form_ctx(entries=entries, subject_filter=subject, msg=msg,
+                                                     error=None, kind_labels=library.KIND_LABELS), sess)
+
+
+@app.post("/library")
+async def library_add(request: Request, csrf: str = Form(""), title: str = Form(""),
+                      subject: str = Form(""), subject_custom: str = Form(""), units: str = Form(""),
+                      questionnaire: str = Form(""), year: str = Form(""), season: str = Form(""),
+                      structure: str = Form(""),
+                      exam: UploadFile | None = File(None), solution: UploadFile | None = File(None),
+                      rubric: UploadFile | None = File(None)):
+    sess = session(request)
+    check_csrf(sess, csrf)
+    try:
+        meta = _exam_meta(subject, subject_custom, units, questionnaire, year, season, "ar")
+        if not meta["subject"]:
+            raise UploadError("اختر الموضوع")
+        parse_structure(structure)
+        files = {k: f for k, f in (("exam", await _read(exam)), ("solution", await _read(solution)),
+                                   ("rubric", await _read(rubric))) if f}
+        for f in files.values():
+            if extension(f[0]) not in SUPPORTED_EXTS:
+                raise UploadError(f"صيغة الملف {f[0]} غير مدعومة")
+        if "rubric" in files and extension(files["rubric"][0]) in EXCEL_EXTS:
+            try:
+                parse_rubric(files["rubric"][1])
+            except RubricError:
+                pass  # a free-form rubric in Excel is fine too
+        meta.pop("language")
+        library.create_entry({**meta, "title": title.strip() or None, "structure_text": structure.strip(),
+                              "created_by": sess.user["username"]}, files)
+    except (UploadError, StructureError, ValueError) as exc:
+        entries = [dict(e, label=catalog.exam_label(e), structure_lines=[]) for e in library.list_entries()]
+        return render(request, "library.html", _form_ctx(entries=entries, subject_filter="", msg="",
+                                                         error=str(exc), kind_labels=library.KIND_LABELS),
+                      sess, status_code=400)
+    return RedirectResponse("/library?msg=" + quote("تمت إضافة الامتحان إلى المكتبة"), status_code=303)
+
+
+def _entry_or_404(entry_id: str) -> dict:
+    try:
+        return library.get_entry(entry_id)
+    except KeyError:
+        raise HTTPException(404, "الامتحان غير موجود في المكتبة")
+
+
+@app.get("/library/{entry_id}/{kind}")
+def library_file(request: Request, entry_id: str, kind: str):
+    session(request)
+    _entry_or_404(entry_id)
+    if kind not in library.KINDS:
+        raise HTTPException(404)
+    f = library.load_file(entry_id, kind)
+    if not f:
+        raise HTTPException(404, "الملف غير موجود")
+    return Response(f[1], media_type="application/octet-stream",
+                    headers={"Content-Disposition": "attachment; filename*=UTF-8''" + quote(f[0])})
+
+
+@app.post("/library/{entry_id}/delete")
+def library_delete(request: Request, entry_id: str, csrf: str = Form("")):
+    sess = session(request)
+    check_csrf(sess, csrf)
+    entry = _entry_or_404(entry_id)
+    if not sess.is_admin and entry.get("created_by") != sess.user["username"]:
+        raise HTTPException(403, "فقط من أضاف الامتحان أو المدير يستطيع حذفه")
+    library.delete_entry(entry_id)
+    return RedirectResponse("/library?msg=" + quote("تم حذف الامتحان من المكتبة"), status_code=303)
 
 
 def _job_or_404(job_id: str, sess: Session) -> dict:
@@ -509,7 +693,7 @@ async def save_student(request: Request, job_id: str, idx: int):
         if "teacher_comment" in form:
             s["teacher_comment"] = str(form["teacher_comment"])[:4000]
             s["reviewed"] = form.get("reviewed") == "on"
-        grader.summarize(s)
+        grader.summarize(s, sections_from_dicts(job.get("structure")))
     storage.update_job(job_id, apply)
     return RedirectResponse(f"/jobs/{job_id}/students/{idx}?saved=1", status_code=303)
 

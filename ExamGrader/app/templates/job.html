@@ -7,7 +7,8 @@
       <h1>{{ job.title }}</h1>
       <div class="muted">{{ job.created.replace("T", " ")[:16] }} ·
         {% if job.mode == "rubric" %}سلم تصحيح منظم{% else %}تصحيح حر بالذكاء الاصطناعي{% endif %} ·
-        سلم التصحيح: {{ job.files.rubric }}</div>
+        {% if job.files.rubric %}سلم التصحيح: {{ job.files.rubric }}{% endif %}</div>
+      {% if job.label %}<div class="muted">{{ job.label }}</div>{% endif %}
     </div>
     <div class="actions">
       <a class="btn" href="/jobs/{{ job.id }}/export.xlsx">⬇ العلامات (Excel)</a>

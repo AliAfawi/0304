@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}مكتبة الامتحانات{% endblock %}
+{% block content %}
+{% if msg %}<div class="alert ok">{{ msg }}</div>{% endif %}
+{% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+
+<div class="card">
+  <div class="report-head">
+    <div>
+      <h1>مكتبة الامتحانات</h1>
+      <p class="muted">امتحانات بجروت وامتحانات تجريبية ومدرسية لكل المواضيع، مع الحل وسلم التصحيح ومبنى الامتحان. مشتركة لكل معلمي المدرسة: يكفي أن يُضاف الامتحان مرة واحدة.</p>
+    </div>
+    <form method="get" class="inline-form">
+      <select name="subject" onchange="this.form.submit()">
+        <option value="">كل المواضيع</option>
+        {% for key, ar, he in subjects %}<option value="{{ key }}" {% if key == subject_filter %}selected{% endif %}>{{ ar }}</option>{% endfor %}
+      </select>
+    </form>
+  </div>
+
+  {% if entries %}
+  <div class="table-wrap"><table>
+    <tr><th>الامتحان</th><th>الملفات</th><th>مبنى الامتحان</th><th>أضافه</th><th></th></tr>
+    {% for e in entries %}
+    <tr>
+      <td>{% if e.title %}<b>{{ e.title }}</b><div class="muted">{{ e.label }}</div>{% else %}<b>{{ e.label }}</b>{% endif %}</td>
+      <td>{% for kind, f in e.files.items() %}<div><a href="/library/{{ e.id }}/{{ kind }}">⬇ {{ kind_labels[kind] }}</a></div>{% endfor %}</td>
+      <td class="small">{% for line in e.structure_lines %}<div>{{ line }}</div>{% else %}<span class="muted">كل الأسئلة</span>{% endfor %}</td>
+      <td class="small">{{ e.created_by }}<div class="muted">{{ e.created[:10] }}</div></td>
+      <td>
+        <div class="actions">
+          <a class="btn" href="/?library_id={{ e.id }}">صحّح به</a>
+          {% if is_admin or e.created_by == user.username %}
+          <form method="post" action="/library/{{ e.id }}/delete" onsubmit="return confirm('حذف هذا الامتحان من المكتبة؟')">
+            <input type="hidden" name="csrf" value="{{ csrf }}">
+            <button class="btn danger" type="submit">حذف</button>
+          </form>{% endif %}
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </table></div>
+  {% else %}
+  <div class="alert info">لا توجد امتحانات {% if subject_filter %}في هذا الموضوع {% endif %}بعد. أضف امتحاناً من النموذج أدناه، أو اختر «احفظ في المكتبة» عند التصحيح.</div>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h2>إضافة امتحان إلى المكتبة</h2>
+  <p class="muted small">امتحانات البجروت السابقة وحلولها منشورة في موقع وزارة التربية (מאגר בחינות הבגרות). حمّلها من هناك وأضفها هنا مع سلم التصحيح ومبنى الامتحان.</p>
+  <form method="post" action="/library" enctype="multipart/form-data">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <p><label>اسم (اختياري)<input type="text" name="title" placeholder="مثلاً: بجروت فيزياء – ميكانيكا"></label></p>
+    {% set require_subject = true %}
+    {% include "_exam_fields.html" %}
+    <div class="grid2" style="margin-top:12px">
+      <label class="field"><b>الامتحان الأصلي</b><input type="file" name="exam" accept=".pdf,.docx,.xlsx,.xlsm,.txt,.jpg,.jpeg,.png,.webp"></label>
+      <label class="field"><b>الامتحان المحلول</b><input type="file" name="solution" accept=".xlsx,.xlsm,.pdf,.docx,.txt,.ipynb,.py,.sql,.jpg,.jpeg,.png,.webp"></label>
+      <label class="field"><b>سلم التصحيح</b><input type="file" name="rubric" accept=".xlsx,.xlsm,.pdf,.docx,.txt,.jpg,.jpeg,.png,.webp"></label>
+    </div>
+    <p class="muted small">يلزم سلم تصحيح أو امتحان محلول على الأقل.</p>
+    <p><button class="btn" type="submit">إضافة إلى المكتبة</button></p>
+  </form>
+</div>
+{% endblock %}

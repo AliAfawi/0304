@@ -129,7 +129,7 @@ def test_free_rubric_needs_ai_key(client):
 def test_free_rubric_with_ai(client, monkeypatch):
     monkeypatch.setenv("ANTHROPIC_API_KEY", "test")
 
-    def fake_submission(reference_blocks, name, filename, data):
+    def fake_submission(reference_blocks, name, files):
         assert reference_blocks[-1]["cache_control"] == {"type": "ephemeral"}
         return {"general_feedback": "عمل جيد", "questions": [
             {"qid": "1", "description": "سؤال", "max_points": 10, "score": 8,

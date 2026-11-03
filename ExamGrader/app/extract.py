@@ -6,7 +6,8 @@ from io import BytesIO
 from pathlib import PurePath
 
 TEXT_EXTS = {".txt", ".csv", ".py", ".sql", ".r", ".md", ".json", ".tsv"}
-SUPPORTED_EXTS = TEXT_EXTS | {".pdf", ".docx", ".xlsx", ".xlsm", ".ipynb"}
+IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
+SUPPORTED_EXTS = TEXT_EXTS | IMAGE_EXTS | {".pdf", ".docx", ".xlsx", ".xlsm", ".ipynb"}
 
 
 def extension(filename: str) -> str:
@@ -74,4 +75,6 @@ def file_to_text(filename: str, data: bytes) -> str:
         return _ipynb_text(data)
     if ext in TEXT_EXTS:
         return _decode(data)
+    if ext in IMAGE_EXTS:
+        raise ValueError("الصور تُقرأ بالذكاء الاصطناعي فقط")
     raise ValueError(f"نوع الملف {ext or '(بدون امتداد)'} غير مدعوم")

@@ -11,7 +11,8 @@
     <div>
       <div class="muted">تقرير تصحيح · {{ job.title }}</div>
       <h1>{{ s.name }}</h1>
-      <div class="muted">الملف: {{ s.filename }}</div>
+      {% if job.label %}<div class="muted">{{ job.label }}</div>{% endif %}
+      <div class="muted">{{ "الملفات" if (s.files or [])|length > 1 else "الملف" }}: {{ s.filename }}</div>
     </div>
     <div style="text-align:center">
       <div class="big-grade grade {{ 'pass' if s.grade >= pass_mark else 'fail' }}">{{ s.grade }}</div>
@@ -25,11 +26,14 @@
 {% if not standalone %}<form method="post"><input type="hidden" name="csrf" value="{{ csrf }}">{% endif %}
 <div class="card">
   <h2>تفصيل العلامة</h2>
+  {% if job.structure %}<p class="muted small">مبنى الامتحان: {% for sec in job.structure %}{{ sec.title ~ ": " if sec.title }}من الأسئلة {{ sec.qids|join(", ") }} يُحسب {{ sec.required }}{{ " (الأفضل)" if sec.rule == "best" else "" }}{{ "؛ " if not loop.last }}{% endfor %}</p>{% endif %}
   <div class="table-wrap"><table>
     <tr><th>سؤال</th><th>البند</th><th>إجابتك</th>{% if job.mode == "rubric" %}<th>الإجابة الصحيحة</th>{% endif %}<th class="num">العلامة</th><th>ملاحظات</th></tr>
     {% for it in s["items"] %}
-    <tr>
-      <td><b>{{ it.qid }}</b><div><span class="pill s-{{ it.status }}">{{ status_labels[it.status] }}</span></div></td>
+    {% set counted = it.counted is not defined or it.counted %}
+    <tr {% if not counted %}class="not-counted"{% endif %}>
+      <td><b>{{ it.qid }}</b><div><span class="pill s-{{ it.status }}">{{ status_labels[it.status] }}</span></div>
+        {% if not counted %}<div><span class="pill s-skip" title="أجاب الطالب عن أسئلة أكثر من المطلوب في هذا الفصل">لا يُحسب</span></div>{% endif %}</td>
       <td>{{ it.description }}{% if it.cell %}<div class="muted code">{{ it.cell }}</div>{% endif %}
         <div class="muted">{{ check_labels.get(it.check, it.check) }}</div></td>
       <td class="code">{{ it.student_answer }}</td>
