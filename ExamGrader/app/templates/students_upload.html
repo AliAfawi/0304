@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}حلول الطلاب – {{ entry.title or label }}{% endblock %}
+{% block content %}
+<div class="steps">
+  <div class="step done"><b>١</b> ارفع الامتحان</div>
+  <div class="step done"><b>٢</b> راجع سلم التصحيح (מחוון)</div>
+  <div class="step on"><b>٣</b> أرفق حلول الطلاب</div>
+  <div class="step"><b>٤</b> تقرير وعلامة لكل طالب (PDF)</div>
+</div>
+{% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+
+<div class="card">
+  <h1>حلول الطلاب</h1>
+  <div class="muted">{{ entry.title or "" }}{% if entry.title and label %} · {% endif %}{{ label }}
+    {% if rows %} · سلم التصحيح: {{ rows|length }} أسئلة · <a href="/exams/{{ entry.id }}">تعديل</a>{% endif %}</div>
+
+  <form method="post" enctype="multipart/form-data" style="margin-top:14px">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <p><label>اسم هذا التصحيح<input type="text" name="title" placeholder="مثلاً: الصف الحادي عشر ب" value=""></label></p>
+
+    <h3>طالب طالب</h3>
+    <p class="muted small">لكل طالب: اكتب اسمه وأرفق حله: صور الصفحات من الهاتف (يمكن اختيار عدة صور معاً) أو ملف PDF أو Word. الصور تُحوَّل إلى مسح ضوئي (סריקה) نظيف قبل التصحيح.</p>
+    <div id="students">
+      <div class="srow" data-i="0">
+        <label>اسم الطالب<input type="text" name="name_0" placeholder="الاسم الكامل"></label>
+        <label>الحل<input type="file" name="files_0" multiple accept="image/*,.pdf,.docx,.xlsx,.txt,.py,.sql,.ipynb"></label>
+        <span class="count muted small"></span>
+      </div>
+    </div>
+    <p><button type="button" class="btn light" id="add">+ طالب آخر</button></p>
+
+    <details>
+      <summary>أو: رفع كل الحلول دفعة واحدة (ملف ZIP أو عدة ملفات)</summary>
+      <p class="muted small">اسم الملف = اسم الطالب. صفحات نفس الطالب: مجلد باسمه داخل الـ ZIP، أو أسماء مثل «أحمد_1.jpg»، «أحمد_2.jpg».</p>
+      <input type="file" name="bulk" multiple accept="image/*,.pdf,.docx,.xlsx,.zip,.txt,.py,.sql,.ipynb">
+    </details>
+
+    <div class="grid4" style="margin-top:14px">
+      <label>لغة الملاحظات للطالب
+        <select name="language">{% for key, name in languages.items() %}<option value="{{ key }}">{{ name }}</option>{% endfor %}</select></label>
+      <label>معالجة الصور
+        <select name="scan"><option value="1">مسح ضوئي: قص الورقة وتنظيفها (موصى به)</option><option value="0">إبقاء الصور كما هي</option></select></label>
+    </div>
+
+    <p class="actions" style="margin-top:16px"><button class="btn" type="submit">صحّح الآن ←</button></p>
+  </form>
+  {% if not ai %}<div class="alert warn">تصحيح الحلول المكتوبة باليد يحتاج مفتاح ANTHROPIC_API_KEY.</div>{% endif %}
+</div>
+
+<script>
+(function () {
+  const box = document.getElementById('students');
+  function wire(row) {
+    const input = row.querySelector('input[type=file]');
+    input.onchange = () => {
+      row.querySelector('.count').textContent = input.files.length === 1 ? 'ملف واحد' : (input.files.length ? input.files.length + ' ملفات' : '');
+      const name = row.querySelector('input[type=text]');
+      if (!name.value && input.files.length) name.value = input.files[0].name.replace(/\.[^.]+$/, '').replace(/[_\-]+\d*$/, '').replace(/[_\-]+/g, ' ');
+    };
+  }
+  wire(box.firstElementChild);
+  document.getElementById('add').onclick = () => {
+    const n = box.children.length;
+    const row = box.firstElementChild.cloneNode(true);
+    row.dataset.i = n;
+    row.querySelectorAll('input').forEach(el => { el.name = el.name.replace(/_\d+$/, '_' + n); el.value = ''; });
+    row.querySelector('.count').textContent = '';
+    box.appendChild(row);
+    wire(row);
+    row.querySelector('input[type=text]').focus();
+  };
+})();
+</script>
+{% endblock %}

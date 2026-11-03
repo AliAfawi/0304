@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block head %}<meta http-equiv="refresh" content="3">{% endblock %}
+{% block content %}
+<div class="steps">
+  <div class="step done"><b>١</b> ارفع الامتحان</div>
+  <div class="step on"><b>٢</b> راجع سلم التصحيح (מחוון)</div>
+  <div class="step"><b>٣</b> أرفق حلول الطلاب</div>
+  <div class="step"><b>٤</b> تقرير وعلامة لكل طالب (PDF)</div>
+</div>
+<div class="card">
+  <h1>{{ entry.title or label or "الامتحان" }}</h1>
+  <p>يقرأ الموقع الامتحان ويجهّز سلم التصحيح… قد يستغرق ذلك دقيقة أو دقيقتين.</p>
+  <div class="progress"><i class="indeterminate"></i></div>
+  <p class="muted">ستتحدث الصفحة تلقائياً.</p>
+</div>
+{% endblock %}

@@ -4,6 +4,7 @@ from __future__ import annotations
 import hmac
 import io
 import os
+import secrets
 import re
 import threading
 import zipfile
@@ -16,8 +17,9 @@ from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from starlette.datastructures import UploadFile as StarletteUpload
 
-from . import ai_grader, auth, catalog, grader, library, reports, storage
+from . import ai_grader, auth, catalog, grader, library, mahvan, pdf_report, reports, scanner, storage
 from .excel_reader import ExcelFile, WorkbookError
 from .extract import IMAGE_EXTS, SUPPORTED_EXTS, extension
 from .rubric import CHECK_LABELS_AR, Rubric, RubricError, build_template, parse_rubric
@@ -154,8 +156,12 @@ EXCEL_EXTS = {".xlsx", ".xlsm"}
 def run_job(job_id: str, students: list[tuple[str, list[tuple[str, bytes]]]], rubric: Rubric | None,
             solution: tuple[str, bytes] | None, exam: tuple[str, bytes] | None,
             rubric_file: tuple[str, bytes] | None, sections: list | None = None,
-            context: str = "") -> None:
+            context: str = "", scheme: list[dict] | None = None, scan: bool = True) -> None:
+    """Grade every student. `scheme` is the teacher's marking scheme (מחוון)
+    from the site; `scan` turns photos into clean scans first."""
     key = None
+    if scheme:
+        rubric_file = ("מחוון.txt", mahvan.as_text(scheme).encode("utf-8"))
     warnings: list[str] = []
     if rubric is not None and solution and extension(solution[0]) in EXCEL_EXTS:
         try:
@@ -175,6 +181,25 @@ def run_job(job_id: str, students: list[tuple[str, list[tuple[str, bytes]]]], ru
 
     def grade_one(entry):
         name, files = entry
+        file_key = secrets.token_hex(8)
+        scanned_pages = 0
+        if scan:
+            processed = []
+            for fname, data in files:
+                if extension(fname) in IMAGE_EXTS:
+                    try:
+                        res = scanner.scan_image(data)
+                        processed.append((PurePath(fname).stem + ".jpg", res.data))
+                        scanned_pages += 1
+                        continue
+                    except Exception:
+                        pass  # keep the original photo
+                processed.append((fname, data))
+            files = processed
+        try:
+            storage.save_student_files(job_id, file_key, files)
+        except OSError:
+            file_key = None
         excel = [f for f in files if extension(f[0]) in EXCEL_EXTS]
 
         def failed(msg):
@@ -192,12 +217,14 @@ def run_job(job_id: str, students: list[tuple[str, list[tuple[str, bytes]]]], ru
                                        f"بقية ملفات الطالب ({len(files) - 1}) لم تُصحح")
                     grader.summarize(result)
             elif ai_grader.ai_available():
-                result = grader.grade_ai_student(name, files, refs(), sections)
+                result = grader.grade_ai_student(name, files, refs(), sections, scheme)
             else:
                 result = failed("هذه الملفات تحتاج تصحيحاً بالذكاء الاصطناعي (صور، PDF، Word...)، "
                                 "لكن مفتاح API غير مُعدّ")
         except Exception as exc:  # one broken file must not stop the class
             result = failed(f"حدث خطأ أثناء تصحيح ملفات هذا الطالب: {exc}")
+        result["file_key"] = file_key
+        result["scanned_pages"] = scanned_pages
 
         def add(job):
             job["students"].append(result)
@@ -405,7 +432,18 @@ def _form_ctx(**extra) -> dict:
 
 
 @app.get("/", response_class=HTMLResponse)
+def home(request: Request, error: str = ""):
+    """Step 1 of the guided flow: upload an exam."""
+    sess = session(request)
+    exams = [dict(e, label=catalog.exam_label(e)) for e in library.list_entries()]
+    exams.sort(key=lambda e: e["created"], reverse=True)
+    return render(request, "home.html", _form_ctx(jobs=_visible_jobs(sess), exams=exams[:30],
+                                                  error=error or None), sess)
+
+
+@app.get("/advanced", response_class=HTMLResponse)
 def index(request: Request, library_id: str = ""):
+    """All options on one page: Excel rubrics, ready-made marking schemes, ZIPs."""
     sess = session(request)
     return render(request, "index.html", _form_ctx(jobs=_visible_jobs(sess), error=None,
                                                    selected_library=library_id), sess)
@@ -543,6 +581,237 @@ async def grade(request: Request,
     threading.Thread(target=run_job, daemon=True,
                      args=(job_id, submissions, structured, solution_f, exam_f, rubric_f, sections,
                            context)).start()
+    return RedirectResponse(f"/jobs/{job_id}", status_code=303)
+
+
+# ------------------------------------------------------- guided flow (exams)
+
+def _can_edit(sess: Session, entry: dict) -> bool:
+    return sess.is_admin or entry.get("created_by") == sess.user["username"]
+
+
+def _generate_mahvan(entry_id: str) -> None:
+    """Background: draft the marking scheme from the exam with Claude."""
+    try:
+        _draft_mahvan(entry_id)
+    except KeyError:
+        pass  # the exam was deleted while the draft was being written
+
+
+def _draft_mahvan(entry_id: str) -> None:
+    entry = library.get_entry(entry_id)
+    exam = library.load_file(entry_id, "exam")
+    solution = library.load_file(entry_id, "solution")
+    context = ai_grader.exam_context(label=catalog.exam_label(entry))
+    try:
+        draft = mahvan.generate(exam, solution, context)
+    except Exception as exc:
+        def failed(e):
+            e["mahvan_status"] = "failed"
+            e["mahvan_error"] = f"تعذر إعداد سلم التصحيح آلياً: {exc}"
+        library.update_entry(entry_id, failed)
+        return
+    structure = draft.get("structure", "").strip()
+    try:
+        parse_structure(structure)
+    except StructureError:
+        structure = ""  # the teacher fixes it on the edit page
+
+    def done(e):
+        e["mahvan"] = draft["questions"]
+        e["structure_text"] = e.get("structure_text") or structure
+        e["mahvan_notes"] = draft.get("notes", "")
+        e["mahvan_status"] = "draft"
+        e.pop("mahvan_error", None)
+    library.update_entry(entry_id, done)
+
+
+@app.post("/exams")
+async def create_exam(request: Request, csrf: str = Form(""), title: str = Form(""),
+                      subject: str = Form(""), subject_custom: str = Form(""), units: str = Form(""),
+                      questionnaire: str = Form(""), year: str = Form(""), season: str = Form(""),
+                      exam: UploadFile | None = File(None), solution: UploadFile | None = File(None)):
+    """Step 1: the teacher uploads the exam; Claude drafts a marking scheme."""
+    sess = session(request)
+    check_csrf(sess, csrf)
+    try:
+        meta = _exam_meta(subject, subject_custom, units, questionnaire, year, season, "ar")
+        meta.pop("language")
+        exam_f = await _read(exam)
+        solution_f = await _read(solution)
+        if not exam_f:
+            raise UploadError("ارفع ملف الامتحان (PDF، Word، صورة...)")
+        for f in (exam_f, solution_f):
+            if f and extension(f[0]) not in SUPPORTED_EXTS:
+                raise UploadError(f"صيغة الملف {f[0]} غير مدعومة")
+    except UploadError as exc:
+        return RedirectResponse("/?error=" + quote(str(exc)), status_code=303)
+    files = {"exam": exam_f}
+    if solution_f:
+        files["solution"] = solution_f
+    ai = ai_grader.ai_available()
+    entry = library.create_entry({
+        **meta, "title": title.strip() or None, "structure_text": "", "created_by": sess.user["username"],
+        "mahvan": [], "mahvan_status": "generating" if ai else "manual",
+    }, files, require_key=False)
+    if ai:
+        threading.Thread(target=_generate_mahvan, args=(entry["id"],), daemon=True).start()
+    return RedirectResponse(f"/exams/{entry['id']}", status_code=303)
+
+
+@app.get("/exams/{entry_id}", response_class=HTMLResponse)
+def exam_page(request: Request, entry_id: str, saved: int = 0, error: str = ""):
+    """Step 2: review and edit the marking scheme (מחוון)."""
+    sess = session(request)
+    entry = _entry_or_404(entry_id)
+    if entry.get("mahvan_status") == "generating":
+        return render(request, "mahvan_wait.html", {"entry": entry, "label": catalog.exam_label(entry)}, sess)
+    rows = entry.get("mahvan") or []
+    return render(request, "mahvan.html", _form_ctx(
+        entry=entry, label=catalog.exam_label(entry), rows=rows, total=mahvan.total(rows) if rows else 0,
+        can_edit=_can_edit(sess, entry), saved=bool(saved), error=error or entry.get("mahvan_error"),
+        kind_labels=library.KIND_LABELS), sess)
+
+
+@app.post("/exams/{entry_id}/mahvan")
+async def save_mahvan(request: Request, entry_id: str):
+    sess = session(request)
+    form = await request.form()
+    check_csrf(sess, form.get("csrf"))
+    entry = _entry_or_404(entry_id)
+    if not _can_edit(sess, entry):
+        raise HTTPException(403, "فقط من أضاف الامتحان أو المدير يستطيع تعديل سلم التصحيح")
+    structure = str(form.get("structure", "")).strip()
+    try:
+        rows = mahvan.from_form(form)
+        if not rows:
+            raise mahvan.MahvanError("سلم التصحيح فارغ: أضف سؤالاً واحداً على الأقل")
+        sections = parse_structure(structure)
+        unknown = {q for sec in sections for q in sec.qids} - {r["qid"] for r in rows}
+        if unknown:
+            raise StructureError(f"مبنى الامتحان يذكر أسئلة غير موجودة في السلم: {', '.join(sorted(unknown))}")
+    except (mahvan.MahvanError, StructureError) as exc:
+        return RedirectResponse(f"/exams/{entry_id}?error=" + quote(str(exc)), status_code=303)
+
+    def apply(e):
+        e["mahvan"] = rows
+        e["structure_text"] = structure
+        e["mahvan_status"] = "approved"
+        e.pop("mahvan_error", None)
+    library.update_entry(entry_id, apply)
+    if form.get("next") == "students":
+        return RedirectResponse(f"/exams/{entry_id}/students", status_code=303)
+    return RedirectResponse(f"/exams/{entry_id}?saved=1", status_code=303)
+
+
+@app.post("/exams/{entry_id}/regenerate")
+def regenerate_mahvan(request: Request, entry_id: str, csrf: str = Form("")):
+    sess = session(request)
+    check_csrf(sess, csrf)
+    entry = _entry_or_404(entry_id)
+    if not _can_edit(sess, entry):
+        raise HTTPException(403)
+    if not ai_grader.ai_available() or not entry["files"].get("exam"):
+        return RedirectResponse(f"/exams/{entry_id}?error=" + quote("الإعداد الآلي يحتاج ملف امتحان ومفتاح API"),
+                                status_code=303)
+    library.update_entry(entry_id, lambda e: e.update(mahvan_status="generating"))
+    threading.Thread(target=_generate_mahvan, args=(entry_id,), daemon=True).start()
+    return RedirectResponse(f"/exams/{entry_id}", status_code=303)
+
+
+@app.get("/exams/{entry_id}/students", response_class=HTMLResponse)
+def students_page(request: Request, entry_id: str, error: str = ""):
+    """Step 3: attach each student's solution."""
+    sess = session(request)
+    entry = _entry_or_404(entry_id)
+    return render(request, "students_upload.html", _form_ctx(
+        entry=entry, label=catalog.exam_label(entry), error=error or None,
+        rows=entry.get("mahvan") or []), sess)
+
+
+@app.post("/exams/{entry_id}/students")
+async def grade_students(request: Request, entry_id: str):
+    sess = session(request)
+    form = await request.form()
+    check_csrf(sess, form.get("csrf"))
+    entry = _entry_or_404(entry_id)
+
+    def fail(msg):
+        return RedirectResponse(f"/exams/{entry_id}/students?error=" + quote(msg), status_code=303)
+
+    scheme = entry.get("mahvan") or []
+    rubric_f = library.load_file(entry_id, "rubric")
+    if not scheme and not rubric_f:
+        return RedirectResponse(f"/exams/{entry_id}?error=" + quote("اعتمد سلم التصحيح أولاً"), status_code=303)
+
+    # one row per student (name + files), plus an optional bulk upload grouped automatically
+    submissions: list[tuple[str, list[tuple[str, bytes]]]] = []
+    try:
+        rows = sorted({int(k.split("_", 1)[1]) for k in form.keys()
+                       if k.startswith("files_") and k.split("_", 1)[1].isdigit()})
+        for i in rows:
+            files = [f for f in [await _read(u) for u in form.getlist(f"files_{i}")
+                                 if isinstance(u, StarletteUpload)] if f]
+            files = [f for f in files if extension(f[0]) in SUPPORTED_EXTS]
+            if not files:
+                continue
+            name = str(form.get(f"name_{i}", "")).strip()[:120] or _student_name(files[0][0])
+            submissions.append((name, files))
+        bulk = [f for f in [await _read(u) for u in form.getlist("bulk") if isinstance(u, StarletteUpload)] if f]
+        if bulk:
+            submissions += group_submissions(collect_student_files(bulk))
+    except UploadError as exc:
+        return fail(str(exc))
+    if not submissions:
+        return fail("لم تُرفق ملفات حلول لأي طالب")
+    if len(submissions) > MAX_STUDENTS:
+        return fail(f"عدد الطلاب أكبر من {MAX_STUDENTS}")
+    seen: dict[str, int] = {}
+    unique = []
+    for name, files in submissions:
+        seen[name] = seen.get(name, 0) + 1
+        unique.append((name if seen[name] == 1 else f"{name} ({seen[name]})", files))
+
+    structured = None
+    if not scheme and rubric_f and extension(rubric_f[0]) in EXCEL_EXTS:
+        try:
+            structured = parse_rubric(rubric_f[1])
+        except RubricError:
+            structured = None
+    if structured is None and not ai_grader.ai_available():
+        return fail("تصحيح هذه الحلول يحتاج الذكاء الاصطناعي، لكن مفتاح ANTHROPIC_API_KEY غير مُعدّ")
+
+    language = str(form.get("language", "ar"))
+    language = language if language in ai_grader.FEEDBACK_LANGUAGES else "ar"
+    sections = parse_structure(entry.get("structure_text", ""))
+    label = catalog.exam_label(entry)
+    context = ai_grader.exam_context(label=label, structure="\n".join(x.describe() for x in sections),
+                                     language=language)
+    title = str(form.get("title", "")).strip() or entry.get("title") or label or "امتحان"
+    exam_f = library.load_file(entry_id, "exam")
+    solution_f = library.load_file(entry_id, "solution")
+    job_id = storage.new_job_id()
+    job = {
+        "id": job_id, "owner": sess.user["username"], "title": title,
+        "created": datetime.now().isoformat(timespec="seconds"),
+        "status": "running", "error": None, "progress": 0, "total": len(unique),
+        "mode": "rubric" if structured else "ai",
+        "meta": {k: entry.get(k) for k in ("subject", "subject_custom", "units", "questionnaire", "year", "season")}
+        | {"language": language},
+        "label": label, "library_id": entry_id,
+        "structure": sections_to_dicts(sections), "structure_text": entry.get("structure_text", ""),
+        "files": {"exam": exam_f[0] if exam_f else None, "solution": solution_f[0] if solution_f else None,
+                  "rubric": "מחוון" if scheme else (rubric_f[0] if rubric_f else None)},
+        "rubric": structured.to_dict() if structured else None,
+        "warnings": [] if structured else
+        ["التصحيح تم بالذكاء الاصطناعي حسب سلم التصحيح؛ راجع العلامات قبل إرسالها للطلاب."],
+        "students": [],
+    }
+    storage.save_job(job)
+    threading.Thread(target=run_job, daemon=True, kwargs=dict(
+        job_id=job_id, students=unique, rubric=structured, solution=solution_f, exam=exam_f,
+        rubric_file=rubric_f, sections=sections, context=context, scheme=scheme or None,
+        scan=form.get("scan", "1") == "1")).start()
     return RedirectResponse(f"/jobs/{job_id}", status_code=303)
 
 
@@ -723,6 +992,41 @@ def reports_zip(request: Request, job_id: str):
             zf.writestr(f"{fname}.html", html)
     return Response(buf.getvalue(), media_type="application/zip",
                     headers={"Content-Disposition": "attachment; filename*=UTF-8''" + quote(f"تقارير - {job['title']}.zip")})
+
+
+def _student_pdf(job: dict, idx: int) -> bytes:
+    s = _student_or_404(job, idx)
+    files = storage.load_student_files(job["id"], s["file_key"]) if s.get("file_key") else []
+    return pdf_report.build_student_pdf(job, s, files)
+
+
+def _pdf_name(s: dict, job: dict) -> str:
+    return re.sub(r'[\\/:*?"<>|]', "_", f"{s['name']} - {job['title']}") + ".pdf"
+
+
+@app.get("/jobs/{job_id}/students/{idx}/report.pdf")
+def student_pdf(request: Request, job_id: str, idx: int):
+    """The grading report followed by the student's scanned solution."""
+    job = _job_or_404(job_id, session(request))
+    data = _student_pdf(job, idx)
+    return Response(data, media_type="application/pdf", headers={
+        "Content-Disposition": "inline; filename*=UTF-8''" + quote(_pdf_name(job["students"][idx], job))})
+
+
+@app.get("/jobs/{job_id}/reports-pdf.zip")
+def all_pdfs(request: Request, job_id: str):
+    job = _job_or_404(job_id, session(request))
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
+        used = set()
+        for idx, s in enumerate(job["students"]):
+            name = _pdf_name(s, job)
+            if name in used:
+                name = f"{idx + 1} - {name}"
+            used.add(name)
+            zf.writestr(name, _student_pdf(job, idx))
+    return Response(buf.getvalue(), media_type="application/zip", headers={
+        "Content-Disposition": "attachment; filename*=UTF-8''" + quote(f"تقارير PDF - {job['title']}.zip")})
 
 
 @app.post("/jobs/{job_id}/delete")

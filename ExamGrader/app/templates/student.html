@@ -2,7 +2,8 @@
 {% block title %}{{ s.name }} – {{ job.title }}{% endblock %}
 {% block content %}
 {% if not standalone %}
-<p class="no-print"><a href="/jobs/{{ job.id }}">→ العودة لنتائج الصف</a></p>
+<p class="no-print actions"><a href="/jobs/{{ job.id }}">→ العودة لنتائج الصف</a>
+  <a class="btn" href="/jobs/{{ job.id }}/students/{{ idx }}/report.pdf" target="_blank">⬇ PDF للطباعة أو الإرسال (التقرير + حل الطالب)</a></p>
 {% if saved %}<div class="alert ok no-print">تم حفظ التعديلات.</div>{% endif %}
 {% endif %}
 
@@ -64,7 +65,7 @@
   <p><label><input type="checkbox" name="reviewed" {% if s.reviewed %}checked{% endif %}> راجعت هذا التصحيح (إزالة علامة «للمراجعة»)</label></p>
   <div class="actions">
     <button class="btn" type="submit">حفظ التعديلات</button>
-    <button class="btn light" type="button" onclick="window.print()">🖨 طباعة / حفظ PDF</button>
+    <a class="btn light" href="/jobs/{{ job.id }}/students/{{ idx }}/report.pdf" target="_blank">⬇ ملف PDF: التقرير + حل الطالب</a>
   </div>
 </div>
 </form>

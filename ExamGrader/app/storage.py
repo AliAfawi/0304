@@ -1,12 +1,15 @@
-"""Saving grading jobs as JSON files on disk.
+"""Saving grading jobs on disk.
 
-Student files themselves are not kept: only the grading results are stored.
+data/jobs/<id>.json        results
+data/jobs/<id>/files/<k>/  the student's (scanned) pages, used to build the
+                           printable PDF; deleted together with the job.
 """
 from __future__ import annotations
 
 import json
 import os
 import re
+import shutil
 import threading
 import uuid
 from pathlib import Path
@@ -65,6 +68,36 @@ def delete_job(job_id: str) -> None:
     path = _path(job_id)
     with _lock(job_id):
         path.unlink(missing_ok=True)
+        shutil.rmtree(path.with_suffix(""), ignore_errors=True)
+
+
+_FILE_KEY = re.compile(r"^[0-9a-f]{16}$")
+
+
+def _files_dir(job_id: str, key: str):
+    if not _FILE_KEY.match(key):
+        raise KeyError(key)
+    return _path(job_id).with_suffix("") / "files" / key
+
+
+def save_student_files(job_id: str, key: str, files: list[tuple[str, bytes]]) -> None:
+    folder = _files_dir(job_id, key)
+    folder.mkdir(parents=True, exist_ok=True)
+    index = []
+    for n, (name, data) in enumerate(files):
+        stored = f"{n:03d}{os.path.splitext(name)[1].lower()}"
+        (folder / stored).write_bytes(data)
+        index.append({"name": name, "path": stored})
+    (folder / "index.json").write_text(json.dumps(index, ensure_ascii=False), encoding="utf-8")
+
+
+def load_student_files(job_id: str, key: str) -> list[tuple[str, bytes]]:
+    folder = _files_dir(job_id, key)
+    index_path = folder / "index.json"
+    if not index_path.exists():
+        return []
+    index = json.loads(index_path.read_text(encoding="utf-8"))
+    return [(f["name"], (folder / f["path"]).read_bytes()) for f in index]
 
 
 def list_jobs(owner: str | None = None) -> list[dict]:
@@ -73,7 +106,7 @@ def list_jobs(owner: str | None = None) -> list[dict]:
     if not folder.exists():
         return []
     jobs = []
-    for p in folder.glob("*.json"):
+    for p in folder.glob("*.json"):  # only the <id>.json files at the top level
         try:
             j = json.loads(p.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):

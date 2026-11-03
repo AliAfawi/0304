@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+{% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+
+<div class="steps">
+  <div class="step on"><b>١</b> ارفع الامتحان</div>
+  <div class="step"><b>٢</b> راجع سلم التصحيح (מחוון)</div>
+  <div class="step"><b>٣</b> أرفق حلول الطلاب</div>
+  <div class="step"><b>٤</b> تقرير وعلامة لكل طالب (PDF)</div>
+</div>
+
+<div class="card">
+  <h1>تصحيح امتحان جديد</h1>
+  <p class="muted">ارفع ورقة الامتحان (PDF، Word أو صورة). {% if ai %}سيقرأها الموقع ويجهّز لك سلم تصحيح (מחוון) تراجعه وتعدّله قبل التصحيح.{% else %}بعدها تكتب سلم التصحيح (מחוון) في الموقع.{% endif %}</p>
+  <form action="/exams" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <div class="grid2">
+      <label class="field req"><b>ورقة الامتحان</b><span class="muted">PDF / Word / صورة</span>
+        <input type="file" name="exam" required accept=".pdf,.docx,.jpg,.jpeg,.png,.webp,.txt,.xlsx"></label>
+      <label class="field"><b>حل نموذجي</b><span class="muted">اختياري: يساعد على إعداد سلم تصحيح أدق</span>
+        <input type="file" name="solution" accept=".pdf,.docx,.jpg,.jpeg,.png,.webp,.txt,.xlsx"></label>
+    </div>
+    <p><label>اسم الامتحان<input type="text" name="title" placeholder="مثلاً: امتحان فيزياء – الصف الحادي عشر ب"></label></p>
+    <details>
+      <summary>تفاصيل البجروت (اختياري): الموضوع، الوحدات، رقم النموذج…</summary>
+      <div class="grid4" style="margin-top:10px">
+        <label>الموضوع
+          <select name="subject"><option value="">—</option>
+            {% for key, ar, he in subjects %}<option value="{{ key }}">{{ ar }}{% if key != "other" %} · {{ he }}{% endif %}</option>{% endfor %}
+          </select></label>
+        <label>موضوع آخر<input type="text" name="subject_custom"></label>
+        <label>وحدات (יח"ל)<select name="units"><option value="">—</option>{% for u in units %}<option>{{ u }}</option>{% endfor %}</select></label>
+        <label>رقم النموذج (מספר שאלון)<input type="text" name="questionnaire" dir="ltr"></label>
+        <label>السنة<input type="number" name="year" min="1990" max="2100" placeholder="{{ this_year }}"></label>
+        <label>الموعد<select name="season"><option value="">—</option>{% for key, name in seasons %}<option value="{{ key }}">{{ name }}</option>{% endfor %}</select></label>
+      </div>
+    </details>
+    <p class="actions" style="margin-top:16px">
+      <button class="btn" type="submit">التالي: إعداد سلم التصحيح ←</button>
+      <a class="btn light" href="/advanced">خيارات متقدمة (Excel، سلم جاهز، ZIP)</a>
+    </p>
+  </form>
+  {% if not ai %}<div class="alert info">الإعداد الآلي لسلم التصحيح وتصحيح الحلول المكتوبة باليد يحتاجان مفتاح ANTHROPIC_API_KEY. بدونه يمكنك كتابة السلم بنفسك، وتصحيح امتحانات Excel من «خيارات متقدمة».</div>{% endif %}
+</div>
+
+{% if exams %}
+<div class="card">
+  <h2>امتحانات جاهزة للتصحيح</h2>
+  <div class="table-wrap"><table>
+    <tr><th>الامتحان</th><th>سلم التصحيح</th><th>أضافه</th><th></th></tr>
+    {% for e in exams %}
+    <tr>
+      <td><b>{{ e.title or e.label or "امتحان" }}</b>{% if e.title and e.label %}<div class="muted small">{{ e.label }}</div>{% endif %}</td>
+      <td class="small">
+        {% if e.mahvan_status == "generating" %}<span class="pill s-review">قيد الإعداد…</span>
+        {% elif e.mahvan %}{{ e.mahvan|length }} أسئلة{% if e.mahvan_status == "draft" %} · <span class="pill s-partial">مسودة</span>{% endif %}
+        {% elif e.files.rubric %}ملف مرفق{% else %}<span class="pill s-wrong">غير جاهز</span>{% endif %}
+      </td>
+      <td class="small">{{ e.created_by }}</td>
+      <td><div class="actions">
+        <a class="btn light" href="/exams/{{ e.id }}">سلم التصحيح</a>
+        <a class="btn" href="/exams/{{ e.id }}/students">أرفق حلول الطلاب</a>
+      </div></td>
+    </tr>
+    {% endfor %}
+  </table></div>
+  <p class="small"><a href="/library">كل الامتحانات في المكتبة ←</a></p>
+</div>
+{% endif %}
+
+{% if jobs %}
+<div class="card">
+  <h2>تصحيحات سابقة</h2>
+  <div class="table-wrap"><table>
+    <tr><th>الامتحان</th>{% if is_admin %}<th>المعلم</th>{% endif %}<th>التاريخ</th><th class="num">طلاب</th><th>الحالة</th></tr>
+    {% for j in jobs %}
+    <tr>
+      <td><a href="/jobs/{{ j.id }}">{{ j.title }}</a></td>{% if is_admin %}<td>{{ j.owner or "" }}</td>{% endif %}
+      <td>{{ j.created.replace("T", " ")[:16] }}</td>
+      <td class="num">{{ j.count }}</td>
+      <td>{% if j.status == "running" %}قيد التصحيح{% elif j.status == "failed" %}فشل{% else %}مكتمل{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </table></div>
+</div>
+{% endif %}
+{% endblock %}

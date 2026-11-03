@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import re
 import shutil
+import threading
 import uuid
 from datetime import datetime
 from pathlib import PurePath
@@ -30,9 +31,13 @@ def _dir(entry_id: str):
     return _root() / entry_id
 
 
-def create_entry(meta: dict, files: dict[str, tuple[str, bytes]]) -> dict:
-    if "rubric" not in files and "solution" not in files:
+def create_entry(meta: dict, files: dict[str, tuple[str, bytes]], require_key: bool = True) -> dict:
+    """`require_key=False` for an exam whose marking scheme will be written on
+    the site (מחוון) instead of uploaded."""
+    if require_key and "rubric" not in files and "solution" not in files:
         raise ValueError("يجب أن يحتوي الامتحان في المكتبة على سلم تصحيح أو امتحان محلول")
+    if not files:
+        raise ValueError("لم يُرفع أي ملف")
     entry_id = uuid.uuid4().hex
     folder = _dir(entry_id)
     folder.mkdir(parents=True)
@@ -79,6 +84,23 @@ def list_entries(subject: str | None = None) -> list[dict]:
         out.append(e)
     return sorted(out, key=lambda e: (e.get("subject") or "", -(int(e.get("year") or 0)),
                                       e.get("questionnaire") or "", e["created"]))
+
+
+_lock = threading.Lock()
+
+
+def update_entry(entry_id: str, fn) -> dict:
+    """Read-modify-write of an entry's metadata (e.g. the edited marking scheme)."""
+    path = _dir(entry_id) / "meta.json"
+    with _lock:
+        if not path.exists():
+            raise KeyError(entry_id)
+        entry = json.loads(path.read_text(encoding="utf-8"))
+        fn(entry)
+        tmp = path.with_suffix(".tmp")
+        tmp.write_text(json.dumps(entry, ensure_ascii=False, indent=1), encoding="utf-8")
+        tmp.replace(path)
+    return entry
 
 
 def delete_entry(entry_id: str) -> None:

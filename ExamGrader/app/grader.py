@@ -325,7 +325,10 @@ def grade_excel_student(name: str, filename: str, data: bytes, rubric: Rubric,
 
 
 def grade_ai_student(name: str, files: list[tuple[str, bytes]], reference_blocks: list[dict],
-                     sections: list | None = None) -> dict:
+                     sections: list | None = None, scheme: list[dict] | None = None) -> dict:
+    """`scheme`: the teacher's marking scheme (מחוון). When given, its question
+    numbers and points are authoritative: the model's marks are capped to them
+    and questions it skipped are added for the teacher to review."""
     student = _new_student(name, [f for f, _ in files], "ai")
     try:
         out = ai_grader.grade_submission(reference_blocks, name, files)
@@ -343,4 +346,26 @@ def grade_ai_student(name: str, files: list[tuple[str, bytes]], reference_blocks
             "student_answer": q["student_answer"], "expected_answer": "",
             "feedback": q["feedback"], "ai": True,
         })
+    if scheme:
+        by_qid = {i["qid"]: i for i in student["items"]}
+        items = []
+        for row in scheme:
+            it = by_qid.get(row["qid"])
+            if it is None:
+                it = {"qid": row["qid"], "description": row["description"], "check": "ai", "cell": "",
+                      "points": row["points"], "score": 0.0, "status": STATUS_REVIEW,
+                      "student_answer": "", "expected_answer": "", "ai": True,
+                      "feedback": "لم يُصحح هذا السؤال آلياً؛ يرجى تصحيحه يدوياً"}
+            else:
+                it["points"] = row["points"]
+                it["score"] = _round(min(it["score"], row["points"]))
+                it["description"] = it["description"] or row["description"]
+                if it["status"] != STATUS_REVIEW:
+                    it["status"] = _status(it["score"], it["points"])
+            items.append(it)
+        extra = [i for i in student["items"] if i["qid"] not in {r["qid"] for r in scheme}]
+        if extra:
+            student["error"] = ("أعاد التصحيح الآلي أسئلة غير موجودة في سلم التصحيح وتم تجاهلها: "
+                                + "، ".join(i["qid"] for i in extra))
+        student["items"] = items
     return summarize(student, sections)
