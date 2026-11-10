@@ -26,6 +26,7 @@
   --shadow: 0 1px 2px rgba(11, 31, 23, .05), 0 8px 24px -12px rgba(11, 31, 23, .18);
   --shadow-lift: 0 2px 6px rgba(11, 31, 23, .07), 0 18px 40px -18px rgba(11, 31, 23, .32);
 
+  --font-scale: 1;
   --tabbar: calc(62px + env(safe-area-inset-bottom));
   --topbar: 58px;
   --gutter: 16px;
@@ -36,12 +37,29 @@
 
 html { -webkit-text-size-adjust: 100%; }
 
+/* ---------- الوضع الداكن ---------- */
+:root[data-theme="dark"] {
+  --ink: #e8f0ea;
+  --ink-2: #b2c7ba;
+  --ink-3: #8aa394;
+  --forest: #0a1f16;
+  --forest-2: #123326;
+  --paper: #0b1a14;
+  --card: #132b21;
+  --line: #244034;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -12px rgba(0, 0, 0, .7);
+  --shadow-lift: 0 2px 6px rgba(0, 0, 0, .5), 0 18px 40px -18px rgba(0, 0, 0, .8);
+}
+:root[data-motion="reduce"] *, :root[data-motion="reduce"] *::before, :root[data-motion="reduce"] *::after {
+  animation-duration: .001ms !important; transition-duration: .001ms !important;
+}
+
 body {
   margin: 0;
   font-family: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', sans-serif;
   background: var(--paper);
   color: var(--ink);
-  font-size: 15px;
+  font-size: calc(15px * var(--font-scale));
   line-height: 1.65;
   overscroll-behavior-y: none;
 }
@@ -576,4 +594,157 @@ details.fold .fold-body { padding: 0 15px 15px; }
 @media print {
   .tabbar, .topbar, .detail-root, .sheet-root, .toast, .hero { display: none !important; }
   body { background: #fff; }
+}
+
+
+/* ===========================================================
+   مكوّنات المزايا الجديدة
+   =========================================================== */
+
+/* ---------- تباين الوضع الداكن على الأسطح الفاتحة ---------- */
+:root[data-theme="dark"] .topbar { background: rgba(11, 26, 20, .9); }
+:root[data-theme="dark"] .tabbar { background: rgba(11, 26, 20, .94); }
+:root[data-theme="dark"] .search-box,
+:root[data-theme="dark"] .chip,
+:root[data-theme="dark"] .f-opt,
+:root[data-theme="dark"] .panel,
+:root[data-theme="dark"] .visit-card,
+:root[data-theme="dark"] details.fold,
+:root[data-theme="dark"] .file-drop,
+:root[data-theme="dark"] .src-list a,
+:root[data-theme="dark"] .map-tools button,
+:root[data-theme="dark"] .map-tools a,
+:root[data-theme="dark"] .trip-tabs button,
+:root[data-theme="dark"] .weather-grid span,
+:root[data-theme="dark"] .stat,
+:root[data-theme="dark"] .btn-soft { background: var(--card); color: var(--ink); }
+:root[data-theme="dark"] .meta-pill { background: #1c3a2c; color: var(--ink-2); }
+:root[data-theme="dark"] .checklist label,
+:root[data-theme="dark"] .field input,
+:root[data-theme="dark"] .field textarea { background: #0e241b; color: var(--ink); }
+:root[data-theme="dark"] .sheet-close,
+:root[data-theme="dark"] .trip-item .rm { background: #1c3a2c; color: var(--ink-2); }
+:root[data-theme="dark"] .callout.warn { background: #3a2c12; color: #f0d9a8; }
+:root[data-theme="dark"] .callout.info { background: #15304d; color: #cfe2fb; }
+:root[data-theme="dark"] .callout.ok { background: #143526; color: #bfe6cd; }
+:root[data-theme="dark"] .callout.muted { background: #1a2f26; color: var(--ink-2); }
+:root[data-theme="dark"] .map-canvas,
+:root[data-theme="dark"] .detail-map { filter: brightness(.82) contrast(1.06); }
+:root[data-theme="dark"] .map-float button,
+:root[data-theme="dark"] .map-legend { background: rgba(19, 43, 33, .95); color: var(--ink); }
+
+/* ---------- شريط انقطاع الاتصال ---------- */
+.offline-bar {
+  position: sticky; top: var(--topbar); z-index: 55;
+  display: flex; align-items: center; gap: 8px;
+  background: #8a5a15; color: #fff; font-size: 12.5px; font-weight: 600;
+  padding: 9px var(--gutter);
+}
+.offline-bar .icon { width: 16px; height: 16px; }
+
+/* ---------- اقتراحات البحث ---------- */
+.suggestions {
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--r);
+  box-shadow: var(--shadow); margin-top: 8px; overflow: hidden;
+}
+.sugg-head { font-size: 11.5px; font-weight: 700; color: var(--ink-3); padding: 10px 14px 4px; }
+.sugg {
+  display: flex; align-items: center; gap: 9px; width: 100%; text-align: start;
+  padding: 11px 14px; font-size: 14px; border-bottom: 1px solid var(--line);
+}
+.sugg:last-child { border-bottom: 0; }
+.sugg .icon { color: var(--ink-3); flex: none; }
+.sugg small { margin-inline-start: auto; font-size: 11px; color: var(--ink-3); }
+.sugg.clear { color: var(--ink-3); font-size: 12.5px; }
+mark { background: #d9f58e; color: inherit; border-radius: 3px; padding: 0 1px; }
+:root[data-theme="dark"] mark { background: #4d6b1c; color: #f2ffd9; }
+
+/* ---------- عدّادات داخل الفلاتر ---------- */
+.f-opt { display: inline-flex; align-items: center; gap: 7px; }
+.f-opt i {
+  font-style: normal; font-size: 10.5px; font-weight: 700;
+  background: rgba(13, 42, 31, .1); color: var(--ink-3);
+  border-radius: 999px; padding: 1px 6px; min-width: 18px; text-align: center;
+}
+.f-opt.on i { background: rgba(255, 255, 255, .22); color: #fff; }
+.f-opt.empty { opacity: .42; }
+
+/* ---------- مؤشر اكتمال البيانات ---------- */
+.completeness { display: flex; align-items: center; gap: 10px; margin: 0 0 18px; font-size: 11.5px; color: var(--ink-3); }
+.completeness .bar { flex: 1; height: 5px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.completeness .bar i { display: block; height: 100%; border-radius: 99px; background: var(--lime-deep); }
+.completeness.warn .bar i { background: #e2a93c; }
+.completeness.low .bar i { background: #cf6a5c; }
+
+/* ---------- تجميع دبابيس الخريطة ---------- */
+.map-cluster {
+  display: grid; place-items: center; border-radius: 50%;
+  background: rgba(13, 42, 31, .92); color: var(--lime);
+  border: 2.5px solid #fff; font-weight: 700; font-size: 13px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, .35);
+}
+
+/* ---------- معرض الصور ---------- */
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 7px; }
+.gallery .shot { display: block; aspect-ratio: 1; border-radius: var(--r-sm); overflow: hidden; background: var(--line); }
+.gallery .shot img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ---------- توقّعات الأسبوع ---------- */
+.forecast {
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(58px, 1fr);
+  gap: 6px; margin-top: 10px; overflow-x: auto; scrollbar-width: none;
+}
+.forecast::-webkit-scrollbar { display: none; }
+.fc-day {
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--r-sm);
+  padding: 9px 4px; text-align: center; font-size: 11px;
+}
+.fc-day b { display: block; font-size: 11px; color: var(--ink-3); font-weight: 600; }
+.fc-day .fc-i { display: block; font-size: 17px; margin: 3px 0; }
+.fc-day i { font-style: normal; font-weight: 700; font-size: 13px; }
+.fc-day u { text-decoration: none; color: var(--ink-3); font-size: 11px; margin-inline-start: 3px; }
+.fc-day em { display: block; font-style: normal; font-size: 10px; color: #2f6fb0; min-height: 13px; }
+
+/* ---------- أماكن قريبة ومشابهة ---------- */
+.related-row { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 3px; }
+.related-row::-webkit-scrollbar { display: none; }
+.related {
+  flex: none; max-width: 190px; text-align: start;
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--r-sm);
+  padding: 10px 12px;
+}
+.related b { display: block; font-size: 13.5px; }
+.related small { display: block; font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+
+/* ---------- ملاحظات شخصية ---------- */
+.field textarea {
+  width: 100%; border: 1px solid var(--line); border-radius: 12px;
+  padding: 11px 13px; background: var(--paper); outline: 0;
+  font-family: inherit; resize: vertical; min-height: 72px;
+}
+.field textarea:focus { border-color: var(--lime-deep); }
+
+/* ---------- ترتيب محطات الرحلة ---------- */
+.trip-move { display: flex; flex-direction: column; gap: 2px; margin-inline-start: auto; }
+.trip-move button {
+  width: 26px; height: 20px; border-radius: 6px; background: #eef2ec;
+  color: var(--ink-3); font-size: 10px; line-height: 1;
+}
+.trip-move button:disabled { opacity: .3; }
+:root[data-theme="dark"] .trip-move button { background: #1c3a2c; }
+.trip-item .rm { margin-inline-start: 6px; }
+
+/* ---------- شارة «زرته» ---------- */
+.chip-glass.visited { background: rgba(47, 125, 82, .82); display: inline-flex; align-items: center; gap: 4px; }
+.chip-glass.visited .icon { width: 12px; height: 12px; }
+
+/* ---------- طباعة صفحة المكان ---------- */
+@media print {
+  .detail-root { position: static !important; display: block !important; }
+  .detail-veil, .detail-nav, .detail-foot, .map-tools, .file-drop, .offline-bar { display: none !important; }
+  .detail { position: static !important; width: auto !important; transform: none !important; box-shadow: none; }
+  .detail-hero { max-height: 220px; }
+  details.fold { break-inside: avoid; }
+  details.fold > summary::after { display: none; }
+  details.fold[open] .fold-body { display: block !important; }
 }

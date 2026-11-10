@@ -33,7 +33,12 @@
     <span>دُروب<small>خُطاك إلى الطبيعة</small></span>
   </a>
   <button type="button" class="topbar-act" data-act="search" aria-label="ابحث عن مكان"><span data-i="search"></span></button>
+  <button type="button" class="topbar-act" data-act="settings" aria-label="الإعدادات"><span data-i="sliders"></span></button>
 </header>
+
+<div class="offline-bar" id="offlineBar" role="status" hidden>
+  <span data-i="info"></span> أنت دون اتصال — ما حُفظ يعمل، أما الصور والخرائط فتحتاج إنترنت.
+</div>
 
 <main>
 
@@ -57,6 +62,7 @@
             <span data-i="sliders"></span><span class="dot" id="filterDot" hidden>0</span>
           </button>
         </div>
+        <div class="suggestions" id="suggestions" hidden></div>
         <div class="chip-row" id="themeChips" role="group" aria-label="تصفية سريعة حسب نوع التجربة"></div>
       </div>
 
@@ -84,6 +90,7 @@
     <div class="map-float">
       <button type="button" data-act="map-layer" aria-label="تبديل طبقة الخريطة"><span data-i="layers"></span></button>
       <button type="button" data-act="map-locate" aria-label="موقعي الآن"><span data-i="locate"></span></button>
+      <button type="button" data-act="search-here" aria-label="ابحث في هذه المنطقة"><span data-i="search"></span></button>
     </div>
     <div class="map-legend">
       <span><i></i> موقع معلم موثّق</span>
@@ -99,8 +106,9 @@
         <div><h2>رحلتي</h2><p>خطتك ومفضلتك محفوظتان على هذا الجهاز</p></div>
       </div>
       <div class="trip-tabs" id="tripTabs">
-        <button type="button" class="on" data-triptab="plan">خطة الرحلة</button>
+        <button type="button" class="on" data-triptab="plan">الخطة</button>
         <button type="button" data-triptab="saved">المفضلة</button>
+        <button type="button" data-triptab="log">زياراتي</button>
       </div>
       <div id="tripBody"></div>
     </div>
@@ -122,6 +130,19 @@
       <button type="button" class="btn btn-soft" data-act="reset-filters">مسح الكل</button>
       <button type="button" class="btn btn-primary" style="flex:1" id="filterApply" data-act="apply-filters">اعرض النتائج</button>
     </div>
+  </div>
+</div>
+
+<!-- ======== الإعدادات ======== -->
+<div class="sheet-root" id="settingsSheet" role="dialog" aria-modal="true" aria-label="الإعدادات">
+  <div class="sheet-veil" id="settingsVeil"></div>
+  <div class="sheet">
+    <div class="sheet-grip"></div>
+    <div class="sheet-head">
+      <h2>الإعدادات</h2>
+      <button type="button" class="sheet-close" data-act="close-settings" aria-label="إغلاق"><span data-i="close"></span></button>
+    </div>
+    <div id="settingsBody"></div>
   </div>
 </div>
 

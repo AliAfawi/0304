@@ -149,6 +149,65 @@
     return job;
   }
 
+  /* ---------- معرض صور: كل صور صفحة ويكيبيديا الصالحة ---------- */
+  const galleryJobs = new Map();
+  const JUNK = /(icon|logo|flag|map|symbol|commons-|wiki|edit|seal|coat_of_arms|crystal|ambox|question_book|nuvola|p_|disambig)/i;
+  function gallery(place) {
+    if (!place || !place.wiki) return Promise.resolve([]);
+    const key = place.wiki;
+    if (galleryJobs.has(key)) return galleryJobs.get(key);
+    const cached = recall('gallery:' + key);
+    if (cached !== undefined) return Promise.resolve(cached || []);
+    const job = (async () => {
+      try {
+        const ctl = new AbortController();
+        const timer = setTimeout(() => ctl.abort(), 9000);
+        const res = await fetch(
+          'https://en.wikipedia.org/api/rest_v1/page/media-list/' + encodeURIComponent(key.replace(/ /g, '_')),
+          { signal: ctl.signal, headers: { Accept: 'application/json' } }
+        );
+        clearTimeout(timer);
+        if (!res.ok) { remember('gallery:' + key, null); return []; }
+        const data = await res.json();
+        const out = [];
+        for (const item of (data.items || [])) {
+          if (item.type !== 'image' || item.showInGallery === false) continue;
+          const name = String(item.title || '').replace(/^File:/, '');
+          if (JUNK.test(name) || !/\.(jpe?g|png)$/i.test(name)) continue;
+          const best = (item.srcset || []).map(x => x.src).pop();
+          if (!best) continue;
+          const url = ('https:' + String(best).replace(/^https?:/, ''))
+            .replace(/\/\d+px-/, '/' + THUMB_WIDTH + 'px-');
+          out.push({
+            url,
+            fallback: 'https:' + String(best).replace(/^https?:/, ''),
+            page: filePage(name),
+            caption: (item.caption && item.caption.text) || name.replace(/_/g, ' ').replace(/\.[a-z]+$/i, ''),
+            credit: 'Wikimedia Commons'
+          });
+          if (out.length >= 8) break;
+        }
+        remember('gallery:' + key, out);
+        return out;
+      } catch (e) { return []; }
+    })();
+    galleryJobs.set(key, job);
+    return job;
+  }
+
+  /* ---------- نبذة ويكيبيديا: من الذاكرة المجهّزة أولًا ---------- */
+  function extractFor(place) {
+    if (!place || !place.wiki) return Promise.resolve(null);
+    const baked = BAKED[place.wiki];
+    const page = title => 'https://en.wikipedia.org/wiki/' + encodeURIComponent(String(title).replace(/ /g, '_'));
+    if (baked && baked.extract) return Promise.resolve({ text: baked.extract, page: page(baked.title || place.wiki) });
+    return wikiSummary(place.wiki).then(sum => {
+      if (!sum) return null;
+      applyCoordinates(place, sum);
+      return sum.extract ? { text: sum.extract, page: page(sum.title) } : null;
+    });
+  }
+
   /* ---------- الواجهة: احصل على صورة مكان ---------- */
   const resolved = new Map();
   function resolve(place) {
@@ -264,5 +323,5 @@
       <small>الصورة الموثّقة قيد الإضافة</small></div></div>`;
   }
 
-  w.DPhotos = { resolve, watch, fill, box, wikiSummary, warmCoordinates, onCoordinates };
+  w.DPhotos = { resolve, watch, fill, box, wikiSummary, warmCoordinates, onCoordinates, gallery, extractFor, thumbUrl };
 })(window);

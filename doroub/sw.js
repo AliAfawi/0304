@@ -1,6 +1,6 @@
 /* دُروب V8 — تخزين هيكل الموقع للعمل السريع ودون اتصال.
    بلاطات الخرائط وصور ويكيميديا لا تُخزَّن: تراخيصها تمنع التحميل المسبق الجماعي. */
-const CACHE = 'doroub-v8-2026-11-10';
+const CACHE = 'doroub-v8-features-2026-11-10';
 const SHELL = [
   './', './index.html', './css/doroub.css',
   './data/trails.js', './data/heritage.js', './data/places.js', './data/wiki-cache.js',

@@ -70,7 +70,7 @@
   function statRow(p) {
     const siteOnly = !!p.siteOnly;
     return `<div class="stat-row">
-      <div class="stat">${icon('route')}<small>${siteOnly ? 'نوع الزيارة' : 'المسافة'}</small><b>${esc(siteOnly ? 'جولة موقع' : p.kmLabel)}</b></div>
+      <div class="stat">${icon('route')}<small>${siteOnly ? 'نوع الزيارة' : 'المسافة'}</small><b>${esc(D.kmText(p))}</b></div>
       <div class="stat">${icon('clock')}<small>المدة</small><b>${esc(siteOnly ? 'حسب الزيارة' : (p.h || 'غير موثّقة'))}</b></div>
       <div class="stat">${icon('mountain')}<small>${siteOnly ? 'الحضارة' : 'الصعود'}</small><b>${esc(siteOnly ? (p.era || 'تاريخي') : (p.up || 'غير موثّق'))}</b></div>
       <div class="stat">${icon('steps')}<small>الصعوبة</small><b>${esc(p.levelLabel)}</b></div>
@@ -100,13 +100,14 @@
       ['المنطقة', `${p.regionLabel} · ${p.zoneName}`],
       ['نوع المكان', p.kindLabel],
       ['الصعوبة', p.levelLabel],
-      ['المسافة', p.siteOnly ? 'جولة داخل موقع' : p.kmLabel],
-      p.km2 ? ['طول بديل مذكور', p.km2 + ' كم'] : null,
+      ['المسافة', D.kmText(p)],
+      p.km2 ? ['طول بديل مذكور', D.fmtKm(p.km2)] : null,
       ['المدة المقدّرة', p.h || 'غير موثّقة'],
       ['الصعود التراكمي', p.up || 'غير موثّق'],
       p.rt && p.rt.type ? ['شكل المسار', ROUTE_TYPE[p.rt.type] || p.rt.type] : null,
       p.rt && p.rt.pts && p.rt.pts.length ? ['محطات مذكورة', p.rt.pts.join(' ← ')] : null,
       ['الرسوم', D.FEE[p.fee] || 'غير موثّقة'],
+      ['اكتمال البيانات', p.completeness + '%'],
       p.era ? ['الحضارة / العصر', p.era] : null,
       p.visitKind ? ['طبيعة الزيارة', p.visitKind] : null,
       p.land ? ['طبيعة المكان', p.land] : null,
@@ -144,6 +145,121 @@
     <p class="note" style="margin-top:9px">القائمة تُحفظ على جهازك فقط، ولا تضمن فتح المسار أو سلامته.</p>`;
   }
 
+  /* ---------- نبذة ويكيبيديا ---------- */
+  function wikiSection() {
+    return `<section class="sec" id="wikiSection" hidden>
+      <h3>${icon('book')} نبذة عن المكان</h3>
+      <div id="wikiExtract" class="prose"></div>
+      <p class="note" id="wikiCredit" style="margin-top:8px"></p>
+    </section>`;
+  }
+
+  /* ---------- اتجاه المكان من موقع الزائر ---------- */
+  function bearingBlock(p) {
+    const b = D.bearingTo(p);
+    if (!b) return '';
+    const km = D.distanceTo(p);
+    return `<div class="callout info" style="margin-top:10px">${icon('locate')}<div>
+      <b>من موقعك الآن</b>يبعُد ${esc(D.fmtKm(km))} ${esc(b.label)} بخطّ مستقيم — وليست مسافة الطريق.
+    </div></div>`;
+  }
+
+  /* ---------- تقدير زمن المشي بسرعة الزائر ---------- */
+  function paceBlock(p) {
+    const est = D.estimateWalk(p);
+    if (!est) return '';
+    const pace = D.store.settings.pace;
+    return `<div class="callout muted" style="margin-top:10px">${icon('steps')}<div>
+      <b>تقديرك أنت: ${esc(est.label)}</b>
+      محسوب بسرعة ${esc(pace)} كم/س${p.up ? ' مع إضافة ساعة لكل ٦٠٠ م صعود' : ''} (قاعدة نيسميث).
+      تقدير حسابي لا يراعي الراحة ولا وعورة الأرض — عدّل سرعتك من الإعدادات.
+    </div></div>`;
+  }
+
+  /* ---------- الشمس وحاسبة العودة الآمنة ---------- */
+  function sunSection() {
+    return `<details class="fold" id="sunFold">
+      <summary>${icon('sun')} الشمس ووقت العودة الآمن</summary>
+      <div class="fold-body"><div id="sunBox" class="note">افتح القسم لحساب ضوء النهار…</div></div>
+    </details>`;
+  }
+
+  /* ---------- معرض الصور ---------- */
+  function gallerySection() {
+    return `<details class="fold" id="galleryFold">
+      <summary>${icon('mountain')} صور المكان</summary>
+      <div class="fold-body">
+        <div id="galleryGrid" class="gallery">جارٍ البحث عن صور موثّقة…</div>
+        <p class="note" style="margin-top:9px">الصور من ويكيميديا كومنز وويكيبيديا. اضغط أي صورة لفتح صفحة مصدرها ورخصتها. لا نعرض صورة لمكان آخر.</p>
+      </div>
+    </details>`;
+  }
+
+  /* ---------- ملاحظاتي وسجل زيارتي ---------- */
+  function personalSection(p) {
+    const note = D.store.notes[p.id] || '';
+    const visited = D.store.visited[p.id];
+    return `<details class="fold" ${note || visited ? 'open' : ''}>
+      <summary>${icon('bookmark')} ملاحظاتي وزياراتي</summary>
+      <div class="fold-body">
+        <label class="field"><span>ملاحظة خاصة بك عن هذا المكان</span>
+          <textarea id="placeNote" rows="3" maxlength="600"
+            placeholder="مثلًا: الموقف الشمالي أسهل، وخذ ماءً إضافيًا">${esc(note)}</textarea></label>
+        <div class="map-tools">
+          <button type="button" data-act="visited">${icon(visited ? 'checkCircle' : 'check')} ${visited ? 'زرته في ' + esc(visited) : 'سجّل أنني زرته'}</button>
+          ${visited ? `<button type="button" data-act="unvisited">${icon('trash')} احذف التسجيل</button>` : ''}
+        </div>
+        <p class="note" style="margin-top:9px">الملاحظات والسجل محفوظان على جهازك وحده، ولا يراهما أحد غيرك.</p>
+      </div>
+    </details>`;
+  }
+
+  /* ---------- أماكن قريبة ومشابهة ---------- */
+  function relatedSection(p) {
+    const near = D.nearbyTo(p);
+    const similar = D.similarTo(p).filter(x => !near.some(n => n.p.id === x.id));
+    if (!near.length && !similar.length) return '';
+    const chip = (place, extra) => `<button type="button" class="related" data-open="${esc(place.id)}">
+      <b>${esc(place.n)}</b><small>${esc(extra)}</small></button>`;
+    return `<section class="sec">
+      <h3>${icon('compass')} أماكن أخرى</h3>
+      ${near.length ? `<p class="note" style="margin-bottom:7px">الأقرب إلى هذا المكان</p>
+        <div class="related-row">${near.map(x => chip(x.p, D.fmtKm(x.km) + ' · ' + x.p.kindLabel)).join('')}</div>` : ''}
+      ${similar.length ? `<p class="note" style="margin:11px 0 7px">تجارب مشابهة</p>
+        <div class="related-row">${similar.map(x => chip(x, x.zoneName + ' · ' + x.levelLabel)).join('')}</div>` : ''}
+      ${near.length ? '<p class="note" style="margin-top:9px">المسافات جوية بين النقاط، وليست مسافة طريق.</p>' : ''}
+    </section>`;
+  }
+
+  /* ---------- فتح في تطبيقات الملاحة ---------- */
+  function navSection(p) {
+    const ll = D.latLng(p);
+    const term = encodeURIComponent(p.wz || p.en || p.n);
+    const apps = ll
+      ? [
+        ['خرائط جوجل', `https://www.google.com/maps/search/?api=1&query=${ll[0]},${ll[1]}`],
+        ['ويز', `https://waze.com/ul?ll=${ll[0]},${ll[1]}&navigate=yes`],
+        ['خرائط آبل', `https://maps.apple.com/?ll=${ll[0]},${ll[1]}&q=${term}`],
+        ['OpenStreetMap', `https://www.openstreetmap.org/?mlat=${ll[0]}&mlon=${ll[1]}#map=15/${ll[0]}/${ll[1]}`]
+      ]
+      : [['خرائط جوجل', `https://www.google.com/maps/search/?api=1&query=${term}`],
+         ['ويز', `https://waze.com/ul?q=${term}&navigate=yes`]];
+    return `<div class="map-tools" style="margin-top:9px">
+      ${apps.map(([label, href]) => `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${icon('link')} ${esc(label)}</a>`).join('')}
+      ${ll ? `<button type="button" data-act="copy-coords">${icon('pin')} نسخ الإحداثيات</button>` : ''}
+    </div>
+    ${ll ? `<p class="note" style="margin-top:7px">الإحداثيات: ${ll[0].toFixed(5)}, ${ll[1].toFixed(5)}${p.geoPrecision === 'wiki' ? ' — مرجعية من ويكيبيديا' : ''}</p>` : ''}`;
+  }
+
+  /* ---------- مؤشر اكتمال البيانات ---------- */
+  function completenessBar(p) {
+    const tone = p.completeness >= 75 ? 'ok' : p.completeness >= 45 ? 'warn' : 'low';
+    return `<div class="completeness ${tone}" title="نسبة الحقول الموثّقة لهذا المكان">
+      <div class="bar"><i style="width:${p.completeness}%"></i></div>
+      <span>${p.completeness}% من بيانات هذا المكان موثّقة</span>
+    </div>`;
+  }
+
   /* ---------- البناء الكامل ---------- */
   function render(p) {
     const track = D.state.tracks[p.id] || null;
@@ -167,11 +283,16 @@
 
     <div class="detail-body">
       ${statRow(p)}
+      ${completenessBar(p)}
 
       <section class="sec">
         <p class="prose">${esc(p.d)}</p>
         <div class="callout ok" style="margin-top:12px">${icon('check')}<div><b>ما يميّز المكان</b>${esc(p.highlight)}</div></div>
+        ${bearingBlock(p)}
+        ${paceBlock(p)}
       </section>
+
+      ${wikiSection()}
 
       <section class="sec">
         <h3>${icon('clock')} الزيارة والمواعيد</h3>
@@ -197,8 +318,8 @@
           <button type="button" data-act="layer">${icon('layers')} <span id="layerLabel">طبقة التضاريس</span></button>
           <button type="button" data-act="locate">${icon('locate')} موقعي الآن</button>
           <button type="button" data-act="fit">${icon('expand')} عرض المنطقة</button>
-          <a href="${esc(D.externalMap(p))}" target="_blank" rel="noopener noreferrer">${icon('link')} خرائط خارجية</a>
         </div>
+        ${navSection(p)}
       </section>
 
       <details class="fold">
@@ -230,10 +351,14 @@
       </details>
 
       <details class="fold">
-        <summary>${icon('sun')} الطقس الآن</summary>
+        <summary>${icon('sun')} الطقس وتوقّعات الأسبوع</summary>
         <div class="fold-body"><div id="weatherBox" class="note">افتح القسم لجلب حالة الطقس…</div>
         <p class="note" style="margin-top:9px">توقّعات من Open-Meteo، وليست تحذير سيول أو إغلاق رسمي.</p></div>
       </details>
+
+      ${sunSection()}
+      ${gallerySection()}
+      ${personalSection(p)}
 
       <details class="fold">
         <summary>${icon('checkCircle')} قائمة التجهيزات</summary>
@@ -250,12 +375,15 @@
         <div class="fold-body">${sourcesBlock(p)}<p class="note" id="photoCredit" style="margin-top:10px"></p></div>
       </details>
 
+      ${relatedSection(p)}
+
       <div class="detail-foot">
         <button type="button" class="btn btn-primary" data-act="trip">${icon(inTrip ? 'check' : 'plus')} <span>${inTrip ? 'في رحلتي' : 'أضف إلى رحلتي'}</span></button>
+        <button type="button" class="btn btn-soft square" data-act="share-whatsapp" aria-label="مشاركة عبر واتساب">${icon('share')}</button>
         <button type="button" class="btn btn-soft square" data-act="print" aria-label="طباعة الصفحة">${icon('print')}</button>
       </div>
     </div>`;
   }
 
-  w.DDetail = { render, parseTrack, elevationBlock };
+  w.DDetail = { render, parseTrack, elevationBlock, completenessBar };
 })(window);

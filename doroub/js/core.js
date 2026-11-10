@@ -8,6 +8,67 @@ window.D = (function () {
   const esc = x => String(x ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const httpsOnly = u => /^https:\/\/[^\s"'<>]+$/.test(String(u || '')) ? String(u) : null;
 
+  /* ---------- تطبيع النص العربي للبحث ----------
+     يوحّد الهمزات والألف المقصورة والتاء المربوطة ويزيل التشكيل والتطويل،
+     فيجد «الاقصى» و«الأقصى»، و«قلعه» و«قلعة»، و«مقام» بأي تشكيل. */
+  const AR_DIACRITICS = /[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g;
+  function normalize(text) {
+    return String(text ?? '')
+      .toLowerCase()
+      .replace(AR_DIACRITICS, '')
+      .replace(/[إأآٱا]/g, 'ا')
+      .replace(/ى/g, 'ي')
+      .replace(/ؤ/g, 'و')
+      .replace(/ئ/g, 'ي')
+      .replace(/ة/g, 'ه')
+      .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  /* يحوّل حرفًا واحدًا إلى صورته المطبّعة دون قصّ أو دمج مسافات،
+     حتى تبقى مواضع الحروف قابلة للمطابقة مع النص الأصلي. */
+  function normalizeChar(ch) {
+    const low = ch.toLowerCase();
+    if (AR_DIACRITICS.test(low)) { AR_DIACRITICS.lastIndex = 0; return ''; }
+    AR_DIACRITICS.lastIndex = 0;
+    if ('إأآٱا'.includes(low)) return 'ا';
+    if (low === 'ى' || low === 'ئ') return 'ي';
+    if (low === 'ؤ') return 'و';
+    if (low === 'ة') return 'ه';
+    return /[\p{L}\p{N}]/u.test(low) ? low : ' ';
+  }
+
+  /* يبرز أجزاء النص المطابقة للبحث، ويعيد HTML مُهرَّبًا جاهزًا للعرض. */
+  function highlight(text, needle) {
+    const raw = String(text ?? '');
+    const words = [...new Set(normalize(needle).split(' ').filter(w => w.length > 1))];
+    if (!words.length) return esc(raw);
+
+    let flat = '';
+    const map = [];
+    for (let i = 0; i < raw.length; i++) {
+      for (const ch of normalizeChar(raw[i])) { flat += ch; map.push(i); }
+    }
+
+    const marks = new Array(raw.length).fill(false);
+    for (const w of words) {
+      let from = 0, at;
+      while ((at = flat.indexOf(w, from)) > -1) {
+        for (let k = at; k < at + w.length; k++) marks[map[k]] = true;
+        from = at + 1;
+      }
+    }
+
+    let out = '', open = false;
+    for (let i = 0; i < raw.length; i++) {
+      if (marks[i] && !open) { out += '<mark>'; open = true; }
+      else if (!marks[i] && open) { out += '</mark>'; open = false; }
+      out += esc(raw[i]);
+    }
+    return out + (open ? '</mark>' : '');
+  }
+
   /* ---------- أيقونات خطية موحّدة ---------- */
   const PATHS = {
     home: '<path d="m3 11 9-8 9 8v10H3V11Z"/><path d="M9 21v-7h6v7"/>',
@@ -90,12 +151,27 @@ window.D = (function () {
     t.kmLabel = t.kr ? t.kr + ' كم' : (t.km != null ? t.km + ' كم' : 'غير موثقة');
     t.highlight = t.feature || t.land ||
       ({ S: 'أخاديد وجبال وألوان الصحراء', C: 'طبيعة وآثار قريبة من المدن', N: 'غابات وينابيع وإطلالات' }[t.r] || '');
-    t.searchText = [t.n, t.en, t.d, t.feature, t.land, t.wz, t.era, t.opening, t.kindLabel, t.zoneName]
-      .filter(Boolean).join(' ').toLocaleLowerCase('ar');
+    t.searchText = normalize([t.n, t.en, t.d, t.feature, t.land, t.wz, t.era, t.opening, t.kindLabel, t.zoneName]
+      .filter(Boolean).join(' '));
+    /* نسبة اكتمال البيانات: مؤشر صادق يُعرض للزائر بدل إخفاء النقص. */
+    const fields = [t.d, t.feature || t.land, t.place, t.opening, t.src,
+      t.siteOnly ? t.era : (t.km != null || t.kr), t.siteOnly ? t.visitKind : t.h, t.siteOnly ? t.phone : t.up];
+    t.completeness = Math.round(fields.filter(Boolean).length / fields.length * 100);
     return t;
   });
   const BY_ID = Object.fromEntries(PLACES.map(p => [p.id, p]));
   const byId = id => BY_ID[id] || null;
+
+  /* الإحداثيات المجهّزة مسبقًا تُطبَّق فور التحميل، فتظهر الخريطة كاملة
+     دون انتظار أي استعلام شبكي. تبقى موسومة بأنها مرجعية لا نقطة انطلاق. */
+  const BAKED = window.DOROUB_WIKI_CACHE || {};
+  PLACES.forEach(p => {
+    if (p.place || !p.wiki) return;
+    const row = BAKED[p.wiki];
+    if (!row || !row.coord) return;
+    p.place = { lat: row.coord.lat, lng: row.coord.lng, label: 'إحداثيات مرجعية من ويكيبيديا، وليست بداية مسار مشي' };
+    p.geoPrecision = 'wiki';
+  });
 
   ZONES.forEach(z => { z.count = PLACES.filter(p => p.z === z.id).length; });
   REGIONS.forEach(r => { r.count = PLACES.filter(p => p.r === r.id).length; });
@@ -123,13 +199,82 @@ window.D = (function () {
   const read = (k, fb) => { try { const v = JSON.parse(localStorage.getItem(k)); return v ?? fb; } catch (e) { return fb; } };
   const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } };
 
+  const DEFAULT_SETTINGS = {
+    theme: 'auto',        /* auto | light | dark */
+    fontScale: 1,         /* 1 | 1.12 | 1.25 */
+    units: 'metric',      /* metric | imperial */
+    pace: 4.5,            /* كم/ساعة لتقدير زمن المشي */
+    reduceMotion: false
+  };
+
+  const blankTrip = (name = 'رحلتي') => ({ id: 't' + Date.now().toString(36), name, ids: [], date: '', notes: '' });
+
   const store = {
     favorites: read('doroub8-favorites', {}),
-    trip: (() => { const t = read('doroub8-trip', null); return t && Array.isArray(t.ids) ? t : { ids: [], date: '', notes: '' }; })(),
     checks: read('doroub8-checks', {}),
+    notes: read('doroub8-notes', {}),          /* ملاحظات شخصية لكل مكان */
+    visited: read('doroub8-visited', {}),      /* سجل الزيارات: id -> تاريخ */
+    recent: read('doroub8-recent', []),        /* آخر ما تصفّحه الزائر */
+    searches: read('doroub8-searches', []),    /* عمليات البحث الأخيرة */
+    settings: Object.assign({}, DEFAULT_SETTINGS, read('doroub8-settings', {})),
+    trips: (() => {
+      const saved = read('doroub8-trips', null);
+      if (Array.isArray(saved) && saved.length) return saved;
+      /* ترقية من نسخة الرحلة الواحدة القديمة دون فقدان بيانات الزائر. */
+      const legacy = read('doroub8-trip', null);
+      const first = blankTrip();
+      if (legacy && Array.isArray(legacy.ids)) Object.assign(first, { ids: legacy.ids, date: legacy.date || '', notes: legacy.notes || '' });
+      return [first];
+    })(),
+    activeTrip: read('doroub8-active-trip', ''),
+
+    get trip() {
+      const found = this.trips.find(t => t.id === this.activeTrip);
+      if (found) return found;
+      this.activeTrip = this.trips[0].id;
+      return this.trips[0];
+    },
+
     saveFavorites() { write('doroub8-favorites', this.favorites); },
-    saveTrip() { write('doroub8-trip', this.trip); },
-    saveChecks() { write('doroub8-checks', this.checks); }
+    saveChecks() { write('doroub8-checks', this.checks); },
+    saveNotes() { write('doroub8-notes', this.notes); },
+    saveVisited() { write('doroub8-visited', this.visited); },
+    saveSettings() { write('doroub8-settings', this.settings); },
+    saveTrip() { write('doroub8-trips', this.trips); write('doroub8-active-trip', this.activeTrip); },
+    newTrip(name) { const t = blankTrip(name); this.trips.push(t); this.activeTrip = t.id; this.saveTrip(); return t; },
+    removeTrip(id) {
+      this.trips = this.trips.filter(t => t.id !== id);
+      if (!this.trips.length) this.trips = [blankTrip()];
+      if (!this.trips.some(t => t.id === this.activeTrip)) this.activeTrip = this.trips[0].id;
+      this.saveTrip();
+    },
+    pushRecent(id) {
+      this.recent = [id, ...this.recent.filter(x => x !== id)].slice(0, 12);
+      write('doroub8-recent', this.recent);
+    },
+    pushSearch(q) {
+      const text = String(q || '').trim();
+      if (text.length < 2) return;
+      this.searches = [text, ...this.searches.filter(x => x !== text)].slice(0, 8);
+      write('doroub8-searches', this.searches);
+    },
+    /* تصدير واستيراد كل ما يخصّ الزائر في ملف واحد. */
+    exportAll() {
+      return {
+        app: 'doroub', version: 8, exportedAt: new Date().toISOString(),
+        favorites: this.favorites, checks: this.checks, notes: this.notes,
+        visited: this.visited, trips: this.trips, settings: this.settings
+      };
+    },
+    importAll(data) {
+      if (!data || data.app !== 'doroub') throw new Error('هذا الملف ليس نسخة من بيانات دُروب');
+      if (data.favorites) { this.favorites = data.favorites; this.saveFavorites(); }
+      if (data.checks) { this.checks = data.checks; this.saveChecks(); }
+      if (data.notes) { this.notes = data.notes; this.saveNotes(); }
+      if (data.visited) { this.visited = data.visited; this.saveVisited(); }
+      if (Array.isArray(data.trips) && data.trips.length) { this.trips = data.trips; this.activeTrip = data.trips[0].id; this.saveTrip(); }
+      if (data.settings) { this.settings = Object.assign({}, DEFAULT_SETTINGS, data.settings); this.saveSettings(); }
+    }
   };
 
   /* ---------- حالة الواجهة ---------- */
@@ -138,7 +283,10 @@ window.D = (function () {
     query: '', theme: 'all', region: 'all', zone: 'all',
     level: 'all', kind: 'all', visit: 'all', era: 'all',
     sort: 'featured', favoritesOnly: false, limit: 12,
-    pos: null, detailId: null, tripTab: 'plan',
+    pos: null, accuracy: null, detailId: null, tripTab: 'plan',
+    radius: 'all',          /* فلتر نصف القطر بالكيلومترات */
+    mapBoundsOnly: false,   /* قصر النتائج على إطار الخريطة الحالي */
+    bounds: null,
     tracks: {}, gps: { on: false, watch: null, points: [], start: 0, timer: null }
   };
 
@@ -166,9 +314,19 @@ window.D = (function () {
     return state.pos && ll ? haversine(state.pos, ll) : Infinity;
   }
 
+  function inBounds(p) {
+    const ll = latLng(p);
+    if (!ll || !state.bounds) return false;
+    const b = state.bounds;
+    return ll[0] >= b.south && ll[0] <= b.north && ll[1] >= b.west && ll[1] <= b.east;
+  }
+
   function query() {
-    const q = state.query.trim().toLocaleLowerCase('ar');
+    const q = normalize(state.query);
+    const radius = state.radius === 'all' ? Infinity : Number(state.radius);
     let list = PLACES.filter(p =>
+      (!state.mapBoundsOnly || inBounds(p)) &&
+      (radius === Infinity || !state.pos || distanceTo(p) <= radius) &&
       (!state.favoritesOnly || store.favorites[p.id]) &&
       (state.region === 'all' || p.r === state.region) &&
       (state.zone === 'all' || p.z === state.zone) &&
@@ -184,13 +342,82 @@ window.D = (function () {
     else if (state.sort === 'level') list.sort((a, b) => LEVEL_ORDER[a.lv] - LEVEL_ORDER[b.lv]);
     else if (state.sort === 'name') list.sort((a, b) => a.n.localeCompare(b.n, 'ar'));
     else if (state.sort === 'near' && state.pos) list.sort((a, b) => distanceTo(a) - distanceTo(b));
+    else if (state.sort === 'complete') list.sort((a, b) => b.completeness - a.completeness);
     else list.sort((a, b) => rank(a.id) - rank(b.id));
     return list;
   }
 
+  /* ---------- وحدات القياس ---------- */
+  const imperial = () => store.settings.units === 'imperial';
+  function fmtKm(km) {
+    if (km == null || !Number.isFinite(+km)) return null;
+    const v = +km;
+    return imperial() ? (v * 0.621371).toFixed(v < 10 ? 1 : 0) + ' ميل' : (Number.isInteger(v) ? v : v.toFixed(1)) + ' كم';
+  }
+  function fmtM(metres) {
+    if (metres == null || !Number.isFinite(+metres)) return null;
+    const v = +metres;
+    return imperial() ? Math.round(v * 3.28084) + ' قدم' : Math.round(v) + ' م';
+  }
+  /* يعيد صياغة نص مسافة مخزّن مثل «8–15 كم» أو «5.5 كم» حسب وحدة الزائر. */
+  function kmText(place) {
+    if (place.siteOnly) return 'جولة موقع';
+    if (place.kr) {
+      if (!imperial()) return place.kr + ' كم';
+      const parts = String(place.kr).split(/[–-]/).map(x => parseFloat(x)).filter(Number.isFinite);
+      if (parts.length === 2) return parts.map(x => (x * 0.621371).toFixed(1)).join('–') + ' ميل';
+      return place.kr + ' كم';
+    }
+    return place.km != null ? fmtKm(place.km) : 'غير موثقة';
+  }
+
+  /* ---------- تقدير زمن المشي (قاعدة نيسميث) ---------- */
+  /* الزمن الأساسي من المسافة بسرعة الزائر، مضافًا إليه ساعة لكل 600 متر صعود. */
+  function estimateWalk(place) {
+    const km = place.km != null ? place.km : (place.kr ? parseFloat(String(place.kr).split(/[–-]/)[0]) : null);
+    if (!Number.isFinite(km)) return null;
+    const pace = Math.max(1.5, Math.min(8, +store.settings.pace || 4.5));
+    const climb = parseFloat(String(place.up || '').replace(/[^\d.]/g, ''));
+    let hours = km / pace + (Number.isFinite(climb) ? climb / 600 : 0);
+    const h = Math.floor(hours), m = Math.round((hours - h) * 60);
+    return { hours, label: (h ? h + ' س ' : '') + (m ? m + ' د' : (h ? '' : 'أقل من دقيقة')) };
+  }
+
+  /* ---------- اتجاه البوصلة من موقعك ---------- */
+  const COMPASS = ['شمالًا', 'شمالًا شرقًا', 'شرقًا', 'جنوبًا شرقًا', 'جنوبًا', 'جنوبًا غربًا', 'غربًا', 'شمالًا غربًا'];
+  function bearingTo(place) {
+    const to = latLng(place);
+    if (!state.pos || !to) return null;
+    const d = Math.PI / 180;
+    const [lat1, lon1] = state.pos.map(x => x * d), [lat2, lon2] = to.map(x => x * d);
+    const y = Math.sin(lon2 - lon1) * Math.cos(lat2);
+    const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
+    const deg = (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+    return { deg, label: COMPASS[Math.round(deg / 45) % 8] };
+  }
+
+  /* ---------- أماكن قريبة ومشابهة ---------- */
+  function nearbyTo(place, limit = 4, maxKm = 35) {
+    const from = latLng(place);
+    if (!from) return [];
+    return PLACES
+      .filter(p => p.id !== place.id && latLng(p))
+      .map(p => ({ p, km: haversine(from, latLng(p)) }))
+      .filter(x => x.km <= maxKm)
+      .sort((a, b) => a.km - b.km)
+      .slice(0, limit);
+  }
+  function similarTo(place, limit = 4) {
+    const score = p => (p.z === place.z ? 3 : 0) + (p.heritageType === place.heritageType ? 2 : 0)
+      + (p.lv === place.lv ? 1 : 0) + (p.era && p.era === place.era ? 2 : 0);
+    return PLACES.filter(p => p.id !== place.id && score(p) >= 3)
+      .sort((a, b) => score(b) - score(a)).slice(0, limit);
+  }
+
   function activeFilterCount() {
     let n = 0;
-    ['region', 'zone', 'level', 'kind', 'visit', 'era'].forEach(k => { if (state[k] !== 'all') n++; });
+    ['region', 'zone', 'level', 'kind', 'visit', 'era', 'radius'].forEach(k => { if (state[k] !== 'all') n++; });
+    if (state.mapBoundsOnly) n++;
     if (state.theme !== 'all') n++;
     if (state.sort !== 'featured') n++;
     if (state.favoritesOnly) n++;
@@ -200,7 +427,8 @@ window.D = (function () {
   function resetFilters() {
     Object.assign(state, {
       query: '', theme: 'all', region: 'all', zone: 'all', level: 'all',
-      kind: 'all', visit: 'all', era: 'all', sort: 'featured', favoritesOnly: false, limit: 12
+      kind: 'all', visit: 'all', era: 'all', sort: 'featured', favoritesOnly: false, limit: 12,
+      radius: 'all', mapBoundsOnly: false
     });
   }
 
@@ -225,6 +453,8 @@ window.D = (function () {
     PLACES, byId, state, store, query, activeFilterCount, resetFilters,
     latLng, centerOf, areaOf, haversine, distanceTo, matchesTheme,
     sourceLink, externalMap, toast,
+    normalize, highlight, fmtKm, fmtM, kmText, estimateWalk, bearingTo,
+    nearbyTo, similarTo, inBounds,
     CHECKS: window.DOROUB_CHECKS || [], COLLECTIONS: window.DOROUB_COLLECTIONS || []
   };
 })();

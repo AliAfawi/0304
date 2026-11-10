@@ -54,7 +54,8 @@ for (const title of pending) {
         title: d.title || title,
         coord: d.coordinates ? { lat: +d.coordinates.lat.toFixed(5), lng: +d.coordinates.lon.toFixed(5) } : null,
         img: (d.originalimage && d.originalimage.source || '').split('?')[0] || null,
-        desc: d.description || null
+        desc: d.description || null,
+        extract: d.extract || null
       };
       done = true;
     } catch (e) { sleep(6000); }
@@ -68,7 +69,12 @@ for (const title of pending) {
 const rows = {};
 for (const [title, row] of Object.entries(state)) {
   if (!row || row.error || (!row.img && !row.coord)) continue;
-  rows[title] = { title: row.title, coord: row.coord || null, img: row.img || null };
+  rows[title] = {
+    title: row.title,
+    coord: row.coord || null,
+    img: row.img || null,
+    extract: row.extract ? String(row.extract).replace(/\s+/g, ' ').slice(0, 420) : null
+  };
 }
 
 const header = `/* دُروب — نتائج ويكيبيديا المجهّزة مسبقًا (صورة وإحداثيات مرجعية).
