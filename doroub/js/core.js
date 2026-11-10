@@ -114,11 +114,27 @@ window.D = (function () {
   });
 
   /* ---------- التسميات ---------- */
-  const LEVEL = { easy: 'سهل', mid: 'متوسط', hard: 'صعب', exp: 'متقدم', unk: 'غير محدد' };
-  const REGION = { S: 'الجنوب والنقب', C: 'المركز والقدس', N: 'الشمال والجليل' };
+  /* التسميات تُقرأ من طبقة اللغات، فتتبدّل مع لغة الواجهة دون إعادة بناء الكتالوج. */
+  const T = window.DI18N ? window.DI18N.t : (k => k);
+  const LEVEL = {};
+  const REGION = {};
+  function refreshLabels() {
+    ['easy', 'mid', 'hard', 'exp', 'unk'].forEach(k => { LEVEL[k] = T('level.' + k); });
+    ['S', 'C', 'N'].forEach(k => { REGION[k] = T('region.' + k); });
+    Object.keys(KIND).forEach(k => { KIND[k] = T('kind.' + k); });
+    Object.keys(VISIT).forEach(k => { VISIT[k] = T('visit.' + k); });
+    THEMES.forEach(x => { x.name = T('theme.' + x.id); });
+    ZONES.forEach(z => { z.name = z.nameByLang && z.nameByLang[window.DI18N.current()] || z.name; });
+    PLACES.forEach(p => {
+      p.levelLabel = LEVEL[p.lv] || LEVEL.unk;
+      p.regionLabel = REGION[p.r] || '';
+      p.kindLabel = KIND[p.heritageType] || KIND.nature;
+      p.zoneName = p.zone ? p.zone.name : p.regionLabel;
+    });
+  }
   const FEE = { ok: 'مجاني حسب المصدر', q: 'تحقق من الرسوم', u: 'غير موثّق', p: 'بتذكرة', c: 'الدخول بشروط', f: 'قد توجد رسوم' };
-  const VISIT = { hours: 'ساعات منشورة', appointment: 'حجز مسبق', unknown: 'تأكد من الفتح' };
-  const KIND = { mosque: 'مسجد تاريخي', maqam: 'مقام', religious: 'معلم ديني', ruins: 'موقع أثري', nature: 'معلم طبيعي', trail: 'مسار مشي' };
+  const VISIT = { hours: '', appointment: '', unknown: '' };
+  const KIND = { mosque: '', maqam: '', religious: '', ruins: '', nature: '', trail: '' };
   const THEMES = [
     { id: 'all', name: 'الكل', ic: '🧭' },
     { id: 'water', name: 'مياه وشلالات', ic: '💦' },
@@ -201,6 +217,7 @@ window.D = (function () {
   const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } };
 
   const DEFAULT_SETTINGS = {
+    lang: 'ar',           /* لغة الواجهة: ar | he | en */
     theme: 'auto',        /* auto | light | dark */
     fontScale: 1,         /* 1 | 1.12 | 1.25 */
     units: 'metric',      /* metric | imperial */
@@ -354,26 +371,37 @@ window.D = (function () {
 
   /* ---------- وحدات القياس ---------- */
   const imperial = () => store.settings.units === 'imperial';
+  /* وحدات القياس تتبع لغة الواجهة أيضًا، فلا تبقى عربية داخل نصّ عبري أو إنجليزي. */
+  const UNIT = {
+    km: { ar: 'كم', he: 'ק״מ', en: 'km' },
+    mi: { ar: 'ميل', he: 'מייל', en: 'mi' },
+    m: { ar: 'م', he: 'מ׳', en: 'm' },
+    ft: { ar: 'قدم', he: 'רגל', en: 'ft' }
+  };
+  const unit = key => UNIT[key][window.DI18N ? window.DI18N.current() : 'ar'] || UNIT[key].ar;
   function fmtKm(km) {
     if (km == null || !Number.isFinite(+km)) return null;
     const v = +km;
-    return imperial() ? (v * 0.621371).toFixed(v < 10 ? 1 : 0) + ' ميل' : (Number.isInteger(v) ? v : v.toFixed(1)) + ' كم';
+    return imperial()
+      ? (v * 0.621371).toFixed(v < 10 ? 1 : 0) + ' ' + unit('mi')
+      : (Number.isInteger(v) ? v : v.toFixed(1)) + ' ' + unit('km');
   }
   function fmtM(metres) {
     if (metres == null || !Number.isFinite(+metres)) return null;
     const v = +metres;
-    return imperial() ? Math.round(v * 3.28084) + ' قدم' : Math.round(v) + ' م';
+    return imperial() ? Math.round(v * 3.28084) + ' ' + unit('ft') : Math.round(v) + ' ' + unit('m');
   }
   /* يعيد صياغة نص مسافة مخزّن مثل «8–15 كم» أو «5.5 كم» حسب وحدة الزائر. */
   function kmText(place) {
-    if (place.siteOnly) return 'جولة موقع';
+    const T2 = window.DI18N ? window.DI18N.t : (k => k);
+    if (place.siteOnly) return T2('place.siteTour');
     if (place.kr) {
-      if (!imperial()) return place.kr + ' كم';
+      if (!imperial()) return place.kr + ' ' + unit('km');
       const parts = String(place.kr).split(/[–-]/).map(x => parseFloat(x)).filter(Number.isFinite);
-      if (parts.length === 2) return parts.map(x => (x * 0.621371).toFixed(1)).join('–') + ' ميل';
-      return place.kr + ' كم';
+      if (parts.length === 2) return parts.map(x => (x * 0.621371).toFixed(1)).join('–') + ' ' + unit('mi');
+      return place.kr + ' ' + unit('km');
     }
-    return place.km != null ? fmtKm(place.km) : 'غير موثقة';
+    return place.km != null ? fmtKm(place.km) : T2('place.undocumented');
   }
 
   /* ---------- تقدير زمن المشي (قاعدة نيسميث) ---------- */
@@ -508,12 +536,14 @@ window.D = (function () {
     toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
   }
 
+  refreshLabels();
+
   return {
     $, $$, esc, httpsOnly, icon, paintIcons,
     LEVEL, REGION, FEE, VISIT, KIND, THEMES, REGIONS, ZONES, ZONE_BY_ID,
     PLACES, byId, state, store, query, activeFilterCount, resetFilters,
     latLng, centerOf, areaOf, haversine, distanceTo, matchesTheme,
-    sourceLink, externalMap, toast,
+    sourceLink, externalMap, toast, refreshLabels,
     normalize, highlight, fmtKm, fmtM, kmText, estimateWalk, bearingTo,
     nearbyTo, similarTo, inBounds,
     startPoint, startLatLng, navTarget, seasonFor, inSeasonNow, travelBetween, MONTHS,

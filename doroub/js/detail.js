@@ -5,6 +5,7 @@
   const D = w.D, P = w.DPhotos, M = w.DMap;
   const { esc, icon } = D;
 
+  const T = w.DI18N.t;
   const ROUTE_TYPE = { out: 'ذهاب وعودة من نفس الطريق', loop: 'مسار دائري (حلقة)', line: 'باتجاه واحد — يلزم ترتيب العودة' };
 
   /* ---------- أدوات المسار المستورد ---------- */
@@ -67,13 +68,20 @@
   }
 
   /* ---------- أقسام الصفحة ---------- */
+  /* قيمة الصعود مخزّنة كنصّ عربي مثل «٣٨ م»، فنعيد تنسيقها بوحدة لغة الواجهة. */
+  function climbText(p) {
+    if (!p.up) return T('place.undocumented');
+    const n = parseFloat(String(p.up).replace(/[^\d.]/g, ''));
+    return Number.isFinite(n) ? D.fmtM(n) : p.up;
+  }
+
   function statRow(p) {
     const siteOnly = !!p.siteOnly;
     return `<div class="stat-row">
-      <div class="stat">${icon('route')}<small>${siteOnly ? 'نوع الزيارة' : 'المسافة'}</small><b>${esc(D.kmText(p))}</b></div>
-      <div class="stat">${icon('clock')}<small>المدة</small><b>${esc(siteOnly ? 'حسب الزيارة' : (p.h || 'غير موثّقة'))}</b></div>
-      <div class="stat">${icon('mountain')}<small>${siteOnly ? 'الحضارة' : 'الصعود'}</small><b>${esc(siteOnly ? (p.era || 'تاريخي') : (p.up || 'غير موثّق'))}</b></div>
-      <div class="stat">${icon('steps')}<small>الصعوبة</small><b>${esc(p.levelLabel)}</b></div>
+      <div class="stat">${icon('route')}<small>${esc(siteOnly ? T('place.visitKind') : T('place.distance'))}</small><b>${esc(D.kmText(p))}</b></div>
+      <div class="stat">${icon('clock')}<small>${esc(T('place.duration'))}</small><b>${esc(siteOnly ? T('place.byVisit') : (p.h || T('place.undocumented')))}</b></div>
+      <div class="stat">${icon('mountain')}<small>${esc(siteOnly ? T('place.era') : T('place.climb'))}</small><b>${esc(siteOnly ? (p.era || '—') : climbText(p))}</b></div>
+      <div class="stat">${icon('steps')}<small>${esc(T('place.level'))}</small><b>${esc(p.levelLabel)}</b></div>
     </div>`;
   }
 
@@ -148,7 +156,7 @@
   /* ---------- نبذة ويكيبيديا ---------- */
   function wikiSection() {
     return `<section class="sec" id="wikiSection" hidden>
-      <h3>${icon('book')} نبذة عن المكان</h3>
+      <h3>${icon('book')} ${esc(T('place.about'))}</h3>
       <div id="wikiExtract" class="prose"></div>
       <p class="note" id="wikiCredit" style="margin-top:8px"></p>
     </section>`;
@@ -179,7 +187,7 @@
   /* ---------- الشمس وحاسبة العودة الآمنة ---------- */
   function sunSection() {
     return `<details class="fold" id="sunFold">
-      <summary>${icon('sun')} الشمس ووقت العودة الآمن</summary>
+      <summary>${icon('sun')} ${esc(T('place.sun'))}</summary>
       <div class="fold-body"><div id="sunBox" class="note">افتح القسم لحساب ضوء النهار…</div></div>
     </details>`;
   }
@@ -187,7 +195,7 @@
   /* ---------- معرض الصور ---------- */
   function gallerySection() {
     return `<details class="fold" id="galleryFold">
-      <summary>${icon('mountain')} صور المكان</summary>
+      <summary>${icon('mountain')} ${esc(T('place.photos'))}</summary>
       <div class="fold-body">
         <div id="galleryGrid" class="gallery">جارٍ البحث عن صور موثّقة…</div>
         <p class="note" style="margin-top:9px">الصور من ويكيميديا كومنز وويكيبيديا. اضغط أي صورة لفتح صفحة مصدرها ورخصتها. لا نعرض صورة لمكان آخر.</p>
@@ -200,7 +208,7 @@
     const note = D.store.notes[p.id] || '';
     const visited = D.store.visited[p.id];
     return `<details class="fold" ${note || visited ? 'open' : ''}>
-      <summary>${icon('bookmark')} ملاحظاتي وزياراتي</summary>
+      <summary>${icon('bookmark')} ${esc(T('place.mine'))}</summary>
       <div class="fold-body">
         <label class="field"><span>ملاحظة خاصة بك عن هذا المكان</span>
           <textarea id="placeNote" rows="3" maxlength="600"
@@ -222,7 +230,7 @@
     const chip = (place, extra) => `<button type="button" class="related" data-open="${esc(place.id)}">
       <b>${esc(place.n)}</b><small>${esc(extra)}</small></button>`;
     return `<section class="sec">
-      <h3>${icon('compass')} أماكن أخرى</h3>
+      <h3>${icon('compass')} ${esc(T('place.others'))}</h3>
       ${near.length ? `<p class="note" style="margin-bottom:7px">الأقرب إلى هذا المكان</p>
         <div class="related-row">${near.map(x => chip(x.p, D.fmtKm(x.km) + ' · ' + x.p.kindLabel)).join('')}</div>` : ''}
       ${similar.length ? `<p class="note" style="margin:11px 0 7px">تجارب مشابهة</p>
@@ -248,6 +256,11 @@
       ${apps.map(([label, href]) => `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${icon('link')} ${esc(label)}</a>`).join('')}
       ${ll ? `<button type="button" data-act="copy-coords">${icon('pin')} نسخ الإحداثيات</button>` : ''}
     </div>
+    ${ll ? `<div class="map-tools" style="margin-top:7px">
+      <a href="https://www.google.com/maps/search/restaurants+cafes/@${ll[0]},${ll[1]},14z" target="_blank" rel="noopener noreferrer">
+        ${icon('pin')} ${esc(T('place.food'))}</a>
+    </div>
+    <p class="note" style="margin-top:6px">نفتح البحث في خرائط خارجية بدل أن نحتفظ بقائمة مطاعم تتقادم: ساعاتها وتقييماتها هناك محدَّثة، وهنا ستبلى.</p>` : ''}
     ${ll ? `<p class="note" style="margin-top:7px">الإحداثيات: ${ll[0].toFixed(5)}, ${ll[1].toFixed(5)}${p.geoPrecision === 'wiki' ? ' — مرجعية من ويكيبيديا' : ''}</p>` : ''}`;
   }
 
@@ -277,6 +290,34 @@
     </div></div>`;
   }
 
+  /* ---------- الإتاحة والوصول بالمواصلات ----------
+     حقول صريحة تخدم من لا يملك سيارة ومن يحتاج مسارًا متاحًا،
+     وتُعرض كنقص معلن حين لا تتوفّر بدل تجاهل السؤال. */
+  const A11Y_FIELDS = [
+    ['wheelchair', 'كرسي متحرك'],
+    ['stroller', 'عربة أطفال'],
+    ['shade', 'ظل على المسار'],
+    ['water', 'ماء شرب في الموقع'],
+    ['toilets', 'دورات مياه'],
+    ['transit', 'وصول بالمواصلات العامة']
+  ];
+  function accessibilityBlock(p) {
+    const known = A11Y_FIELDS.filter(([k]) => p.access && p.access[k] != null);
+    if (!known.length) {
+      return `<div class="callout muted" style="margin-top:10px">${icon('info')}<div>
+        <b>${esc(T('place.accessibility'))}</b>
+        لم تُوثَّق بعد إتاحة هذا المكان لكرسي متحرك أو عربة أطفال، ولا توفّر الظل والماء ودورات المياه،
+        ولا إمكان الوصول إليه بالمواصلات العامة. هذه أسئلة تحدّد من يستطيع زيارة المكان أصلًا،
+        ونفضّل الإفصاح عن جهلنا بها.
+      </div></div>`;
+    }
+    return `<div class="visit-card hours" style="margin-top:10px">
+      <div class="visit-head"><b>${icon('check')} ${esc(T('place.accessibility'))}</b></div>
+      <div class="trip-sum">${known.map(([k, label]) =>
+        `<span>${esc(label)}: ${esc(p.access[k])}</span>`).join('')}</div>
+    </div>`;
+  }
+
   /* ---------- فكرة ١: كيف تصل ----------
      نقطة الانطلاق مفصولة عن موقع المعلم. حين لا تكون موثّقة نقولها صراحةً
      ونفتح للزائر طريقًا للمساهمة بها بدل إخفاء النقص. */
@@ -284,7 +325,7 @@
     const st = D.startPoint(p);
     if (st) {
       return `<section class="sec">
-        <h3>${icon('locate')} كيف تصل</h3>
+        <h3>${icon('locate')} ${esc(T('place.access'))}</h3>
         <div class="visit-card hours">
           <div class="visit-head"><b>${icon('pin')} نقطة الانطلاق</b>
             <span class="meta-pill v-hours">${esc(st.verified ? 'موثّقة' : 'بحاجة إلى تأكيد')}</span></div>
@@ -300,7 +341,7 @@
       </section>`;
     }
     return `<section class="sec">
-      <h3>${icon('locate')} كيف تصل</h3>
+      <h3>${icon('locate')} ${esc(T('place.access'))}</h3>
       <div class="callout muted">${icon('info')}<div>
         <b>لم تُوثَّق نقطة انطلاق لهذا المكان بعد</b>
         الإحداثية المعروضة تشير إلى موقع المعلم نفسه، لا إلى حيث تركن السيارة وتبدأ المشي.
@@ -309,6 +350,7 @@
       <button type="button" class="btn btn-soft btn-block" data-act="contribute" data-field="start" style="margin-top:10px">
         ${icon('plus')} أعرف نقطة الانطلاق — ساهم بها
       </button>
+      ${accessibilityBlock(p)}
     </section>`;
   }
 
@@ -318,7 +360,7 @@
   function storySection(p) {
     const hand = p.story;
     return `<section class="sec" id="storySection" ${hand ? '' : 'hidden'}>
-      <h3>${icon('book')} الحكاية</h3>
+      <h3>${icon('book')} ${esc(T('place.story'))}</h3>
       <div id="storyBody" class="prose">${hand ? esc(hand) : ''}</div>
       <p class="note" id="storyCredit" style="margin-top:8px"></p>
       ${hand ? '' : `<button type="button" class="btn btn-soft btn-block" data-act="contribute" data-field="story" style="margin-top:10px">
@@ -339,7 +381,7 @@
   /* ---------- فكرة ٦: الحفظ للعمل دون اتصال ---------- */
   function offlineSection(p) {
     return `<details class="fold">
-      <summary>${icon('download')} احفظ هذا المكان للعمل دون اتصال</summary>
+      <summary>${icon('download')} ${esc(T('place.offline'))}</summary>
       <div class="fold-body">
         <p class="note">يحفظ نصّ المكان وصورته وبيانات زيارته في متصفحك، فتفتح صفحته كاملة بلا إنترنت.</p>
         <div class="map-tools" style="margin-top:10px">
@@ -384,8 +426,8 @@
       </div>
       <div class="detail-title">
         <span class="kicker">${icon('pin')} ${esc(p.regionLabel)} · ${esc(p.zoneName)}</span>
-        <h2>${esc(p.n)}</h2>
-        <div class="en">${esc(p.en || '')}</div>
+        <h2>${esc(w.DI18N.placeName(p))}</h2>
+        <div class="en">${esc(w.DI18N.placeSubName(p))}</div>
       </div>
     </div>
 
@@ -397,7 +439,8 @@
 
       <section class="sec">
         <p class="prose">${esc(p.d)}</p>
-        <div class="callout ok" style="margin-top:12px">${icon('check')}<div><b>ما يميّز المكان</b>${esc(p.highlight)}</div></div>
+        ${w.DI18N.current() !== 'ar' ? `<p class="note">${esc(w.DI18N.textLangNote('ar'))}</p>` : ''}
+        <div class="callout ok" style="margin-top:12px">${icon('check')}<div><b>${esc(T('place.highlight'))}</b>${esc(p.highlight)}</div></div>
         ${bearingBlock(p)}
         ${paceBlock(p)}
       </section>
@@ -407,19 +450,19 @@
       ${accessSection(p)}
 
       <section class="sec">
-        <h3>${icon('clock')} الزيارة والمواعيد</h3>
+        <h3>${icon('clock')} ${esc(T('place.visiting'))}</h3>
         ${visitBlock(p)}
       </section>
 
       <section class="sec">
-        <div class="callout warn">${icon('warn')}<div><b>قبل الانطلاق</b>
+        <div class="callout warn">${icon('warn')}<div><b>${esc(T('place.before'))}</b>
           ${esc(p.note || 'تحقّق من فتح المسار والطقس والرسوم ونقطة الانطلاق في المصدر الرسمي.')}
           ${D.httpsOnly(p.officialUpdate) ? ` <a href="${esc(p.officialUpdate)}" target="_blank" rel="noopener noreferrer"><u>التحديث الرسمي</u></a>` : ''}
         </div></div>
       </section>
 
       <section class="sec">
-        <h3>${icon('map')} الخريطة</h3>
+        <h3>${icon('map')} ${esc(T('place.map'))}</h3>
         <div class="callout ${D.latLng(p) ? 'info' : 'muted'}" style="margin-bottom:10px">${icon('info')}<div>
           ${track ? '<b>معروض الآن: خط من ملفك المستورد</b>الخط من ملفك ولم يُراجع ميدانيًا؛ انتبه لعلامات المسارات الرسمية.'
             : D.latLng(p) ? '<b>نقطة معلم</b>هذه إشارة إلى موقع المعلم وليست نقطة انطلاق مؤكدة لمسار مشي.'
@@ -463,7 +506,7 @@
       </details>
 
       <details class="fold">
-        <summary>${icon('sun')} الطقس وتوقّعات الأسبوع</summary>
+        <summary>${icon('sun')} ${esc(T('place.weather'))}</summary>
         <div class="fold-body"><div id="weatherBox" class="note">افتح القسم لجلب حالة الطقس…</div>
         <p class="note" style="margin-top:9px">توقّعات من Open-Meteo، وليست تحذير سيول أو إغلاق رسمي.</p></div>
       </details>
@@ -474,17 +517,17 @@
       ${offlineSection(p)}
 
       <details class="fold">
-        <summary>${icon('checkCircle')} قائمة التجهيزات</summary>
+        <summary>${icon('checkCircle')} ${esc(T('place.kit'))}</summary>
         <div class="fold-body">${checklistBlock(p)}</div>
       </details>
 
       <details class="fold">
-        <summary>${icon('info')} كل التفاصيل المسجّلة</summary>
+        <summary>${icon('info')} ${esc(T('place.allFacts'))}</summary>
         <div class="fold-body">${factsBlock(p)}</div>
       </details>
 
       <details class="fold">
-        <summary>${icon('link')} المصادر والصور</summary>
+        <summary>${icon('link')} ${esc(T('place.sources'))}</summary>
         <div class="fold-body">${sourcesBlock(p)}<p class="note" id="photoCredit" style="margin-top:10px"></p></div>
       </details>
 
@@ -492,7 +535,7 @@
       ${contributeSection(p)}
 
       <div class="detail-foot">
-        <button type="button" class="btn btn-primary" data-act="trip">${icon(inTrip ? 'check' : 'plus')} <span>${inTrip ? 'في رحلتي' : 'أضف إلى رحلتي'}</span></button>
+        <button type="button" class="btn btn-primary" data-act="trip">${icon(inTrip ? 'check' : 'plus')} <span>${esc(inTrip ? T('place.inTrip') : T('place.addTrip'))}</span></button>
         <button type="button" class="btn btn-soft square" data-act="share-whatsapp" aria-label="مشاركة عبر واتساب">${icon('share')}</button>
         <button type="button" class="btn btn-soft square" data-act="print" aria-label="طباعة الصفحة">${icon('print')}</button>
       </div>

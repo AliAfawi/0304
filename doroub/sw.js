@@ -1,11 +1,11 @@
 /* دُروب V8 — تخزين هيكل الموقع للعمل السريع ودون اتصال.
    بلاطات الخرائط وصور ويكيميديا لا تُخزَّن: تراخيصها تمنع التحميل المسبق الجماعي. */
-const CACHE = 'doroub-v9-2026-11-10';
+const CACHE = 'doroub-v10-2026-11-10';
 const SHELL = [
   './', './index.html', './css/doroub.css',
   './data/trails.js', './data/heritage.js', './data/open-places.js', './data/places.js',
   './data/wiki-cache.js', './data/ar-cache.js',
-  './js/core.js', './js/photos.js', './js/map.js', './js/contribute.js', './js/detail.js', './js/app.js',
+  './data/names.js', './js/i18n.js', './js/core.js', './js/photos.js', './js/map.js', './js/contribute.js', './js/detail.js', './js/app.js',
   './manifest.webmanifest', './assets/icon.svg',
   './vendor/leaflet/leaflet.js', './vendor/leaflet/leaflet.css',
   './vendor/fonts.css',

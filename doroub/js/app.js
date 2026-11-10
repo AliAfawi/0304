@@ -4,6 +4,33 @@
   const D = w.D, P = w.DPhotos, M = w.DMap, Detail = w.DDetail;
   const { $, $$, esc, icon, state, store } = D;
 
+  const T = w.DI18N.t;
+  const zoneLabel = z => (z.nameByLang && z.nameByLang[w.DI18N.current()]) || z.name;
+
+  /* يملأ النصوص الثابتة في الصفحة من جدول اللغات. */
+  function applyStaticText() {
+    $$('[data-t]').forEach(el => { el.textContent = T(el.dataset.t); });
+    $$('[data-t-aria]').forEach(el => { el.setAttribute('aria-label', T(el.dataset.tAria)); });
+    $$('[data-t-ph]').forEach(el => { el.setAttribute('placeholder', T(el.dataset.tPh)); });
+    const title = $('#filterApply');
+    if (title) title.textContent = T('filters.apply', { n: D.query().length });
+  }
+
+  /* تبديل لغة الواجهة: يغيّر الاتجاه والتسميات ثم يعيد بناء كل الشاشات. */
+  function setLanguage(code) {
+    w.DI18N.setLang(code);
+    store.settings.lang = code;
+    store.saveSettings();
+    D.refreshLabels();
+    applyStaticText();
+    renderHome();
+    renderExplore();
+    renderTrip();
+    renderSettings();
+    M.refreshMain(openDetail);
+    if (state.detailId) redrawDetail();
+  }
+
   /* ===================== الإعدادات والمظهر ===================== */
   const media = w.matchMedia ? w.matchMedia('(prefers-color-scheme: dark)') : null;
 
@@ -31,11 +58,12 @@
   w.addEventListener('offline', () => { setOnline(); D.toast('أنت دون اتصال — ما حُفظ يعمل، والصور والخرائط لا'); });
 
   const SETTING_GROUPS = () => [
-    { key: 'theme', label: 'المظهر', opts: [['auto', 'حسب الجهاز'], ['light', 'فاتح'], ['dark', 'داكن']] },
-    { key: 'fontScale', label: 'حجم الخط', opts: [[1, 'عادي'], [1.12, 'كبير'], [1.25, 'أكبر']] },
-    { key: 'units', label: 'وحدة القياس', opts: [['metric', 'كيلومتر'], ['imperial', 'ميل']] },
-    { key: 'pace', label: 'سرعة مشيك (لتقدير الزمن)', opts: [[3, 'متأنّية ٣'], [4.5, 'عادية ٤٫٥'], [6, 'سريعة ٦']] },
-    { key: 'reduceMotion', label: 'الحركة والانتقالات', opts: [[false, 'كاملة'], [true, 'مخفّفة']] }
+    { key: 'lang', label: T('lang.label'), opts: w.DI18N.list().map(l => [l.code, l.name]), note: T('lang.textNote') },
+    { key: 'theme', label: T('set.theme'), opts: [['auto', T('set.auto')], ['light', T('set.light')], ['dark', T('set.dark')]] },
+    { key: 'fontScale', label: T('set.font'), opts: [[1, T('set.fontN')], [1.12, T('set.fontL')], [1.25, T('set.fontXL')]] },
+    { key: 'units', label: T('set.units'), opts: [['metric', T('set.km')], ['imperial', T('set.mi')]] },
+    { key: 'pace', label: T('set.pace'), opts: [[3, T('set.paceSlow')], [4.5, T('set.paceMid')], [6, T('set.paceFast')]] },
+    { key: 'reduceMotion', label: T('set.motion'), opts: [[false, T('set.motionFull')], [true, T('set.motionLess')]] }
   ];
 
   function renderSettings() {
@@ -47,28 +75,29 @@
         <div class="f-opts">${g.opts.map(([v, t]) =>
           `<button type="button" class="f-opt ${String(store.settings[g.key]) === String(v) ? 'on' : ''}"
              data-set="${esc(g.key)}" data-val="${esc(String(v))}">${esc(t)}</button>`).join('')}</div>
+        ${g.note ? `<p class="note" style="margin-top:8px">${esc(g.note)}</p>` : ''}
       </div>`).join('') + `
-      <div class="f-group"><label>بياناتك على هذا الجهاز</label>
+      <div class="f-group"><label>${esc(T('set.data'))}</label>
         <div class="trip-sum" style="margin-bottom:10px">
-          <span>${Object.keys(store.favorites).length} مفضلة</span>
-          <span>${store.trips.length} رحلة</span>
-          <span>${visited} مكانًا زرته</span>
-          <span>${Object.keys(store.notes).length} ملاحظة</span>
+          <span>${esc(T('set.favCount', { n: Object.keys(store.favorites).length }))}</span>
+          <span>${esc(T('set.tripCount', { n: store.trips.length }))}</span>
+          <span>${esc(T('set.visitCount', { n: visited }))}</span>
+          <span>${esc(T('set.noteCount', { n: Object.keys(store.notes).length }))}</span>
         </div>
         <div class="map-tools">
-          <button type="button" data-act="export-data">${icon('download')} تصدير نسخة</button>
-          <button type="button" data-act="import-data">${icon('filePlus')} استيراد نسخة</button>
+          <button type="button" data-act="export-data">${icon('download')} ${esc(T('set.export'))}</button>
+          <button type="button" data-act="import-data">${icon('filePlus')} ${esc(T('set.import'))}</button>
           <input id="importFile" type="file" accept="application/json,.json" hidden>
-          <button type="button" data-act="clear-cache">${icon('reset')} تفريغ ذاكرة الصور</button>
+          <button type="button" data-act="clear-cache">${icon('reset')} ${esc(T('set.clearPhotos'))}</button>
         </div>
-        <p class="note" style="margin-top:9px">كل شيء محفوظ على جهازك وحده. التصدير يتيح نقله إلى جهاز آخر.</p>
+        <p class="note" style="margin-top:9px">${esc(T('set.privacy'))}</p>
       </div>
-      <div class="f-group"><label>التطبيق</label>
+      <div class="f-group"><label>${esc(T('set.app'))}</label>
         <div class="map-tools">
-          ${installPrompt ? `<button type="button" data-act="install">${icon('download')} ثبّت دُروب على جهازك</button>` : ''}
-          <button type="button" data-act="shortcuts">${icon('info')} اختصارات لوحة المفاتيح</button>
+          ${installPrompt ? `<button type="button" data-act="install">${icon('download')} ${esc(T('set.install'))}</button>` : ''}
+          <button type="button" data-act="shortcuts">${icon('info')} ${esc(T('set.shortcuts'))}</button>
         </div>
-        ${installPrompt ? '' : '<p class="note" style="margin-top:9px">للتثبيت على آيفون: زر المشاركة في Safari ثم «إضافة إلى الشاشة الرئيسية».</p>'}
+        ${installPrompt ? '' : `<p class="note" style="margin-top:9px">${esc(T('set.iosHint'))}</p>`}
       </div>`;
   }
 
@@ -95,13 +124,13 @@
         aria-label="${fav ? 'إزالة من المفضلة' : 'حفظ في المفضلة'}">${icon('heart')}</button>
       <div class="pc-body">
         <span class="pc-kicker">${icon('pin')} ${esc(p.kindLabel)}</span>
-        <h3>${D.highlight(p.n, state.query)}</h3>
-        <div class="pc-en">${D.highlight(p.en || '', state.query)}</div>
+        <h3>${D.highlight(w.DI18N.placeName(p), state.query)}</h3>
+        <div class="pc-en">${D.highlight(w.DI18N.placeSubName(p), state.query)}</div>
         <p class="pc-feature">${D.highlight(p.highlight, state.query)}</p>
         <div class="pc-meta">
           <span class="meta-pill lv-${esc(p.lv)}">${esc(p.levelLabel)}</span>
           <span class="meta-pill">${icon('route')} ${esc(D.kmText(p))}</span>
-          <span class="meta-pill">${icon('clock')} ${esc(p.h || 'مدة غير موثقة')}</span>
+          <span class="meta-pill">${icon('clock')} ${esc(p.h || T('place.undocumented'))}</span>
           <span class="meta-pill v-${esc(p.visitStatus)}">${esc(D.VISIT[p.visitStatus] || D.VISIT.unknown)}</span>
         </div>
       </div>
@@ -122,51 +151,51 @@
     $('#homeHero').innerHTML = `
       <div class="hero-img">${hero ? P.box(hero) : ''}</div>
       <div class="hero-body wrap">
-        <span class="eyebrow">${icon('compass')} دليلك العربي للطبيعة والتراث</span>
-        <h1>الطبيعة تناديك.<br><em>وين دربك اليوم؟</em></h1>
-        <p class="hero-sub">${D.PLACES.length} مسارًا وموقعًا بين النقب والجليل، بمعلومات من مصادرها وخرائط داخل الموقع.</p>
+        <span class="eyebrow">${icon('compass')} ${esc(T('home.eyebrow'))}</span>
+        <h1>${esc(T('home.title1'))}<br><em>${esc(T('home.title2'))}</em></h1>
+        <p class="hero-sub">${esc(T('home.sub', { n: D.PLACES.length }))}</p>
         <div class="hero-cta">
-          <button type="button" class="btn btn-primary" data-go="explore">${icon('compass')} ابدأ الاستكشاف</button>
-          <button type="button" class="btn btn-ghost" data-act="near-me">${icon('locate')} القريب مني</button>
+          <button type="button" class="btn btn-primary" data-go="explore">${icon('compass')} ${esc(T('home.cta'))}</button>
+          <button type="button" class="btn btn-ghost" data-act="near-me">${icon('locate')} ${esc(T('home.near'))}</button>
         </div>
         <div class="hero-stats">
-          <div><strong>${D.PLACES.length}</strong><span>مسار وموقع</span></div>
-          <div><strong id="heroCoords">${withCoords}</strong><span>بإحداثيات على الخريطة</span></div>
-          <div><strong>${curated}</strong><span>موثّق في الدليل</span></div>
+          <div><strong>${D.PLACES.length}</strong><span>${esc(T('home.statPlaces'))}</span></div>
+          <div><strong id="heroCoords">${withCoords}</strong><span>${esc(T('home.statCoords'))}</span></div>
+          <div><strong>${curated}</strong><span>${esc(T('home.statCurated'))}</span></div>
         </div>
       </div>`;
 
     $('#homeBody').innerHTML = `
       <section class="block">
-        <div class="block-head"><div><h2>اختر منطقتك</h2><p>ثلاث مناطق كبرى، اضغط لترى ما فيها</p></div></div>
+        <div class="block-head"><div><h2>${esc(T('home.regions'))}</h2><p>${esc(T('home.regionsSub'))}</p></div></div>
         <div class="region-rail">
           ${D.REGIONS.map(r => `
             <button type="button" class="region-card" data-region="${esc(r.id)}">
               ${anchorBox(r.anchor)}
-              <span class="rc-count">${r.count} موقعًا</span>
-              <div class="rc-body"><h3>${esc(r.name)}</h3><p>${esc(r.tagline)}</p></div>
+              <span class="rc-count">${esc(T('home.placesCount', { n: r.count }))}</span>
+              <div class="rc-body"><h3>${esc(r.nameByLang ? r.nameByLang[w.DI18N.current()] || r.name : r.name)}</h3><p>${esc(r.tagline)}</p></div>
             </button>`).join('')}
         </div>
       </section>
 
       <section class="block">
         <div class="block-head">
-          <div><h2>المناطق الطبيعية</h2><p>من جبال إيلات إلى بانياس</p></div>
-          <button type="button" class="more" data-go="map">على الخريطة ${icon('arrow')}</button>
+          <div><h2>${esc(T('home.zones'))}</h2><p>${esc(T('home.zonesSub'))}</p></div>
+          <button type="button" class="more" data-go="map">${esc(T('home.onMap'))} ${icon('arrow')}</button>
         </div>
         <div class="zone-rail">
           ${D.ZONES.filter(z => z.count).map(z => `
             <button type="button" class="zone-card" data-zone="${esc(z.id)}">
               ${anchorBox(z.anchor)}
-              <div class="zc-body"><b>${esc(z.name)}</b><small>${z.count} موقعًا · ${esc(z.blurb)}</small></div>
+              <div class="zc-body"><b>${esc(z.name)}</b><small>${esc(T('home.placesCount', { n: z.count }))} · ${esc(z.blurb)}</small></div>
             </button>`).join('')}
         </div>
       </section>
 
       <section class="block">
         <div class="block-head">
-          <div><h2>وجهات مختارة</h2><p>بدايات جيدة إن لم تقرّر بعد</p></div>
-          <button type="button" class="more" data-go="explore">الكل ${icon('arrow')}</button>
+          <div><h2>${esc(T('home.picks'))}</h2><p>${esc(T('home.picksSub'))}</p></div>
+          <button type="button" class="more" data-go="explore">${esc(T('home.all'))} ${icon('arrow')}</button>
         </div>
         <div class="rail">
           ${['redcanyon', 'banias-fall', 'ein-avdat', 'hist-caesarea', 'tel-dan', 'masada-snake']
@@ -176,14 +205,14 @@
 
       ${store.recent.length >= 2 ? `<section class="block">
         <div class="block-head">
-          <div><h2>تابع من حيث وقفت</h2><p>آخر ما تصفّحته على هذا الجهاز</p></div>
-          <button type="button" class="more" data-act="recent-clear">${icon('trash')} امسح</button>
+          <div><h2>${esc(T('home.recent'))}</h2><p>${esc(T('home.recentSub'))}</p></div>
+          <button type="button" class="more" data-act="recent-clear">${icon('trash')} ${esc(T('home.clear'))}</button>
         </div>
         <div class="rail">${store.recent.map(D.byId).filter(Boolean).slice(0, 8).map(placeCard).join('')}</div>
       </section>` : ''}
 
       <section class="block">
-        <div class="block-head"><div><h2>جولات جاهزة</h2><p>أماكن منفصلة مقترحة معًا — وليست خط مشي واحدًا</p></div></div>
+        <div class="block-head"><div><h2>${esc(T('home.tours'))}</h2><p>${esc(T('home.toursSub'))}</p></div></div>
         <div class="zone-rail">
           ${D.COLLECTIONS.map(c => `
             <button type="button" class="zone-card" data-collection="${esc(c.id)}">
@@ -194,15 +223,15 @@
       </section>
 
       <section class="about">
-        <h2>عن دُروب</h2>
-        <p>دليل عربي لاكتشاف مسارات المشي والمواقع الطبيعية والتاريخية. نذكر مصدر كل معلومة، ونوضّح ما لم يتم التحقق منه بدل إخفائه.</p>
+        <h2>${esc(T('about.title'))}</h2>
+        <p>${esc(T('about.body'))}</p>
         <div class="about-grid">
-          <div><b>لا نرسم مسارات مخمّنة</b><small>خط المشي يظهر فقط من ملف حقيقي تستورده أو من مصدر رسمي.</small></div>
-          <div><b>نفرّق بين النقطة والمنطقة</b><small>الدبوس موقع معلم موثق، والدائرة منطقة تقريبية لا تصلح للتوجه.</small></div>
-          <div><b>ساعات الزيارة منشورة لا لحظية</b><small>نذكر تاريخ آخر مراجعة، وتبقى الحاجة للتأكد هاتفيًا.</small></div>
-          <div><b>الصور من مصادرها</b><small>ويكيميديا كومنز وويكيبيديا مع الرخصة؛ ولا نضع صورة مكان آخر.</small></div>
+          <div><b>${esc(T('about.p1t'))}</b><small>${esc(T('about.p1b'))}</small></div>
+          <div><b>${esc(T('about.p2t'))}</b><small>${esc(T('about.p2b'))}</small></div>
+          <div><b>${esc(T('about.p3t'))}</b><small>${esc(T('about.p3b'))}</small></div>
+          <div><b>${esc(T('about.p4t'))}</b><small>${esc(T('about.p4b'))}</small></div>
         </div>
-        <p class="legal">© ٢٠٢٦ دُروب · الخرائط بواسطة Leaflet وبلاطات OpenStreetMap وOpenTopoMap · الطقس من Open-Meteo · المعلومات قابلة للتغيير، والمسؤولية عن السلامة تبقى على الزائر.</p>
+        <p class="legal">${esc(T('about.legal'))}</p>
       </section>`;
     P.watch($('#screen-home'));
   }
@@ -212,7 +241,7 @@
     $('#themeChips').innerHTML = D.THEMES.map(t =>
       `<button type="button" class="chip ${state.theme === t.id ? 'on' : ''}" data-topic="${esc(t.id)}">
         <span class="ic">${t.ic}</span> ${esc(t.name)}</button>`).join('')
-      + `<button type="button" class="chip ${state.favoritesOnly ? 'on' : ''}" data-act="toggle-favs">♥ المفضلة</button>`;
+      + `<button type="button" class="chip ${state.favoritesOnly ? 'on' : ''}" data-act="toggle-favs">♥ ${esc(T('explore.favourites'))}</button>`;
     const n = D.activeFilterCount();
     const dot = $('#filterDot');
     dot.hidden = n === 0;
@@ -267,34 +296,34 @@
     renderChips();
     const list = D.query();
     const shown = list.slice(0, state.limit);
-    $('#exploreCount').innerHTML = `<b>${list.length}</b> من ${D.PLACES.length} وجهة`;
-    $('#exploreHint').textContent = state.seasonOnly ? 'ما يناسب الموسم الحالي'
-      : state.mapBoundsOnly ? 'ضمن إطار الخريطة الحالي'
-      : state.radius !== 'all' && state.pos ? `ضمن ${state.radius} كم منك`
-        : state.favoritesOnly ? 'المحفوظة على جهازك'
-          : state.sort === 'near' && state.pos ? 'مرتّبة بالمسافة الجوية'
-            : 'اضغط البطاقة لكل التفاصيل';
+    $('#exploreCount').textContent = T('explore.count', { n: list.length, total: D.PLACES.length });
+    $('#exploreHint').textContent = state.seasonOnly ? T('explore.hintSeason')
+      : state.mapBoundsOnly ? T('explore.hintBounds')
+        : state.radius !== 'all' && state.pos ? T('explore.hintRadius', { n: state.radius })
+          : state.favoritesOnly ? T('explore.hintFav')
+            : state.sort === 'near' && state.pos ? T('explore.hintNear')
+              : T('explore.hintTap');
     $('#exploreCards').innerHTML = shown.map(placeCard).join('');
     $('#exploreEmpty').hidden = list.length > 0;
     syncUrl();
     renderSuggestions();
     const more = $('#exploreMore');
     more.hidden = state.limit >= list.length;
-    more.textContent = `عرض ${Math.min(12, list.length - state.limit)} وجهة أخرى`;
+    more.textContent = T('explore.more', { n: Math.min(12, list.length - state.limit) });
     P.watch($('#exploreCards'));
   }
 
   /* ===================== ورقة الفلاتر ===================== */
-  const FILTER_GROUPS = [
-    { key: 'region', label: 'المنطقة', opts: () => [['all', 'الكل']].concat(D.REGIONS.map(r => [r.id, r.name])) },
-    { key: 'zone', label: 'المنطقة الطبيعية', opts: () => [['all', 'الكل']].concat(D.ZONES.filter(z => z.count).map(z => [z.id, `${z.name} (${z.count})`])) },
-    { key: 'level', label: 'الصعوبة', opts: () => [['all', 'الكل'], ['easy', 'سهل'], ['mid', 'متوسط'], ['hard', 'صعب'], ['exp', 'متقدم'], ['unk', 'غير محدد']] },
-    { key: 'kind', label: 'نوع المكان', opts: () => [['all', 'الكل'], ['trail', 'مسارات مشي'], ['nature', 'معالم طبيعية'], ['ruins', 'آثار وتاريخ'], ['mosque', 'مساجد تاريخية'], ['maqam', 'مقامات'], ['religious', 'معالم دينية']] },
-    { key: 'visit', label: 'حالة الزيارة', opts: () => [['all', 'الكل'], ['hours', 'ساعات منشورة'], ['appointment', 'بتنسيق مسبق'], ['unknown', 'بحاجة إلى تحقق']] },
-    { key: 'era', label: 'الحضارة', opts: () => [['all', 'الكل']].concat([...new Set(D.PLACES.map(p => p.era).filter(Boolean))].sort().map(e => [e, e])) },
-    { key: 'radius', label: 'ضمن مسافة مني', opts: () => [['all', 'بلا حد'], ['10', '١٠ كم'], ['25', '٢٥ كم'], ['50', '٥٠ كم'], ['100', '١٠٠ كم']] },
-    { key: 'provenance', label: 'مصدر البيانات', opts: () => [['all', 'الكل'], ['curated', 'الدليل المحرَّر'], ['open', 'مصدر مفتوح']] },
-    { key: 'sort', label: 'الترتيب', opts: () => [['featured', 'المقترحة'], ['short', 'الأقصر أولًا'], ['level', 'حسب الصعوبة'], ['name', 'الاسم'], ['near', 'الأقرب إليّ'], ['complete', 'الأكمل بيانات']] }
+  const FILTER_GROUPS = () => [
+    { key: 'region', label: T('filters.region'), opts: () => [['all', T('theme.all')]].concat(D.REGIONS.map(r => [r.id, zoneLabel(r)])) },
+    { key: 'zone', label: T('filters.zone'), opts: () => [['all', T('theme.all')]].concat(D.ZONES.filter(z => z.count).map(z => [z.id, `${zoneLabel(z)} (${z.count})`])) },
+    { key: 'level', label: T('filters.level'), opts: () => [['all', T('theme.all')], ['easy', T('level.easy')], ['mid', T('level.mid')], ['hard', T('level.hard')], ['exp', T('level.exp')], ['unk', T('level.unk')]] },
+    { key: 'kind', label: T('filters.kind'), opts: () => [['all', T('theme.all')], ['trail', T('kind.trail')], ['nature', T('kind.nature')], ['ruins', T('kind.ruins')], ['mosque', T('kind.mosque')], ['maqam', T('kind.maqam')], ['religious', T('kind.religious')]] },
+    { key: 'visit', label: T('filters.visit'), opts: () => [['all', T('theme.all')], ['hours', T('visit.hours')], ['appointment', T('visit.appointment')], ['unknown', T('visit.unknown')]] },
+    { key: 'era', label: T('filters.era'), opts: () => [['all', T('theme.all')]].concat([...new Set(D.PLACES.map(p => p.era).filter(Boolean))].sort().map(e => [e, e])) },
+    { key: 'radius', label: T('filters.radius'), opts: () => [['all', T('filters.noLimit')], ['10', '10'], ['25', '25'], ['50', '50'], ['100', '100']] },
+    { key: 'provenance', label: T('filters.provenance'), opts: () => [['all', T('theme.all')], ['curated', T('filters.curated')], ['open', T('filters.open')]] },
+    { key: 'sort', label: T('filters.sort'), opts: () => [['featured', 'المقترحة'], ['short', 'الأقصر أولًا'], ['level', 'حسب الصعوبة'], ['name', 'الاسم'], ['near', 'الأقرب إليّ'], ['complete', 'الأكمل بيانات']] }
   ];
 
   /* كم نتيجة سيعطي كل خيار لو اخترته الآن؟ يُحسب بتجربة القيمة ثم إعادتها. */
@@ -308,7 +337,7 @@
   }
 
   function renderFilterSheet() {
-    $('#filterBody').innerHTML = FILTER_GROUPS.map(g => `
+    $('#filterBody').innerHTML = FILTER_GROUPS().map(g => `
       <div class="f-group"><label>${esc(g.label)}</label>
         <div class="f-opts">${g.opts().map(([v, t]) => {
           const n = facetCount(g.key, v);
@@ -316,14 +345,14 @@
             data-f="${esc(g.key)}" data-v="${esc(v)}">${esc(t)}${n != null ? `<i>${n}</i>` : ''}</button>`;
         }).join('')}</div>
       </div>`).join('') + `
-      <div class="f-group"><label>نطاق البحث</label>
+      <div class="f-group"><label>${esc(T('filters.scope'))}</label>
         <div class="f-opts">
-          <button type="button" class="f-opt ${state.seasonOnly ? 'on' : ''}" data-act="toggle-season">${icon('sun')} ما يناسب الموسم الآن</button>
-          <button type="button" class="f-opt ${state.mapBoundsOnly ? 'on' : ''}" data-act="toggle-bounds">${icon('map')} ضمن إطار الخريطة فقط</button>
-          <button type="button" class="f-opt" data-act="surprise">${icon('compass')} فاجئني بمكان</button>
+          <button type="button" class="f-opt ${state.seasonOnly ? 'on' : ''}" data-act="toggle-season">${icon('sun')} ${esc(T('filters.season'))}</button>
+          <button type="button" class="f-opt ${state.mapBoundsOnly ? 'on' : ''}" data-act="toggle-bounds">${icon('map')} ${esc(T('filters.bounds'))}</button>
+          <button type="button" class="f-opt" data-act="surprise">${icon('compass')} ${esc(T('filters.surprise'))}</button>
         </div>
       </div>`;
-    $('#filterApply').textContent = `اعرض ${D.query().length} وجهة`;
+    $('#filterApply').textContent = T('filters.apply', { n: D.query().length });
   }
 
   const openSheet = () => { renderFilterSheet(); $('#filterSheet').classList.add('open'); document.body.classList.add('is-locked'); };
@@ -348,14 +377,14 @@
   /* جدول مقارنة بين محطات الخطة — بلا أي زر إضافي على البطاقات. */
   function compareTable(items) {
     const rows = [
-      ['المنطقة', p => p.zoneName],
-      ['نوع المكان', p => p.kindLabel],
-      ['الصعوبة', p => p.levelLabel],
-      ['المسافة', p => p.siteOnly ? 'جولة موقع' : p.kmLabel],
-      ['المدة', p => p.h || 'غير موثّقة'],
-      ['الصعود', p => p.up || 'غير موثّق'],
+      [T('filters.region'), p => p.zoneName],
+      [T('filters.kind'), p => p.kindLabel],
+      [T('place.level'), p => p.levelLabel],
+      [T('place.distance'), p => D.kmText(p)],
+      [T('place.duration'), p => p.h || 'غير موثّقة'],
+      [T('place.climb'), p => p.up || 'غير موثّق'],
       ['الرسوم', p => D.FEE[p.fee] || 'غير موثّقة'],
-      ['الزيارة', p => D.VISIT[p.visitStatus] || D.VISIT.unknown],
+      [T('filters.visit'), p => D.VISIT[p.visitStatus] || D.VISIT.unknown],
       ['على الخريطة', p => D.latLng(p) ? 'موقع موثّق' : 'منطقة تقريبية']
     ];
     return `<table style="width:100%;border-collapse:collapse;font-size:12.5px;min-width:${110 + items.length * 120}px">
@@ -431,7 +460,7 @@
         ${items.length ? items.map((p, i) => `
           <div class="trip-item">
             ${P.box(p)}
-            <div><b>${i + 1}. ${esc(p.n)}</b><small>${esc(p.zoneName)} · ${esc(D.kmText(p))} · ${esc(p.h || 'مدة غير موثقة')}</small></div>
+            <div><b>${i + 1}. ${esc(p.n)}</b><small>${esc(p.zoneName)} · ${esc(D.kmText(p))} · ${esc(p.h || T('place.undocumented'))}</small></div>
             <div class="trip-move">
               <button type="button" data-trip-up="${esc(p.id)}" aria-label="أعلى" ${i === 0 ? 'disabled' : ''}>▲</button>
               <button type="button" data-trip-down="${esc(p.id)}" aria-label="أسفل" ${i === items.length - 1 ? 'disabled' : ''}>▼</button>
@@ -876,7 +905,7 @@
     if (!items.length) { D.toast('أضف مكانًا إلى خطتك أولًا'); return; }
     const text = 'رحلتي على دُروب\n'
       + (store.trip.date ? 'الموعد: ' + store.trip.date + '\n' : '')
-      + items.map((p, i) => `${i + 1}. ${p.n} (${p.siteOnly ? 'جولة موقع' : p.kmLabel})`).join('\n')
+      + items.map((p, i) => `${i + 1}. ${w.DI18N.placeName(p)} (${D.kmText(p)})`).join('\n')
       + (store.trip.notes ? '\nملاحظات: ' + store.trip.notes : '')
       + '\nتحقق من حالة الأماكن قبل الانطلاق.';
     share(text, location.origin + location.pathname);
@@ -947,6 +976,7 @@
     }
     if ((el = e.target.closest('[data-set]'))) {
       const key = el.dataset.set; let v = el.dataset.val;
+      if (key === 'lang') { setLanguage(v); return; }
       if (v === 'true' || v === 'false') v = v === 'true';
       else if (!isNaN(parseFloat(v)) && key !== 'theme' && key !== 'units') v = parseFloat(v);
       store.settings[key] = v; store.saveSettings(); applySettings(); renderSettings();
@@ -1190,7 +1220,10 @@
 
   /* ===================== الإقلاع ===================== */
   function boot() {
+    w.DI18N.setLang(store.settings.lang || 'ar');
+    D.refreshLabels();
     applySettings();
+    applyStaticText();
     setOnline();
     D.paintIcons();
     renderHome();

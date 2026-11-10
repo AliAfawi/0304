@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0d2a1f">
-<meta name="description" content="دُروب — دليل عربي لـ175 مسارًا وموقعًا طبيعيًا وتاريخيًا، بخرائط داخل الموقع ومعلومات زيارة من مصادرها.">
+<meta name="description" content="دُروب — دليل بالعربية والعبرية والإنجليزية لـ175 مسارًا وموقعًا طبيعيًا وتاريخيًا، بخرائط داخل الموقع ومعلومات زيارة من مصادرها.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="دُروب">
@@ -30,14 +30,14 @@
 <header class="topbar on-photo" id="topbar">
   <a class="brand" href="#" data-go="home">
     <span class="glyph">⌁</span>
-    <span>دُروب<small>خُطاك إلى الطبيعة</small></span>
+    <span>دُروب<small data-t="app.tagline">خُطاك إلى الطبيعة</small></span>
   </a>
-  <button type="button" class="topbar-act" data-act="search" aria-label="ابحث عن مكان"><span data-i="search"></span></button>
-  <button type="button" class="topbar-act" data-act="settings" aria-label="الإعدادات"><span data-i="sliders"></span></button>
+  <button type="button" class="topbar-act" data-act="search" aria-label="بحث" data-t-aria="a11y.search"><span data-i="search"></span></button>
+  <button type="button" class="topbar-act" data-act="settings" aria-label="إعدادات" data-t-aria="a11y.settings"><span data-i="sliders"></span></button>
 </header>
 
 <div class="offline-bar" id="offlineBar" role="status" hidden>
-  <span data-i="info"></span> أنت دون اتصال — ما حُفظ يعمل، أما الصور والخرائط فتحتاج إنترنت.
+  <span data-i="info"></span> <span data-t="common.offline">أنت دون اتصال</span>
 </div>
 
 <main>
@@ -56,7 +56,7 @@
           <label class="search-box">
             <span data-i="search"></span>
             <input id="searchInput" type="search" autocomplete="off" enterkeyhint="search"
-                   placeholder="ابحث عن مسار، مسجد، قلعة، وادٍ أو مدينة…" aria-label="البحث في دليل دُروب">
+                   placeholder="…" data-t-ph="explore.placeholder" aria-label="البحث في دليل دُروب">
           </label>
           <button type="button" class="filter-btn" data-act="filters" aria-label="الفلاتر والترتيب">
             <span data-i="sliders"></span><span class="dot" id="filterDot" hidden>0</span>
@@ -75,9 +75,9 @@
 
       <div class="empty" id="exploreEmpty" hidden>
         <span data-i="search"></span>
-        <h3>لا توجد نتائج بهذه الشروط</h3>
-        <p>جرّب منطقة أخرى أو أزل أحد الفلاتر.</p>
-        <button type="button" class="btn btn-soft" data-act="reset-filters" style="margin-top:14px">إظهار كل الوجهات</button>
+        <h3 data-t="explore.emptyTitle">لا توجد نتائج</h3>
+        <p data-t="explore.emptyBody">جرّب منطقة أخرى.</p>
+        <button type="button" class="btn btn-soft" data-act="reset-filters" style="margin-top:14px" data-t="explore.showAll">إظهار كل الوجهات</button>
       </div>
 
       <button type="button" class="btn btn-soft btn-block" id="exploreMore" data-act="more" style="margin-top:18px" hidden></button>
@@ -103,12 +103,12 @@
   <section class="screen" id="screen-trip">
     <div class="wrap">
       <div class="block-head" style="margin-top:18px">
-        <div><h2>رحلتي</h2><p>خطتك ومفضلتك محفوظتان على هذا الجهاز</p></div>
+        <div><h2 data-t="trip.title">رحلتي</h2><p data-t="trip.sub">خطتك ومفضلتك</p></div>
       </div>
       <div class="trip-tabs" id="tripTabs">
-        <button type="button" class="on" data-triptab="plan">الخطة</button>
-        <button type="button" data-triptab="saved">المفضلة</button>
-        <button type="button" data-triptab="log">زياراتي</button>
+        <button type="button" class="on" data-triptab="plan" data-t="trip.plan">الخطة</button>
+        <button type="button" data-triptab="saved" data-t="explore.favourites">المفضلة</button>
+        <button type="button" data-triptab="log" data-t="trip.log">زياراتي</button>
       </div>
       <div id="tripBody"></div>
     </div>
@@ -122,24 +122,24 @@
   <div class="sheet">
     <div class="sheet-grip"></div>
     <div class="sheet-head">
-      <h2>الفلاتر والترتيب</h2>
+      <h2 data-t="filters.title">الفلاتر والترتيب</h2>
       <button type="button" class="sheet-close" data-act="close-sheet" aria-label="إغلاق"><span data-i="close"></span></button>
     </div>
     <div id="filterBody"></div>
     <div class="sheet-actions">
-      <button type="button" class="btn btn-soft" data-act="reset-filters">مسح الكل</button>
+      <button type="button" class="btn btn-soft" data-act="reset-filters" data-t="filters.clear">مسح الكل</button>
       <button type="button" class="btn btn-primary" style="flex:1" id="filterApply" data-act="apply-filters">اعرض النتائج</button>
     </div>
   </div>
 </div>
 
 <!-- ======== الإعدادات ======== -->
-<div class="sheet-root" id="settingsSheet" role="dialog" aria-modal="true" aria-label="الإعدادات">
+<div class="sheet-root" id="settingsSheet" role="dialog" aria-modal="true" aria-label="إعدادات" data-t-aria="a11y.settings">
   <div class="sheet-veil" id="settingsVeil"></div>
   <div class="sheet">
     <div class="sheet-grip"></div>
     <div class="sheet-head">
-      <h2>الإعدادات</h2>
+      <h2 data-t="set.title">الإعدادات</h2>
       <button type="button" class="sheet-close" data-act="close-settings" aria-label="إغلاق"><span data-i="close"></span></button>
     </div>
     <div id="settingsBody"></div>
@@ -167,10 +167,10 @@
 
 <!-- ======== شريط التبويب ======== -->
 <nav class="tabbar" aria-label="التنقل الرئيسي">
-  <button type="button" data-tab="home" class="on"><span data-i="home"></span>الرئيسية</button>
-  <button type="button" data-tab="explore"><span data-i="compass"></span>استكشف</button>
-  <button type="button" data-tab="map"><span data-i="map"></span>الخريطة</button>
-  <button type="button" data-tab="trip"><span data-i="bag"></span>رحلتي<span class="badge" id="tripBadge" hidden>0</span></button>
+  <button type="button" data-tab="home" class="on"><span data-i="home"></span><span data-t="nav.home">الرئيسية</span></button>
+  <button type="button" data-tab="explore"><span data-i="compass"></span><span data-t="nav.explore">استكشف</span></button>
+  <button type="button" data-tab="map"><span data-i="map"></span><span data-t="nav.map">الخريطة</span></button>
+  <button type="button" data-tab="trip"><span data-i="bag"></span><span data-t="nav.trip">رحلتي</span><span class="badge" id="tripBadge" hidden>0</span></button>
 </nav>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -182,6 +182,8 @@
 <script src="./data/places.js"></script>
 <script src="./data/wiki-cache.js"></script>
 <script src="./data/ar-cache.js"></script>
+<script src="./data/names.js"></script>
+<script src="./js/i18n.js"></script>
 <script src="./js/core.js"></script>
 <script src="./js/photos.js"></script>
 <script src="./js/map.js"></script>

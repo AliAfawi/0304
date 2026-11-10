@@ -6,19 +6,19 @@
   /* ثلاث مناطق رئيسية، لكل واحدة صورة مرساة من مكان موثّق داخل الدليل. */
   w.DOROUB_REGIONS = [
     {
-      id: 'S', name: 'الجنوب والنقب',
+      id: 'S', nameByLang: { ar: 'الجنوب والنقب', he: 'הדרום והנגב', en: 'South and Negev' }, name: 'الجنوب والنقب',
       tagline: 'صحراء وأخاديد وألوان لا تتكرر',
       blurb: 'من جبال إيلات الحمراء إلى مكتش رامون والمدن النبطية، منطقة الصحراء والمغامرات الطويلة.',
       anchor: 'redcanyon', accent: '#d08a3f'
     },
     {
-      id: 'C', name: 'المركز والقدس',
+      id: 'C', nameByLang: { ar: 'المركز والقدس', he: 'המרכז וירושלים', en: 'Centre and Jerusalem' }, name: 'المركز والقدس',
       tagline: 'طبيعة وآثار على بُعد نصف ساعة',
       blurb: 'ينابيع سطاف وأودية القدس، وساحل الوسط، وآثار الرملة واللطرون — قريبة وسهلة الوصول.',
       anchor: 'sataf-combo', accent: '#4f9d62'
     },
     {
-      id: 'N', name: 'الشمال والجليل',
+      id: 'N', nameByLang: { ar: 'الشمال والجليل', he: 'הצפון והגליל', en: 'North and Galilee' }, name: 'الشمال والجليل',
       tagline: 'مياه وخضرة وحكايات حضارات',
       blurb: 'بانياس وتل دان وأربيل وعكا وصفورية — ماء دائم، غابات، ومواقع أثرية من كل العصور.',
       anchor: 'banias-fall', accent: '#2f8f93'
@@ -27,18 +27,18 @@
 
   /* المناطق الفرعية: الاسم العربي، وصف قصير، ومكان مرساة للصورة. */
   w.DOROUB_ZONES = [
-    { id: 'eilat',      r: 'S', name: 'جبال إيلات',        blurb: 'جبال حمراء وأخاديد ضيقة ومسارات شاقة قرب خليج العقبة.',       anchor: 'redcanyon' },
-    { id: 'timna',      r: 'S', name: 'وادي تمناع',        blurb: 'أعمدة سليمان والأقواس الصخرية وتاريخ تعدين النحاس.',          anchor: 't-pillars' },
-    { id: 'negev',      r: 'S', name: 'النقب ومكتش رامون', blurb: 'فوهة رامون وعين عفدات والمدن النبطية عبدة وشبطا وممشيت.',     anchor: 'ein-avdat' },
-    { id: 'dead',       r: 'S', name: 'البحر الميت والعربة', blurb: 'عين جدي ومسادا وأودية منحدرة نحو أخفض بقعة على الأرض.',    anchor: 'masada-snake' },
-    { id: 'jer',        r: 'C', name: 'جبال القدس',        blurb: 'سطاف ووادي القلط وتراسات زراعية وينابيع قديمة.',             anchor: 'sataf-combo' },
-    { id: 'shfela',     r: 'C', name: 'السهل والرملة',     blurb: 'آثار الرملة الإسلامية، كنيسة اللطرون، وبيت جبرين.',          anchor: 'hist-white-tower' },
-    { id: 'coast',      r: 'C', name: 'ساحل الوسط',        blurb: 'قيسارية وأبولونيا وأنهار الساحل ومسارات عائلية مستوية.',      anchor: 'hist-caesarea' },
-    { id: 'south_coast', r: 'C', name: 'الساحل الجنوبي',   blurb: 'عسقلان وآثارها الكنعانية والرومانية على البحر.',             anchor: 'hist-ashkelon' },
-    { id: 'carmel',     r: 'N', name: 'ساحل الكرمل',       blurb: 'تل دور ومرفأ قديم وشواطئ صخرية.',                           anchor: 'hist-tel-dor' },
-    { id: 'coastnorth', r: 'N', name: 'شمال الساحل',       blurb: 'نحال تانينيم وقنوات مياه رومانية.',                          anchor: 'taninim' },
-    { id: 'galilee',    r: 'N', name: 'الجليل والمرج',     blurb: 'عكا وصفورية ومجدو وأربيل وتل دان — أكبر تجمّع مواقع في الدليل.', anchor: 'hist-jazzar' },
-    { id: 'golan',      r: 'N', name: 'بانياس والجولان',   blurb: 'شلال بانياس ومجرى مائي دائم وغابات ظليلة.',                  anchor: 'banias-fall' }
+    { id: 'eilat',      r: 'S', nameByLang: { ar: 'جبال إيلات', he: 'הרי אילת', en: 'Eilat Mountains' }, name: 'جبال إيلات',        blurb: 'جبال حمراء وأخاديد ضيقة ومسارات شاقة قرب خليج العقبة.',       anchor: 'redcanyon' },
+    { id: 'timna',      r: 'S', nameByLang: { ar: 'وادي تمناع', he: 'עמק תמנע', en: 'Timna Valley' }, name: 'وادي تمناع',        blurb: 'أعمدة سليمان والأقواس الصخرية وتاريخ تعدين النحاس.',          anchor: 't-pillars' },
+    { id: 'negev',      r: 'S', nameByLang: { ar: 'النقب ومكتش رامون', he: 'הנגב ומכתש רמון', en: 'Negev and Makhtesh Ramon' }, name: 'النقب ومكتش رامون', blurb: 'فوهة رامون وعين عفدات والمدن النبطية عبدة وشبطا وممشيت.',     anchor: 'ein-avdat' },
+    { id: 'dead',       r: 'S', nameByLang: { ar: 'البحر الميت والعربة', he: 'ים המלח והערבה', en: 'Dead Sea and Arava' }, name: 'البحر الميت والعربة', blurb: 'عين جدي ومسادا وأودية منحدرة نحو أخفض بقعة على الأرض.',    anchor: 'masada-snake' },
+    { id: 'jer',        r: 'C', nameByLang: { ar: 'جبال القدس', he: 'הרי ירושלים', en: 'Jerusalem Hills' }, name: 'جبال القدس',        blurb: 'سطاف ووادي القلط وتراسات زراعية وينابيع قديمة.',             anchor: 'sataf-combo' },
+    { id: 'shfela',     r: 'C', nameByLang: { ar: 'السهل والرملة', he: 'השפלה ורמלה', en: 'Shephelah and Ramla' }, name: 'السهل والرملة',     blurb: 'آثار الرملة الإسلامية، كنيسة اللطرون، وبيت جبرين.',          anchor: 'hist-white-tower' },
+    { id: 'coast',      r: 'C', nameByLang: { ar: 'ساحل الوسط', he: 'מישור החוף', en: 'Central Coast' }, name: 'ساحل الوسط',        blurb: 'قيسارية وأبولونيا وأنهار الساحل ومسارات عائلية مستوية.',      anchor: 'hist-caesarea' },
+    { id: 'south_coast', r: 'C', nameByLang: { ar: 'الساحل الجنوبي', he: 'החוף הדרומי', en: 'Southern Coast' }, name: 'الساحل الجنوبي',   blurb: 'عسقلان وآثارها الكنعانية والرومانية على البحر.',             anchor: 'hist-ashkelon' },
+    { id: 'carmel',     r: 'N', nameByLang: { ar: 'ساحل الكرمل', he: 'חוף הכרמל', en: 'Carmel Coast' }, name: 'ساحل الكرمل',       blurb: 'تل دور ومرفأ قديم وشواطئ صخرية.',                           anchor: 'hist-tel-dor' },
+    { id: 'coastnorth', r: 'N', nameByLang: { ar: 'شمال الساحل', he: 'צפון החוף', en: 'Northern Coast' }, name: 'شمال الساحل',       blurb: 'نحال تانينيم وقنوات مياه رومانية.',                          anchor: 'taninim' },
+    { id: 'galilee',    r: 'N', nameByLang: { ar: 'الجليل والمرج', he: 'הגליל והעמק', en: 'Galilee and the Valley' }, name: 'الجليل والمرج',     blurb: 'عكا وصفورية ومجدو وأربيل وتل دان — أكبر تجمّع مواقع في الدليل.', anchor: 'hist-jazzar' },
+    { id: 'golan',      r: 'N', nameByLang: { ar: 'بانياس والجولان', he: 'בניאס והגולן', en: 'Banias and the Golan' }, name: 'بانياس والجولان',   blurb: 'شلال بانياس ومجرى مائي دائم وغابات ظليلة.',                  anchor: 'banias-fall' }
   ];
 
   /* عناوين ويكيبيديا الاحتياطية للمسارات التي لا تحمل photoWiki.
