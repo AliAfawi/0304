@@ -1,0 +1,16 @@
+{
+  "name": "دُروب — خُطاك إلى الطبيعة",
+  "short_name": "دُروب",
+  "description": "دليل عربي للمسارات والمواقع الطبيعية والتراثية، بخرائط ومعلومات زيارة من مصادرها.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6f7f3",
+  "theme_color": "#0d2a1f",
+  "icons": [
+    { "src": "./assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
