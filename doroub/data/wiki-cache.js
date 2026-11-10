@@ -1,6 +1,6 @@
 /* دُروب — نتائج ويكيبيديا المجهّزة مسبقًا (صورة وإحداثيات مرجعية).
    مولّد آليًا بواسطة tools/build-wiki-cache.js — لا تحرّره يدويًا.
-   آخر توليد: 2026-11-10 · 28 عنوانًا من 60.
+   آخر توليد: 2026-11-10 · 45 عنوانًا من 60.
    الإحداثيات مرجعية للمعلم وليست نقطة انطلاق مسار. */
 window.DOROUB_WIKI_CACHE = {
  "Eilat Mountains": {
@@ -223,5 +223,135 @@ window.DOROUB_WIKI_CACHE = {
    "lng": 35.5
   },
   "img": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/Beit_shean.jpg/3840px-Beit_shean.jpg"
+ },
+ "Tel Hazor": {
+  "title": "Tel Hazor",
+  "coord": {
+   "lat": 33.01667,
+   "lng": 35.56694
+  },
+  "img": "https://upload.wikimedia.org/wikipedia/commons/e/e9/Hatzor-HouseofPillars.jpg"
+ },
+ "Nimrod Fortress": {
+  "title": "Nimrod Castle",
+  "coord": null,
+  "img": "https://upload.wikimedia.org/wikipedia/commons/d/df/Nimrod_Fortress_%D7%9E%D7%91%D7%A6%D7%A8_%D7%A0%D7%9E%D7%A8%D7%95%D7%93.jpg"
+ },
+ "Beth Alpha": {
+  "title": "Beth Alpha",
+  "coord": {
+   "lat": 32.51899,
+   "lng": 35.42697
+  },
+  "img": "https://upload.wikimedia.org/wikipedia/commons/b/be/Beyt-Alfa-45.jpg"
+ },
+ "Kafr Birim": {
+  "title": "Kafr Bir'im",
+  "coord": {
+   "lat": 33.04361,
+   "lng": 35.41417
+  },
+  "img": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Birem057.jpg"
+ },
+ "Caesarea Maritima": {
+  "title": "Caesarea Maritima",
+  "coord": {
+   "lat": 32.5,
+   "lng": 34.89167
+  },
+  "img": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Caesarea.JPG"
+ },
+ "Beit Guvrin National Park": {
+  "title": "Beit Guvrin-Maresha National Park",
+  "coord": {
+   "lat": 31.59696,
+   "lng": 34.90065
+  },
+  "img": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Beit_Guvrin_1.JPG"
+ },
+ "Qumran": {
+  "title": "Qumran",
+  "coord": {
+   "lat": 31.74083,
+   "lng": 35.45861
+  },
+  "img": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Kumeran4.jpg"
+ },
+ "Herodium": {
+  "title": "Herodium",
+  "coord": {
+   "lat": 31.66583,
+   "lng": 35.24139
+  },
+  "img": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Herodium_from_above_2.jpg"
+ },
+ "Ein Hemed": {
+  "title": "Ein Hemed",
+  "coord": {
+   "lat": 31.79615,
+   "lng": 35.12597
+  },
+  "img": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/EinHemedNov032022_03.jpg/3840px-EinHemedNov032022_03.jpg"
+ },
+ "Tel Dor": {
+  "title": "Tel Dor",
+  "coord": {
+   "lat": 32.6175,
+   "lng": 34.9175
+  },
+  "img": "https://upload.wikimedia.org/wikipedia/commons/6/68/PikiWiki_Israel_3628_Tel_Dors_shoreline.JPG"
+ },
+ "Mamshit": {
+  "title": "Mampsis",
+  "coord": {
+   "lat": 31.025,
+   "lng": 35.064
+  },
+  "img": "https://upload.wikimedia.org/wikipedia/commons/4/46/Mamshit.jpg"
+ },
+ "Shivta": {
+  "title": "Shivta",
+  "coord": {
+   "lat": 30.88,
+   "lng": 34.63
+  },
+  "img": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Ruins_of_a_church_in_Shivta_in_the_Negev.jpg"
+ },
+ "Avdat": {
+  "title": "Avdat",
+  "coord": {
+   "lat": 30.794,
+   "lng": 34.773
+  },
+  "img": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b6/Aerial_photograph_of_Avdat%2C_Israel%2C_July_2017.jpg/3840px-Aerial_photograph_of_Avdat%2C_Israel%2C_July_2017.jpg"
+ },
+ "Tel Beersheba": {
+  "title": "Tel Be'er Sheva",
+  "coord": {
+   "lat": 31.24472,
+   "lng": 34.84083
+  },
+  "img": "https://upload.wikimedia.org/wikipedia/commons/6/62/Tel_Be%27er_Sheva_Overview_2007041.JPG"
+ },
+ "Tel Arad": {
+  "title": "Tel Arad",
+  "coord": null,
+  "img": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Tel_arad_fortress.JPG"
+ },
+ "En Gedi": {
+  "title": "Ein Gedi Nature Reserve",
+  "coord": {
+   "lat": 31.46667,
+   "lng": 35.39389
+  },
+  "img": "https://upload.wikimedia.org/wikipedia/commons/a/a7/2010-06-18_09-30-17_Israel_Ejn_Gedi_JH_%2852783702009%29.jpg"
+ },
+ "Ashkelon National Park": {
+  "title": "Ashkelon National Park",
+  "coord": {
+   "lat": 31.66389,
+   "lng": 34.54583
+  },
+  "img": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Ashkelon-8999.jpg"
  }
 };
