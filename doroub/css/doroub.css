@@ -420,7 +420,7 @@ a { color: inherit; }
 .detail-nav .spacer { margin-inline-start: auto; }
 .detail-nav .on { color: #ff6b7a; }
 .detail-nav .on .icon { fill: currentColor; }
-.detail-title { position: absolute; inset-inline: 0; bottom: 0; z-index: 3; padding: 18px var(--gutter) 20px; color: #fff; }
+.detail-title { position: absolute; inset-inline: 0; bottom: 0; z-index: 3; padding: 18px var(--gutter) 44px; color: #fff; }
 .detail-title .kicker { font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; color: rgba(255, 255, 255, .85); }
 .detail-title h2 { font-size: clamp(23px, 6.4vw, 31px); margin: 6px 0 3px; }
 .detail-title .en { font-size: 12.5px; color: rgba(255, 255, 255, .7); direction: ltr; unicode-bidi: plaintext; }
