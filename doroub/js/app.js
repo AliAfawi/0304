@@ -298,14 +298,6 @@
     updateGpsStats();
     const fileInput = $('#trackFile');
     if (fileInput) fileInput.addEventListener('change', onTrackFile);
-    $('#detailInner').addEventListener('photo', e => {
-      const box = $('#photoCredit');
-      if (box && e.detail) {
-        box.innerHTML = e.detail.page
-          ? `مصدر الصورة: <a href="${esc(e.detail.page)}" target="_blank" rel="noopener noreferrer">${esc(e.detail.credit || 'Wikimedia Commons')}</a>`
-          : esc(e.detail.credit || '');
-      }
-    }, { once: false });
     try { history.replaceState(null, '', location.pathname + location.search + '#place=' + encodeURIComponent(id)); } catch (e) { }
   }
 
@@ -646,6 +638,15 @@
     renderTrip();
     $('#tripBadge').hidden = !store.trip.ids.length;
     $('#tripBadge').textContent = store.trip.ids.length;
+
+    /* نسب الصورة يُكتب مرة واحدة لكل صورة تُحمَّل داخل صفحة المكان. */
+    $('#detailInner').addEventListener('photo', e => {
+      const box = $('#photoCredit');
+      if (!box || !e.detail) return;
+      box.innerHTML = e.detail.page
+        ? `مصدر الصورة: <a href="${esc(e.detail.page)}" target="_blank" rel="noopener noreferrer">${esc(e.detail.credit || 'Wikimedia Commons')}</a>`
+        : esc(e.detail.credit || '');
+    });
 
     $('#filterSheet').addEventListener('click', e => { if (e.target.id === 'filterVeil') closeSheet(); });
     $('#detailRoot').addEventListener('click', e => { if (e.target.id === 'detailVeil') closeDetail(); });

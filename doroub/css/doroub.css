@@ -101,7 +101,8 @@ a { color: inherit; }
 .block-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 13px; }
 .block-head h2 { font-size: 21px; }
 .block-head p { font-size: 13px; color: var(--ink-3); margin-top: 3px; }
-.block-head .more { font-size: 13px; font-weight: 600; color: var(--ink-2); display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+.block-head .more { font-size: 13px; font-weight: 600; color: var(--ink-2); display: flex; align-items: center;
+  gap: 4px; white-space: nowrap; padding: 9px 2px; margin: -9px -2px; min-height: 40px; }
 
 /* ---------- 4. الواجهة الأولى ---------- */
 .hero {
@@ -112,11 +113,12 @@ a { color: inherit; }
   color: #fff; overflow: hidden;
 }
 .hero-img { position: absolute; inset: 0; background: var(--forest) center/cover no-repeat; }
+.hero-img .ph { position: absolute; inset: 0; }
 .hero-img img { width: 100%; height: 100%; object-fit: cover; animation: slowzoom 18s ease-out both; }
 @keyframes slowzoom { from { transform: scale(1.1); } to { transform: scale(1); } }
 .hero::after {
   content: ''; position: absolute; inset: 0;
-  background: linear-gradient(185deg, rgba(5, 20, 14, .55) 0%, rgba(5, 20, 14, .1) 32%, rgba(5, 20, 14, .72) 72%, rgba(5, 20, 14, .94) 100%);
+  background: linear-gradient(185deg, rgba(5, 20, 14, .68) 0%, rgba(5, 20, 14, .14) 30%, rgba(5, 20, 14, .74) 70%, rgba(5, 20, 14, .95) 100%);
 }
 .hero-body { position: relative; z-index: 2; width: 100%; }
 .hero .eyebrow {
@@ -188,7 +190,8 @@ a { color: inherit; }
 .zone-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(6, 22, 15, .88), rgba(6, 22, 15, .05) 62%); }
 .zone-card .zc-body { position: absolute; inset-inline: 0; bottom: 0; z-index: 2; padding: 13px; }
 .zone-card b { font-size: 15px; display: block; }
-.zone-card small { font-size: 11px; color: rgba(255, 255, 255, .78); }
+.zone-card small { font-size: 11px; color: rgba(255, 255, 255, .78); display: -webkit-box;
+  -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
 /* ---------- 7. صندوق الصورة ---------- */
 .ph { position: relative; overflow: hidden; background: #dfe6dd; }
@@ -535,6 +538,15 @@ details.fold .fold-body { padding: 0 15px 15px; }
   min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px;
   background: var(--danger); color: #fff; font-size: 9.5px; font-weight: 700;
   display: grid; place-items: center;
+}
+
+@media (min-width: 760px) {
+  .tabbar {
+    inset-inline: auto; left: 50%; transform: translateX(-50%);
+    width: min(540px, 92vw); border-radius: 20px 20px 0 0;
+    border: 1px solid var(--line); border-bottom: 0;
+    box-shadow: 0 -8px 30px -16px rgba(11, 31, 23, .4);
+  }
 }
 
 /* ---------- 15. التنبيه العائم ---------- */

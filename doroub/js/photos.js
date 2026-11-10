@@ -7,6 +7,8 @@
   const FILES = w.DOROUB_PHOTO_FILES || {};
   const BAKED = w.DOROUB_WIKI_CACHE || {};
   const CACHE_KEY = 'doroub8-photos';
+  /* ويكيميديا تقدّم نسخًا مصغّرة بعروض محدّدة فقط (960 و1280 و1920)؛ أي عرض آخر يُرَد بخطأ. */
+  const THUMB_WIDTH = 960;
   const TTL = 30 * 24 * 3600 * 1000;
 
   /* ---------- ذاكرة متصفح الزائر ---------- */
@@ -27,7 +29,7 @@
   }
 
   const filePath = name =>
-    'https://commons.wikimedia.org/wiki/Special:FilePath/' + encodeURIComponent(name) + '?width=1000';
+    'https://commons.wikimedia.org/wiki/Special:FilePath/' + encodeURIComponent(name) + '?width=' + THUMB_WIDTH;
   const filePage = name =>
     'https://commons.wikimedia.org/wiki/File:' + encodeURIComponent(String(name).replace(/ /g, '_'));
 
@@ -45,12 +47,14 @@
   }
 
   /* ---------- مصدر 2: نتائج مُجهّزة مسبقًا مع الموقع ---------- */
-  /* نشتق رابط نسخة مصغّرة بعرض 1000 بكسل من رابط الملف الأصلي حتى لا نحمّل صورة بحجم كامل. */
+  /* نشتق النسخة المصغّرة من رابط الملف الأصلي، ونُبقي الأصل بديلًا عند الفشل. */
   const THUMBABLE = /\.(jpe?g|png)$/i;
-  function thumbUrl(original, width = 1000) {
-    const m = String(original).match(/^(https:\/\/upload\.wikimedia\.org\/wikipedia\/commons)\/([0-9a-f])\/([0-9a-f]{2})\/(.+)$/);
-    if (!m || !THUMBABLE.test(m[4])) return original;
-    return `${m[1]}/thumb/${m[2]}/${m[3]}/${m[4]}/${width}px-${m[4]}`;
+  function thumbUrl(original, width = THUMB_WIDTH) {
+    const m = String(original).match(
+      /^https:\/\/(?:upload|thumb)\.wikimedia\.org\/wikipedia\/commons\/([0-9a-f])\/([0-9a-f]{2})\/(.+)$/
+    );
+    if (!m || !THUMBABLE.test(m[3])) return original;
+    return `https://thumb.wikimedia.org/wikipedia/commons/thumb/${m[1]}/${m[2]}/${m[3]}/${width}px-${m[3]}`;
   }
   function fromBaked(place) {
     const row = place.wiki && BAKED[place.wiki];
@@ -110,7 +114,7 @@
       try {
         const url = 'https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6'
           + '&gsrlimit=12&gsrsearch=' + encodeURIComponent('intitle:' + name)
-          + '&prop=imageinfo&iiprop=url%7Cextmetadata&iiurlwidth=1000&format=json&origin=*';
+          + '&prop=imageinfo&iiprop=url%7Cextmetadata&iiurlwidth=960&format=json&origin=*';
         const ctl = new AbortController();
         const timer = setTimeout(() => ctl.abort(), 8000);
         const res = await fetch(url, { signal: ctl.signal });
@@ -218,7 +222,9 @@
       if (!found || !host.isConnected) return;
       const img = new Image();
       img.decoding = 'async';
-      img.loading = 'lazy';
+      /* لا نضع loading="lazy" هنا: الصورة ما زالت خارج الصفحة، والمتصفح يؤجّل
+         تحميل صورة مؤجّلة غير مرتبطة بالمستند إلى ما لا نهاية. التأجيل يتم
+         أصلًا عبر IntersectionObserver قبل الوصول إلى هذه النقطة. */
       img.referrerPolicy = 'no-referrer';
       img.alt = (found.exact ? 'صورة موثقة لـ' : 'صورة للموقع أو محيطه: ') + place.n;
       img.onload = () => {
