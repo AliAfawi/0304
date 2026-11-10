@@ -76,6 +76,7 @@
   const closeSettings = () => { $('#settingsSheet').classList.remove('open'); if (!anySheetOpen()) document.body.classList.remove('is-locked'); };
   const anySheetOpen = () => $('#filterSheet').classList.contains('open')
     || $('#settingsSheet').classList.contains('open')
+    || $('#contributeSheet').classList.contains('open')
     || $('#detailRoot').classList.contains('open');
 
   /* ===================== بطاقات مشتركة ===================== */
@@ -88,6 +89,7 @@
         <span class="chip-glass">${esc(p.zoneName)}</span>
         ${dist != null ? `<span class="chip-glass">${esc(D.fmtKm(dist))} جوًا</span>` : ''}
         ${store.visited[p.id] ? `<span class="chip-glass visited">${icon('check')} زرته</span>` : ''}
+        ${p.provenance === 'open' ? `<span class="chip-glass open-src">مصدر مفتوح</span>` : ''}
       </div>
       <button type="button" class="pc-fav ${fav ? 'on' : ''}" data-fav="${esc(p.id)}"
         aria-label="${fav ? 'إزالة من المفضلة' : 'حفظ في المفضلة'}">${icon('heart')}</button>
@@ -116,20 +118,21 @@
   function renderHome() {
     const hero = D.byId('redcanyon');
     const withCoords = D.PLACES.filter(p => D.latLng(p)).length;
+    const curated = D.PLACES.filter(p => p.provenance === 'curated').length;
     $('#homeHero').innerHTML = `
       <div class="hero-img">${hero ? P.box(hero) : ''}</div>
       <div class="hero-body wrap">
         <span class="eyebrow">${icon('compass')} دليلك العربي للطبيعة والتراث</span>
         <h1>الطبيعة تناديك.<br><em>وين دربك اليوم؟</em></h1>
-        <p class="hero-sub">75 مسارًا وموقعًا بين النقب والجليل، بمعلومات من مصادرها وخرائط داخل الموقع.</p>
+        <p class="hero-sub">${D.PLACES.length} مسارًا وموقعًا بين النقب والجليل، بمعلومات من مصادرها وخرائط داخل الموقع.</p>
         <div class="hero-cta">
           <button type="button" class="btn btn-primary" data-go="explore">${icon('compass')} ابدأ الاستكشاف</button>
           <button type="button" class="btn btn-ghost" data-act="near-me">${icon('locate')} القريب مني</button>
         </div>
         <div class="hero-stats">
-          <div><strong>75</strong><span>مسار وموقع</span></div>
+          <div><strong>${D.PLACES.length}</strong><span>مسار وموقع</span></div>
           <div><strong id="heroCoords">${withCoords}</strong><span>بإحداثيات على الخريطة</span></div>
-          <div><strong>12</strong><span>منطقة طبيعية</span></div>
+          <div><strong>${curated}</strong><span>موثّق في الدليل</span></div>
         </div>
       </div>`;
 
@@ -264,8 +267,9 @@
     renderChips();
     const list = D.query();
     const shown = list.slice(0, state.limit);
-    $('#exploreCount').innerHTML = `<b>${list.length}</b> من 75 وجهة`;
-    $('#exploreHint').textContent = state.mapBoundsOnly ? 'ضمن إطار الخريطة الحالي'
+    $('#exploreCount').innerHTML = `<b>${list.length}</b> من ${D.PLACES.length} وجهة`;
+    $('#exploreHint').textContent = state.seasonOnly ? 'ما يناسب الموسم الحالي'
+      : state.mapBoundsOnly ? 'ضمن إطار الخريطة الحالي'
       : state.radius !== 'all' && state.pos ? `ضمن ${state.radius} كم منك`
         : state.favoritesOnly ? 'المحفوظة على جهازك'
           : state.sort === 'near' && state.pos ? 'مرتّبة بالمسافة الجوية'
@@ -289,6 +293,7 @@
     { key: 'visit', label: 'حالة الزيارة', opts: () => [['all', 'الكل'], ['hours', 'ساعات منشورة'], ['appointment', 'بتنسيق مسبق'], ['unknown', 'بحاجة إلى تحقق']] },
     { key: 'era', label: 'الحضارة', opts: () => [['all', 'الكل']].concat([...new Set(D.PLACES.map(p => p.era).filter(Boolean))].sort().map(e => [e, e])) },
     { key: 'radius', label: 'ضمن مسافة مني', opts: () => [['all', 'بلا حد'], ['10', '١٠ كم'], ['25', '٢٥ كم'], ['50', '٥٠ كم'], ['100', '١٠٠ كم']] },
+    { key: 'provenance', label: 'مصدر البيانات', opts: () => [['all', 'الكل'], ['curated', 'الدليل المحرَّر'], ['open', 'مصدر مفتوح']] },
     { key: 'sort', label: 'الترتيب', opts: () => [['featured', 'المقترحة'], ['short', 'الأقصر أولًا'], ['level', 'حسب الصعوبة'], ['name', 'الاسم'], ['near', 'الأقرب إليّ'], ['complete', 'الأكمل بيانات']] }
   ];
 
@@ -313,6 +318,7 @@
       </div>`).join('') + `
       <div class="f-group"><label>نطاق البحث</label>
         <div class="f-opts">
+          <button type="button" class="f-opt ${state.seasonOnly ? 'on' : ''}" data-act="toggle-season">${icon('sun')} ما يناسب الموسم الآن</button>
           <button type="button" class="f-opt ${state.mapBoundsOnly ? 'on' : ''}" data-act="toggle-bounds">${icon('map')} ضمن إطار الخريطة فقط</button>
           <button type="button" class="f-opt" data-act="surprise">${icon('compass')} فاجئني بمكان</button>
         </div>
@@ -431,7 +437,8 @@
               <button type="button" data-trip-down="${esc(p.id)}" aria-label="أسفل" ${i === items.length - 1 ? 'disabled' : ''}>▼</button>
             </div>
             <button type="button" class="rm" data-trip-remove="${esc(p.id)}" aria-label="إزالة">${icon('close')}</button>
-          </div>`).join('')
+          </div>
+          ${legMarkup(items[i], items[i + 1])}`).join('')
           : `<div class="empty" style="padding:30px 10px">${icon('bag')}<h3>خطتك فارغة</h3><p>افتح أي مكان واضغط «أضف إلى رحلتي».</p></div>`}
         ${items.length ? `<div class="trip-sum">
           <span>${items.length} محطة</span>
@@ -567,7 +574,9 @@
     P.watch($('#detailInner'));
     store.pushRecent(id);
     sunLoaded = galleryLoaded = null;
+    loadStory(p);
     loadExtract(p);
+    w.DOffline.state(p);
     updateLayerLabel();
     setTimeout(() => M.buildDetail(p, state.tracks[p.id]), 90);
     updateGpsStats();
@@ -811,6 +820,36 @@
       : '<p class="note">لم نجد صورًا موثّقة إضافية لهذا المكان.</p>';
   }
 
+  /* ---------- فكرة ٣: الحكاية بالعربية ----------
+     نقدّم ويكيبيديا العربية على الإنجليزية: ما يُكتب بالعربية عن هذه الأماكن
+     ليس ترجمة لمصدر أجنبي، بل معرفة محلية لا توجد فيه. */
+  async function loadStory(p) {
+    if (p.story) return;
+    const found = await P.arabicStory(p);
+    if (!found || state.detailId !== p.id) return;
+    const sec = $('#storySection'), body = $('#storyBody'), credit = $('#storyCredit');
+    if (!sec || !body) return;
+    body.textContent = found.text;
+    if (credit) {
+      credit.innerHTML = `المصدر: <a href="${esc(found.page)}" target="_blank" rel="noopener noreferrer">ويكيبيديا العربية</a>`
+        + ' — نص موسوعي بترخيص CC BY-SA، وقد لا يصف حالة المكان اليوم.';
+    }
+    sec.hidden = false;
+  }
+
+  /* ---------- فكرة ٥: الانتقال بين محطتين ---------- */
+  function legMarkup(from, to) {
+    if (!from || !to) return '';
+    const leg = D.travelBetween(from, to);
+    const oneWay = from.rt && from.rt.type === 'line';
+    if (!leg && !oneWay) return '';
+    return `<div class="trip-leg">
+      ${leg ? `<span>${icon('route')} ${esc(D.fmtKm(leg.road))} · ${esc(leg.label)} قيادة تقريبًا</span>
+        <a href="${esc(leg.directions)}" target="_blank" rel="noopener noreferrer">${icon('link')} الطريق</a>` : ''}
+      ${oneWay ? `<span class="warn-leg">${icon('warn')} المحطة السابقة باتجاه واحد — رتّب عودتك أو سيارتين</span>` : ''}
+    </div>`;
+  }
+
   /* ---------- نبذة ويكيبيديا ---------- */
   async function loadExtract(place) {
     const found = await P.extractFor(place);
@@ -902,6 +941,7 @@
       renderFilterSheet(); renderExplore(); return;
     }
     if ((el = e.target.closest('[data-triptab]'))) { state.tripTab = el.dataset.triptab; renderTrip(); return; }
+    if ((el = e.target.closest('[data-cfield]'))) { w.DContribute.select(el.dataset.cfield); return; }
     if ((el = e.target.closest('[data-suggest]'))) {
       state.query = el.dataset.suggest; $('#searchInput').value = state.query; state.limit = 12; renderExplore(); return;
     }
@@ -977,6 +1017,35 @@
         break;
       case 'clear-searches': store.searches = []; try { localStorage.removeItem('doroub8-searches'); } catch (err) { } renderSuggestions(); break;
 
+      /* ---- فكرة ٢: المساهمة ---- */
+      case 'contribute': w.DContribute.open(place, el.dataset.field); break;
+      case 'close-contribute':
+        w.DContribute.close();
+        if (!anySheetOpen()) document.body.classList.remove('is-locked');
+        break;
+      case 'contrib-github': w.DContribute.toGithub(); break;
+      case 'contrib-copy': w.DContribute.toClipboard(); break;
+      case 'contrib-file': w.DContribute.toFile(); break;
+
+      /* ---- فكرة ٦: الحفظ دون اتصال ---- */
+      case 'save-offline': w.DOffline.save(place); break;
+      case 'forget-offline': w.DOffline.forget(place); break;
+
+      /* ---- فكرة ٤: الموسم ---- */
+      case 'toggle-season':
+        state.seasonOnly = !state.seasonOnly;
+        state.limit = 12; renderFilterSheet(); renderExplore();
+        break;
+
+      /* ---- فكرة ١: نقطة الانطلاق ---- */
+      case 'copy-start':
+        if (place && D.startLatLng(place)) {
+          const st = D.startLatLng(place);
+          navigator.clipboard?.writeText(`${st[0].toFixed(5)}, ${st[1].toFixed(5)}`)
+            .then(() => D.toast('نُسخت إحداثيات نقطة الانطلاق')).catch(() => { });
+        }
+        break;
+
       /* ---- البحث والاكتشاف ---- */
       case 'surprise': closeSheet(); surprise(); break;
       case 'toggle-bounds':
@@ -1027,7 +1096,11 @@
   /* اختصارات لوحة المفاتيح — تتجاهل الكتابة داخل الحقول. */
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
-      if ($('#settingsSheet').classList.contains('open')) closeSettings();
+      if ($('#contributeSheet').classList.contains('open')) {
+        w.DContribute.close();
+        if (!anySheetOpen()) document.body.classList.remove('is-locked');
+      }
+      else if ($('#settingsSheet').classList.contains('open')) closeSettings();
       else if ($('#filterSheet').classList.contains('open')) closeSheet();
       else if ($('#detailRoot').classList.contains('open')) closeDetail();
       return;
@@ -1136,6 +1209,11 @@
     });
 
     $('#settingsSheet').addEventListener('click', e => { if (e.target.id === 'settingsVeil') closeSettings(); });
+    $('#contributeSheet').addEventListener('click', e => {
+      if (e.target.id !== 'contributeVeil') return;
+      w.DContribute.close();
+      if (!anySheetOpen()) document.body.classList.remove('is-locked');
+    });
     document.addEventListener('change', e => {
       if (e.target.id !== 'importFile') return;
       const file = e.target.files && e.target.files[0];

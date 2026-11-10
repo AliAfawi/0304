@@ -233,7 +233,7 @@
 
   /* ---------- فتح في تطبيقات الملاحة ---------- */
   function navSection(p) {
-    const ll = D.latLng(p);
+    const ll = D.navTarget(p);
     const term = encodeURIComponent(p.wz || p.en || p.n);
     const apps = ll
       ? [
@@ -260,6 +260,114 @@
     </div>`;
   }
 
+  /* ---------- فكرة ٤: شريط الموسم ----------
+     يُعرض قرب أعلى الصفحة لأنه قرار «أذهب اليوم أم لا»، لا تفصيلًا ثانويًا. */
+  function seasonBand(p) {
+    const s = D.seasonFor(p);
+    if (!s) return '';
+    const tone = s.status === 'avoid' ? 'warn' : s.status === 'good' ? 'ok' : 'muted';
+    const head = s.status === 'avoid' ? `ليس موسمه — نحن في ${s.monthName}`
+      : s.status === 'good' ? `موسمه الآن — ${s.monthName}`
+        : `${s.monthName}: ممكن بتحفّظ`;
+    return `<div class="callout ${tone}" style="margin-bottom:14px">${icon(s.status === 'avoid' ? 'warn' : 'sun')}<div>
+      <b>${esc(head)}</b>
+      ${s.reason ? esc(s.reason) + ' ' : ''}أفضل الأشهر هنا: ${esc(s.best)}.
+      ${s.flood ? '<br><b style="color:#9a4a2e">منطقة معرّضة للسيول</b> — لا تدخل الوادي في يوم ماطر ولو كان المطر بعيدًا.' : ''}
+      <br><small style="opacity:.8">إرشاد مناخي عام للمنطقة الطبيعية، وليس حالة المسار اليوم.</small>
+    </div></div>`;
+  }
+
+  /* ---------- فكرة ١: كيف تصل ----------
+     نقطة الانطلاق مفصولة عن موقع المعلم. حين لا تكون موثّقة نقولها صراحةً
+     ونفتح للزائر طريقًا للمساهمة بها بدل إخفاء النقص. */
+  function accessSection(p) {
+    const st = D.startPoint(p);
+    if (st) {
+      return `<section class="sec">
+        <h3>${icon('locate')} كيف تصل</h3>
+        <div class="visit-card hours">
+          <div class="visit-head"><b>${icon('pin')} نقطة الانطلاق</b>
+            <span class="meta-pill v-hours">${esc(st.verified ? 'موثّقة' : 'بحاجة إلى تأكيد')}</span></div>
+          <p>${esc(st.label || 'نقطة بدء المشي')}</p>
+          ${st.parking ? `<p class="note" style="margin-top:7px">${icon('pin')} المواقف: ${esc(st.parking)}</p>` : ''}
+          ${st.access ? `<p class="note">${icon('route')} الطريق: ${esc(st.access)}</p>` : ''}
+          <div class="map-tools" style="margin-top:10px">
+            <a href="https://www.google.com/maps/dir/?api=1&destination=${st.lat},${st.lng}&travelmode=driving"
+               target="_blank" rel="noopener noreferrer">${icon('navigation') || icon('link')} اتجاهات إلى نقطة الانطلاق</a>
+            <button type="button" data-act="copy-start">${icon('pin')} نسخ إحداثياتها</button>
+          </div>
+        </div>
+      </section>`;
+    }
+    return `<section class="sec">
+      <h3>${icon('locate')} كيف تصل</h3>
+      <div class="callout muted">${icon('info')}<div>
+        <b>لم تُوثَّق نقطة انطلاق لهذا المكان بعد</b>
+        الإحداثية المعروضة تشير إلى موقع المعلم نفسه، لا إلى حيث تركن السيارة وتبدأ المشي.
+        هذا أهم نقص في بياناتنا، ونفضّل الإفصاح عنه على تخمين نقطة قد توصلك إلى طريق مسدود.
+      </div></div>
+      <button type="button" class="btn btn-soft btn-block" data-act="contribute" data-field="start" style="margin-top:10px">
+        ${icon('plus')} أعرف نقطة الانطلاق — ساهم بها
+      </button>
+    </section>`;
+  }
+
+  /* ---------- فكرة ٣: الحكاية بالعربية ----------
+     نُقدّم المصدر العربي على الإنجليزي: ما يُكتب عن هذه الأماكن بالعربية
+     ليس ترجمة، بل معرفة لا توجد في المصادر الأخرى. */
+  function storySection(p) {
+    const hand = p.story;
+    return `<section class="sec" id="storySection" ${hand ? '' : 'hidden'}>
+      <h3>${icon('book')} الحكاية</h3>
+      <div id="storyBody" class="prose">${hand ? esc(hand) : ''}</div>
+      <p class="note" id="storyCredit" style="margin-top:8px"></p>
+      ${hand ? '' : `<button type="button" class="btn btn-soft btn-block" data-act="contribute" data-field="story" style="margin-top:10px">
+        ${icon('plus')} تعرف حكاية هذا المكان؟ شاركها</button>`}
+    </section>`;
+  }
+
+  /* ---------- وسم مصدر البيانات ---------- */
+  function provenanceBadge(p) {
+    if (p.provenance !== 'open') return '';
+    return `<div class="callout info" style="margin-bottom:14px">${icon('info')}<div>
+      <b>مصدر مفتوح — غير متحقَّق ميدانيًا</b>
+      أُضيف هذا المكان من ويكي بيانات وويكيبيديا: الاسم والإحداثية والنوع مسجّلة،
+      أما المسافة والمدة والصعوبة وساعات الزيارة ونقطة الانطلاق فلم تُوثَّق بعد.
+    </div></div>`;
+  }
+
+  /* ---------- فكرة ٦: الحفظ للعمل دون اتصال ---------- */
+  function offlineSection(p) {
+    return `<details class="fold">
+      <summary>${icon('download')} احفظ هذا المكان للعمل دون اتصال</summary>
+      <div class="fold-body">
+        <p class="note">يحفظ نصّ المكان وصورته وبيانات زيارته في متصفحك، فتفتح صفحته كاملة بلا إنترنت.</p>
+        <div class="map-tools" style="margin-top:10px">
+          <button type="button" data-act="save-offline">${icon('download')} احفظ الآن</button>
+          <button type="button" data-act="forget-offline">${icon('trash')} احذف المحفوظ</button>
+        </div>
+        <p class="note" id="offlineState" style="margin-top:9px"></p>
+        <p class="note">بلاطات الخريطة لا تُحمَّل مسبقًا: ترخيص OpenStreetMap يمنع التحميل الجماعي.
+        ما تصفّحته من الخريطة يبقى في ذاكرة المتصفح وحده.</p>
+      </div>
+    </details>`;
+  }
+
+  /* ---------- فكرة ٢: المساهمة ---------- */
+  function contributeSection(p) {
+    void p;
+    return `<section class="sec">
+      <div class="callout muted">${icon('info')}<div>
+        <b>وجدت معلومة ناقصة أو خاطئة؟</b>
+        دُروب يكبر بمن يعرف هذه الأماكن. كل مساهمة تُراجَع قبل اعتمادها،
+        وتُعرض حتى المراجعة موسومة بأنها من زائر.
+      </div></div>
+      <button type="button" class="btn btn-soft btn-block" data-act="contribute" style="margin-top:10px">
+        ${icon('plus')} ساهم بمعلومة عن هذا المكان
+      </button>
+    </section>`;
+  }
+
   /* ---------- البناء الكامل ---------- */
   function render(p) {
     const track = D.state.tracks[p.id] || null;
@@ -284,6 +392,8 @@
     <div class="detail-body">
       ${statRow(p)}
       ${completenessBar(p)}
+      ${provenanceBadge(p)}
+      ${seasonBand(p)}
 
       <section class="sec">
         <p class="prose">${esc(p.d)}</p>
@@ -292,7 +402,9 @@
         ${paceBlock(p)}
       </section>
 
+      ${storySection(p)}
       ${wikiSection()}
+      ${accessSection(p)}
 
       <section class="sec">
         <h3>${icon('clock')} الزيارة والمواعيد</h3>
@@ -359,6 +471,7 @@
       ${sunSection()}
       ${gallerySection()}
       ${personalSection(p)}
+      ${offlineSection(p)}
 
       <details class="fold">
         <summary>${icon('checkCircle')} قائمة التجهيزات</summary>
@@ -376,6 +489,7 @@
       </details>
 
       ${relatedSection(p)}
+      ${contributeSection(p)}
 
       <div class="detail-foot">
         <button type="button" class="btn btn-primary" data-act="trip">${icon(inTrip ? 'check' : 'plus')} <span>${inTrip ? 'في رحلتي' : 'أضف إلى رحلتي'}</span></button>

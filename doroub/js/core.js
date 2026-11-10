@@ -142,6 +142,7 @@ window.D = (function () {
     if (!t.heritageType) t.heritageType = t.category === 'مسار مشي' ? 'trail' : 'nature';
     if (!t.visitStatus) t.visitStatus = 'unknown';
     t.source = HERITAGE_IDS.has(t.id) ? 'heritage' : 'trail';
+    t.provenance = t.provenance || 'curated';
     t.wiki = t.photoWiki || WIKI_FB[t.id] || null;
     t.zone = ZONE_BY_ID[t.z] || null;
     t.zoneName = t.zone ? t.zone.name : REGION[t.r];
@@ -285,6 +286,8 @@ window.D = (function () {
     sort: 'featured', favoritesOnly: false, limit: 12,
     pos: null, accuracy: null, detailId: null, tripTab: 'plan',
     radius: 'all',          /* فلتر نصف القطر بالكيلومترات */
+    provenance: 'all',      /* curated = الدليل الأصلي · open = مصدر مفتوح */
+    seasonOnly: false,      /* ما يناسب الموسم الحالي فقط */
     mapBoundsOnly: false,   /* قصر النتائج على إطار الخريطة الحالي */
     bounds: null,
     tracks: {}, gps: { on: false, watch: null, points: [], start: 0, timer: null }
@@ -327,6 +330,8 @@ window.D = (function () {
     let list = PLACES.filter(p =>
       (!state.mapBoundsOnly || inBounds(p)) &&
       (radius === Infinity || !state.pos || distanceTo(p) <= radius) &&
+      (!state.seasonOnly || inSeasonNow(p)) &&
+      (state.provenance === 'all' || (p.provenance || 'curated') === state.provenance) &&
       (!state.favoritesOnly || store.favorites[p.id]) &&
       (state.region === 'all' || p.r === state.region) &&
       (state.zone === 'all' || p.z === state.zone) &&
@@ -396,6 +401,61 @@ window.D = (function () {
     return { deg, label: COMPASS[Math.round(deg / 45) % 8] };
   }
 
+  /* ---------- فكرة ١: نقطة الانطلاق ----------
+     نفرّق صراحةً بين «موقع المعلم» (إحداثية مرجعية) و«نقطة الانطلاق»
+     (حيث تركن وتبدأ المشي). الثانية هي ما يحتاجه الزائر فعلًا،
+     ولا تُعرض إلا إذا كانت موثّقة في البيانات. */
+  function startPoint(p) {
+    const st = p && p.start;
+    if (!st || !Number.isFinite(st.lat) || !Number.isFinite(st.lng)) return null;
+    return st;
+  }
+  function startLatLng(p) { const st = startPoint(p); return st ? [st.lat, st.lng] : null; }
+  /* الإحداثية التي يُوجَّه إليها الزائر: نقطة الانطلاق إن وُجدت، وإلا المعلم. */
+  function navTarget(p) { return startLatLng(p) || latLng(p); }
+
+  /* ---------- فكرة ٤: الموسم ----------
+     إرشاد مناخي على مستوى المنطقة الطبيعية، يُعرض موسومًا بأنه عام
+     ولا يُغني عن التحذيرات الرسمية ولا عن نشرة الطقس. */
+  const SEASONS = window.DOROUB_SEASONS || {};
+  const MONTHS = window.DOROUB_MONTHS || [];
+  function seasonFor(place, month) {
+    const s = SEASONS[place.z];
+    if (!s) return null;
+    const m = (month || new Date().getMonth() + 1);
+    const good = s.best.includes(m);
+    const bad = s.avoid.includes(m);
+    const summerMonth = [6, 7, 8, 9].includes(m);
+    return {
+      month: m,
+      monthName: MONTHS[m - 1] || '',
+      status: bad ? 'avoid' : good ? 'good' : 'caution',
+      label: bad ? 'ليس موسمه' : good ? 'موسمه الآن' : 'ممكن بتحفّظ',
+      reason: bad ? (summerMonth ? s.summer : s.winter) : good ? '' : (summerMonth ? s.summer : s.winter),
+      best: s.best.map(x => MONTHS[x - 1]).join('، '),
+      flood: !!s.flood,
+      summer: s.summer, winter: s.winter
+    };
+  }
+  const inSeasonNow = place => { const s = seasonFor(place); return !s || s.status !== 'avoid'; };
+
+  /* ---------- فكرة ٥: الانتقال بين محطتين ----------
+     لا نملك محرّك طرق، فنعطي المسافة الجوية وتقديرًا خشنًا معلن المنهج،
+     مع رابط اتجاهات حقيقي يفتح في خرائط خارجية. */
+  const ROAD_FACTOR = 1.35, ROAD_SPEED = 60;
+  function travelBetween(a, b) {
+    const from = navTarget(a), to = navTarget(b);
+    if (!from || !to) return null;
+    const air = haversine(from, to);
+    const road = air * ROAD_FACTOR;
+    const minutes = Math.round(road / ROAD_SPEED * 60);
+    return {
+      air, road, minutes,
+      label: minutes < 60 ? `~${minutes} دقيقة` : `~${Math.floor(minutes / 60)} س ${minutes % 60} د`,
+      directions: `https://www.google.com/maps/dir/?api=1&origin=${from[0]},${from[1]}&destination=${to[0]},${to[1]}&travelmode=driving`
+    };
+  }
+
   /* ---------- أماكن قريبة ومشابهة ---------- */
   function nearbyTo(place, limit = 4, maxKm = 35) {
     const from = latLng(place);
@@ -416,8 +476,9 @@ window.D = (function () {
 
   function activeFilterCount() {
     let n = 0;
-    ['region', 'zone', 'level', 'kind', 'visit', 'era', 'radius'].forEach(k => { if (state[k] !== 'all') n++; });
+    ['region', 'zone', 'level', 'kind', 'visit', 'era', 'radius', 'provenance'].forEach(k => { if (state[k] !== 'all') n++; });
     if (state.mapBoundsOnly) n++;
+    if (state.seasonOnly) n++;
     if (state.theme !== 'all') n++;
     if (state.sort !== 'featured') n++;
     if (state.favoritesOnly) n++;
@@ -428,7 +489,7 @@ window.D = (function () {
     Object.assign(state, {
       query: '', theme: 'all', region: 'all', zone: 'all', level: 'all',
       kind: 'all', visit: 'all', era: 'all', sort: 'featured', favoritesOnly: false, limit: 12,
-      radius: 'all', mapBoundsOnly: false
+      radius: 'all', mapBoundsOnly: false, provenance: 'all', seasonOnly: false
     });
   }
 
@@ -455,6 +516,7 @@ window.D = (function () {
     sourceLink, externalMap, toast,
     normalize, highlight, fmtKm, fmtM, kmText, estimateWalk, bearingTo,
     nearbyTo, similarTo, inBounds,
+    startPoint, startLatLng, navTarget, seasonFor, inSeasonNow, travelBetween, MONTHS,
     CHECKS: window.DOROUB_CHECKS || [], COLLECTIONS: window.DOROUB_COLLECTIONS || []
   };
 })();

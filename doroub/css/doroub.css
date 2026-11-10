@@ -748,3 +748,38 @@ mark { background: #d9f58e; color: inherit; border-radius: 3px; padding: 0 1px; 
   details.fold > summary::after { display: none; }
   details.fold[open] .fold-body { display: block !important; }
 }
+
+/* ===========================================================
+   V9 — الأفكار الستّ المركزية
+   =========================================================== */
+
+/* ---------- وسم المصدر المفتوح ---------- */
+.chip-glass.open-src { background: rgba(47, 92, 140, .82); }
+
+/* ---------- فكرة ٥: الانتقال بين محطتين ---------- */
+.trip-leg {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin: 2px 0 2px 0; padding: 7px 12px;
+  border-inline-start: 2px dashed var(--line);
+  margin-inline-start: 28px;
+  font-size: 11.5px; color: var(--ink-3);
+}
+.trip-leg .icon { width: 13px; height: 13px; }
+.trip-leg span { display: inline-flex; align-items: center; gap: 5px; }
+.trip-leg a {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-weight: 600; color: var(--forest); text-decoration: none;
+  background: #eef5e4; padding: 4px 10px; border-radius: 999px;
+}
+.trip-leg .warn-leg { color: #9a4a2e; font-weight: 600; }
+:root[data-theme="dark"] .trip-leg a { background: #1c3a2c; color: var(--lime); }
+
+/* ---------- ورقة المساهمة ---------- */
+#contributeBody .f-opt { font-size: 12.5px; }
+#contributeBody textarea { min-height: 110px; }
+
+/* ---------- حالة الحفظ دون اتصال ---------- */
+#offlineState { font-weight: 600; }
+
+/* ورقة المساهمة تُفتح من داخل صفحة المكان، فيجب أن تعلوها لا أن تختفي تحتها. */
+#contributeSheet { z-index: 110; }

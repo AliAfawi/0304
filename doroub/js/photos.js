@@ -208,6 +208,40 @@
     });
   }
 
+  /* ---------- فكرة ٣: نبذة ويكيبيديا العربية ----------
+     المصدر العربي أولًا: نقرأ من الذاكرة المجهّزة، وإلا نسأل ar.wikipedia. */
+  const AR_BAKED = w.DOROUB_AR_CACHE || {};
+  const arJobs = new Map();
+  const arPage = title => 'https://ar.wikipedia.org/wiki/' + encodeURIComponent(String(title).replace(/ /g, '_'));
+
+  function arabicStory(place) {
+    const title = place && (place.arWiki || null);
+    if (!title) return Promise.resolve(null);
+    const baked = AR_BAKED[place.wikidata] || AR_BAKED[title];
+    if (baked && baked.extract) return Promise.resolve({ text: baked.extract, page: arPage(baked.title || title) });
+    if (arJobs.has(title)) return arJobs.get(title);
+    const cached = recall('ar:' + title);
+    if (cached !== undefined) return Promise.resolve(cached);
+    const job = (async () => {
+      try {
+        const ctl = new AbortController();
+        const timer = setTimeout(() => ctl.abort(), 9000);
+        const res = await fetch(
+          'https://ar.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title.replace(/ /g, '_')),
+          { signal: ctl.signal, headers: { Accept: 'application/json' } }
+        );
+        clearTimeout(timer);
+        if (!res.ok) { remember('ar:' + title, null); return null; }
+        const d = await res.json();
+        const out = d.extract ? { text: String(d.extract).replace(/\s+/g, ' ').trim(), page: arPage(d.title || title) } : null;
+        remember('ar:' + title, out);
+        return out;
+      } catch (e) { return null; }
+    })();
+    arJobs.set(title, job);
+    return job;
+  }
+
   /* ---------- الواجهة: احصل على صورة مكان ---------- */
   const resolved = new Map();
   function resolve(place) {
@@ -323,5 +357,5 @@
       <small>الصورة الموثّقة قيد الإضافة</small></div></div>`;
   }
 
-  w.DPhotos = { resolve, watch, fill, box, wikiSummary, warmCoordinates, onCoordinates, gallery, extractFor, thumbUrl };
+  w.DPhotos = { resolve, watch, fill, box, wikiSummary, warmCoordinates, onCoordinates, gallery, extractFor, arabicStory, thumbUrl };
 })(window);
